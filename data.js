@@ -217,5 +217,67 @@ window.FACTORIES = [
     products: ["Bakır boru ve tüpler (rehber kaydına göre)"],
     notes: "Sadece rehber kaydı bulundu; telefon/e-posta yok. Sahada uğranacak bir aday.",
     verified: false
+  },
+  {
+    id: "wadi-el-nile",
+    name: "Wadi El Nile for Metal Industries (WN Copper)",
+    metal: ["bakir"],
+    area: "10th of Ramadan, A1 Sanayi Bölgesi",
+    address: "Saba Street, Industrial Zone A1, 10th of Ramadan City 44637",
+    lat: 30.2850, lng: 31.7300,
+    phones: ["+20 102 533 3361", "+20 102 533 3369"],
+    emails: ["info@wncopper.com"],
+    website: "https://www.facebook.com/Wadielnilemetals/",
+    products: ["Elektrik bakır baraları (busbar)", "Bakır lama / profil", "Bakır işleme (fabrikasyon) parçaları", "Bakır hurda alım-satımı"],
+    notes: "Mısır'ın en büyük bakır bara üreticilerinden biri olarak tanıtılıyor. İki farklı cep numarası yayınlanmış; WhatsApp'tan ikisini de deneyin. Site: wncopper.com",
+    verified: false
+  },
+  {
+    id: "nile-copper",
+    name: "Nile Copper Co. (NCC)",
+    metal: ["bakir"],
+    area: "Shubra El Kheima (Kuzey Kahire)",
+    address: "Ring Road, Shubra El Kheima, Qalyubia",
+    lat: 30.1300, lng: 31.2600,
+    approxOnly: true,
+    phones: [],
+    emails: [],
+    website: "https://yellowpages.com.eg/en/search/copper",
+    products: ["Bakır ürünleri (rehber kaydı – ürün detayı sahada sorulmalı)"],
+    notes: "Yellow Pages kaydı, telefon görünmüyor. Shubra El Kheima küçük/orta ölçekli bakır tel çekme ve döküm atölyelerinin yoğun olduğu bölge; pazarlıkta rekabetçi fiyat için gezmeye değer.",
+    verified: false
+  },
+  {
+    id: "sabaek",
+    name: "Sabaek – Bakır Tel",
+    metal: ["bakir"],
+    area: "10th of Ramadan",
+    address: "10th of Ramadan City (tam adres telefonla sorulmalı)",
+    lat: 30.3000, lng: 31.7500,
+    approxOnly: true,
+    phones: ["+20 55 449 9326"],
+    emails: [],
+    website: "https://waseeteg.com/%D8%AF%D9%84%D9%8A%D9%84-%D8%A7%D9%84%D8%B5%D9%86%D8%A7%D8%B9%D8%A7%D8%AA-%D8%A7%D9%84%D9%85%D8%B9%D8%AF%D9%86%D9%8A%D8%A9-%D8%A8%D8%A7%D9%84%D8%B9%D8%A7%D8%B4%D8%B1/1056",
+    products: ["Bakır tel"],
+    notes: "10th of Ramadan sanayi rehberinden; numara eski olabilir.",
+    verified: false
+  },
+  {
+    id: "q-bars",
+    name: "Q-Bars Power Busbar Electrical Industries",
+    metal: ["bakir"],
+    area: "Sadat City (Kahire'nin ~90 km kuzeybatısı)",
+    address: "Sadat City Industrial Zone, Menoufia",
+    lat: 30.3650, lng: 30.5300,
+    approxOnly: true,
+    phones: [],
+    emails: [],
+    website: "https://q-bars.com/",
+    products: ["Busbar trunking (bara kanal) sistemleri 630A–10.000A", "%99,9+ saflıkta bakır iletkenli baralar"],
+    notes: "İletişim bilgisi sitesinden alınmalı. Ham bakırdan çok mamul (bara kanal sistemi) satıyor.",
+    verified: false
   }
 ];
+
+// Referans fiyat (değiştirilebilir, sayfadaki kutudan güncelleyin).
+window.LME_REF = { copper: 12165, aluminium: null, date: "23.11.2026", source: "https://www.kme.com/en/services/metal-prices" };
