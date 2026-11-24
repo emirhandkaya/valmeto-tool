@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kahire Fabrika Haritası</title>
+<title>Tedarik ve Müşteri Haritası</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="top"><div class="inner">
-  <h1>Kahire Fabrika Haritası</h1>
-  <nav><a href="index.html">Liste</a><a href="harita.html" class="active">Harita</a></nav>
+  <h1>Tedarik &amp; Müşteri Haritası</h1>
+  <nav><a href="index.html">Mısır Üreticileri</a><a href="musteriler.html">Müşteriler</a><a href="harita.html" class="active">Harita</a></nav>
 </div></header>
 <main>
   <div class="legend">
@@ -18,6 +18,13 @@
     <span><span class="dot" style="background:#c8642f"></span>Bakır</span>
     <span><span class="dot" style="background:#7b4fa0"></span>Bakır + Alüminyum</span>
     <span><span class="dot" style="background:#2e7d4f"></span>Ziyaret edildi / teklif alındı</span>
+    <span><span class="dot" style="background:#0f5c8c;border-radius:2px"></span>Potansiyel müşteri</span>
+    <span><span class="dot" style="background:#d4a017;border-radius:2px"></span>Mevcut müşteri</span>
+    <span>
+      <button data-view="cairo">Kahire</button>
+      <button data-view="customers">Balkanlar &amp; Türkiye</button>
+      <button data-view="all">Tümü</button>
+    </span>
     <label><input type="checkbox" id="me"> Konumumu göster</label>
   </div>
   <div id="map"></div>
@@ -26,6 +33,7 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="data.js"></script>
+<script src="musteriler.js"></script>
 <script src="common.js"></script>
 <script>
 const notes = loadNotes();
@@ -57,6 +65,22 @@ FACTORIES.filter(f => f.lat != null).forEach(f => {
     <br><a href="${mapsHref(f)}" target="_blank" rel="noopener">🧭 Google Maps'te aç</a>`);
   markers[f.id] = mk; bounds.push([f.lat, f.lng]);
 });
+// Müşteri katmanı (kare işaretler)
+let crm = {}; try { crm = JSON.parse(localStorage.getItem("musteri-takip-v1")) || {}; } catch (e) {}
+const cBounds = [];
+CUSTOMERS.filter(c => c.lat != null).forEach(c => {
+  const st = crm[c.id]?.status || (c.current ? "musteri" : "");
+  const icon = L.divIcon({ className: "", iconSize: [16, 16], html: `<div style="width:14px;height:14px;border:2px solid #fff;box-shadow:0 0 0 1px #0004;border-radius:3px;background:${st === "musteri" ? "#d4a017" : "#0f5c8c"}"></div>` });
+  const mk = L.marker([c.lat, c.lng], { icon }).addTo(map);
+  mk.bindTooltip(c.name);
+  mk.bindPopup(`<h3>${esc(c.name)}</h3><b>${esc(c.city)}, ${esc(c.country)}</b><br>${esc(c.type)}<br>
+    ${c.phones.map(p => `📞 <a href="${telHref(p)}">${esc(p)}</a>`).join("<br>")}
+    ${c.emails.length ? "<br>" + c.emails.map(e => `✉️ <a href="mailto:${esc(e)}">${esc(e)}</a>`).join("<br>") : ""}
+    <br><b>Alabileceği:</b> ${esc(c.buys)}<br><a href="musteriler.html">→ Müşteri listesi</a>`);
+  markers["m-" + c.id] = mk; cBounds.push([c.lat, c.lng]);
+});
+const views = { cairo: bounds, customers: cBounds, all: bounds.concat(cBounds) };
+document.querySelectorAll("[data-view]").forEach(b => b.onclick = () => map.fitBounds(views[b.dataset.view], { padding: [30, 30] }));
 map.fitBounds(bounds, { padding: [30, 30] });
 
 const hash = location.hash.slice(1);

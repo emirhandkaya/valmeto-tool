@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Potansiyel Müşteriler</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .country-h { margin: 24px 0 10px; font-size: 1.15rem; display: flex; gap: 8px; align-items: baseline; }
+  .country-h small { color: var(--muted); font-weight: 400; font-size: .85rem; }
+  .tag.pirinc { background: #f6eccb; color: #8a6a00; }
+  @media (prefers-color-scheme: dark) { .tag.pirinc { background: #3a3320; color: #e6c35c; } }
+  .tag.current { background: var(--accent); color: #fff; }
+  .stats { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: .85rem; }
+  .stat b { display: block; font-size: 1.2rem; }
+  .sources a { display: block; font-size: .9rem; margin: 3px 0; }
+</style>
+</head>
+<body>
+<header class="top"><div class="inner">
+  <h1>Bakır · Alüminyum · Pirinç Ticaret Aracı</h1>
+  <nav><a href="index.html">Mısır Üreticileri</a><a href="musteriler.html" class="active">Müşteriler</a><a href="harita.html">Harita</a></nav>
+</div></header>
+
+<main>
+  <div class="warning">
+    <b>Türkiye ve Balkanlar'da potansiyel alıcılar:</b> kablo fabrikaları (bakır/alüminyum tel), emaye bobin teli üreticileri,
+    filmaşin/tel çekme tesisleri (katot) ve pirinç çubuk/vana üreticileri (bakır + pirinç). Kaynak: firma siteleri ve rehberler (Kasım 2026).
+    Turuncu “teyit edilmedi” kayıtlar üçüncü taraf rehberlerden; ilk temasta doğrulayın. Takip notlarınız bu cihazda saklanır, “CSV indir” ile yedekleyin.
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="toolbar">
+    <input id="q" type="search" placeholder="Ara: firma, şehir, ürün…">
+    <select id="country"><option value="">Tüm ülkeler</option></select>
+    <select id="need">
+      <option value="">Tüm hammaddeler</option>
+      <option value="bakir">Bakır alıcısı</option>
+      <option value="aluminyum">Alüminyum alıcısı</option>
+      <option value="pirinc">Pirinç alıcısı</option>
+    </select>
+    <select id="status"><option value="">Tüm durumlar</option></select>
+    <button id="csv" class="primary">CSV indir</button>
+  </div>
+
+  <p class="meta" id="count"></p>
+  <div id="list"></div>
+
+  <h2 class="country-h">Taranacak toplu kaynaklar <small>yeni müşteri bulmak için</small></h2>
+  <div class="card sources" id="sources"></div>
+</main>
+<footer>Koordinatlar şehir düzeyindedir. Fiyat ve teklif bilgilerini “Takip” bölümüne girin.</footer>
+
+<script src="musteriler.js"></script>
+<script src="common.js"></script>
+<script>
+const KEY = "musteri-takip-v1";
+let crm = {}; try { crm = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(crm)); } catch (e) {} };
+const CSTATUS = { "": "Henüz aranmadı", arandi: "İletişime geçildi", teklif: "Teklif gönderildi", numune: "Numune / görüşme", musteri: "Müşteri", red: "İlgilenmiyor" };
+const NEED_LABEL = { bakir: "Bakır", aluminyum: "Alüminyum", pirinc: "Pirinç" };
+const ORDER = ["Kosova", "Kuzey Makedonya", "Sırbistan", "Bosna-Hersek", "Hırvatistan", "Slovenya", "Bulgaristan", "Romanya", "Yunanistan", "Türkiye"];
+const status = c => crm[c.id]?.status || (c.current ? "musteri" : "");
+
+const countrySel = document.getElementById("country"), statusSel = document.getElementById("status");
+ORDER.forEach(c => countrySel.add(new Option(`${c} (${CUSTOMERS.filter(x => x.country === c).length})`, c)));
+Object.entries(CSTATUS).forEach(([k, v]) => k && statusSel.add(new Option(v, k)));
+document.getElementById("sources").innerHTML = LEAD_SOURCES.map(s => `<a href="${s.url}" target="_blank" rel="noopener">🔎 ${esc(s.name)}</a>`).join("");
+
+function offerMail(c, email) {
+  const items = c.needs.map(n => ({ bakir: "copper wire / copper wire rod / cathode", aluminyum: "aluminium wire rod / aluminium wire", pirinc: "brass rods / brass products" }[n])).join(", ");
+  const subject = `Supply offer – ${c.needs.map(n => ({ bakir: "copper", aluminyum: "aluminium", pirinc: "brass" }[n])).join(", ")} for ${c.name}`;
+  const body = `Dear ${c.name} purchasing team,
+
+We are a trading company supplying non-ferrous metals to cable and metal manufacturers in the Balkans. We currently supply copper cable wire to a cable producer in Kosovo.
+
+We source from producers in Türkiye, Egypt and Uzbekistan and can offer ${items} with competitive pricing (LME-based), certified quality and flexible quantities.
+
+Could you share your monthly consumption, required specifications (diameter, grade, packaging) and delivery terms? We will send you a quotation and can arrange samples.
+
+Best regards,
+`;
+  return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+function card(c) {
+  const n = crm[c.id] || {}, st = status(c);
+  const tags = c.needs.map(x => `<span class="tag ${x}">${NEED_LABEL[x]}</span>`).join("")
+    + (c.verified ? `<span class="tag ok">resmi kaynak</span>` : `<span class="tag unv">teyit edilmedi</span>`)
+    + (st ? `<span class="tag ${st === "musteri" ? "current" : "visited"}">${esc(CSTATUS[st])}</span>` : "");
+  const phones = c.phones.map(p => `📞 <a href="${telHref(p)}">${esc(p)}</a> · <a href="${waHref(p)}" target="_blank" rel="noopener">WhatsApp</a>`).join("<br>");
+  const emails = c.emails.map(e => `✉️ <a href="mailto:${esc(e)}">${esc(e)}</a>`).join("<br>");
+  return `<article class="card" data-id="${c.id}">
+    <h2>${esc(c.name)}</h2>
+    <div class="tags">${tags}</div>
+    <div class="meta">📍 ${esc(c.city)}, ${esc(c.country)} · ${esc(c.type)}</div>
+    <div class="contacts">${phones || "<span class='meta'>Telefon bulunamadı</span>"}<br>${emails || "<span class='meta'>E-posta bulunamadı</span>"}
+      ${c.contact ? `<br>👤 ${esc(c.contact)}` : ""}</div>
+    <div style="font-size:.9rem"><b>Üretim:</b> ${esc(c.products)}<br><b>Alabileceği:</b> ${esc(c.buys)}</div>
+    ${c.notes ? `<div class="meta">ℹ️ ${esc(c.notes)}</div>` : ""}
+    <div class="actions">
+      ${c.emails[0] ? `<a href="${offerMail(c, c.emails[0])}">✉️ Tedarik teklifi (İng.)</a>` : ""}
+      ${c.website ? `<a href="${esc(c.website)}" target="_blank" rel="noopener">🌐 Site / kaynak</a>` : ""}
+      ${c.lat != null ? `<a href="harita.html#m-${c.id}">🗺️ Harita</a>` : ""}
+    </div>
+    <details class="visit" ${n.status || n.text ? "open" : ""}>
+      <summary>Takip</summary>
+      <label>Durum<select data-k="status">${Object.entries(CSTATUS).map(([k, v]) => `<option value="${k}" ${st === k ? "selected" : ""}>${v}</option>`).join("")}</select></label>
+      <div class="row">
+        <label>Görüşülen kişi<input data-k="person" value="${esc(n.person)}"></label>
+        <label>Son temas tarihi<input type="date" data-k="date" value="${esc(n.date)}"></label>
+      </div>
+      <div class="row">
+        <label>Aylık ihtiyaç (ton)<input type="number" step="any" data-k="tons" value="${esc(n.tons)}"></label>
+        <label>Hedef fiyat / prim<input data-k="price" value="${esc(n.price)}"></label>
+      </div>
+      <label>Notlar (spesifikasyon, ödeme, mevcut tedarikçi…)<textarea rows="3" data-k="text">${esc(n.text)}</textarea></label>
+    </details>
+  </article>`;
+}
+
+function render() {
+  const q = document.getElementById("q").value.toLowerCase(), co = countrySel.value, nd = document.getElementById("need").value, st = statusSel.value;
+  const items = CUSTOMERS.filter(c => (!co || c.country === co) && (!nd || c.needs.includes(nd)) && (!st || status(c) === st)
+    && (!q || JSON.stringify(c).toLowerCase().includes(q) || (crm[c.id]?.text || "").toLowerCase().includes(q)));
+  document.getElementById("list").innerHTML = ORDER.map(country => {
+    const g = items.filter(c => c.country === country); if (!g.length) return "";
+    return `<h2 class="country-h">${country} <small>${g.length} firma</small></h2><div class="grid">${g.map(card).join("")}</div>`;
+  }).join("");
+  document.getElementById("count").textContent = `${items.length} firma gösteriliyor (toplam ${CUSTOMERS.length}, ${ORDER.length} ülke)`;
+  const cnt = k => CUSTOMERS.filter(c => status(c) === k).length;
+  const tons = CUSTOMERS.reduce((s, c) => s + (parseFloat(crm[c.id]?.tons) || 0), 0);
+  document.getElementById("stats").innerHTML = [
+    ["Toplam aday", CUSTOMERS.length], ["Müşteri", cnt("musteri")], ["Teklif gönderildi", cnt("teklif")],
+    ["İletişimde", cnt("arandi") + cnt("numune")], ["Toplam aylık ihtiyaç", tons ? tons + " t" : "–"]
+  ].map(([l, v]) => `<div class="stat"><b>${v}</b>${l}</div>`).join("");
+}
+
+document.getElementById("list").addEventListener("change", e => {
+  const el = e.target, k = el.dataset.k; if (!k) return;
+  const id = el.closest(".card").dataset.id;
+  crm[id] = { ...(crm[id] || {}), [k]: el.value }; save();
+  if (k === "status" || k === "tons") render();
+});
+["q", "country", "need", "status"].forEach(id => document.getElementById(id).addEventListener("input", render));
+
+document.getElementById("csv").onclick = () => {
+  const head = ["Ülke", "Şehir", "Firma", "Tür", "Hammadde", "Telefon", "E-posta", "Web", "Durum", "Kişi", "Son temas", "Aylık ton", "Fiyat/prim", "Notlar"];
+  const rows = CUSTOMERS.map(c => { const n = crm[c.id] || {}; return [c.country, c.city, c.name, c.type, c.needs.map(x => NEED_LABEL[x]).join("/"), c.phones.join(" | "), c.emails.join(" | "), c.website, CSTATUS[status(c)], n.person, n.date, n.tons, n.price, n.text]; });
+  const csv = "﻿" + [head, ...rows].map(r => r.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(";")).join("\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+  a.download = "potansiyel-musteriler.csv"; a.click();
+};
+render();
+</script>
+</body>
+</html>
