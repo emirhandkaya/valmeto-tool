@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kahire Fabrika Haritası</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top"><div class="inner">
+  <h1>Kahire Fabrika Haritası</h1>
+  <nav><a href="index.html">Liste</a><a href="harita.html" class="active">Harita</a></nav>
+</div></header>
+<main>
+  <div class="legend">
+    <span><span class="dot" style="background:#6b7a8f"></span>Alüminyum</span>
+    <span><span class="dot" style="background:#c8642f"></span>Bakır</span>
+    <span><span class="dot" style="background:#7b4fa0"></span>Bakır + Alüminyum</span>
+    <span><span class="dot" style="background:#2e7d4f"></span>Ziyaret edildi / teklif alındı</span>
+    <label><input type="checkbox" id="me"> Konumumu göster</label>
+  </div>
+  <div id="map"></div>
+  <p class="meta">Noktalar yaklaşıktır (sanayi bölgesi / cadde düzeyinde). Yol tarifi için noktaya tıklayıp “Google Maps” açın; taksiciye adresi gösterin.</p>
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="data.js"></script>
+<script src="common.js"></script>
+<script>
+const notes = loadNotes();
+const map = L.map("map").setView([30.06, 31.35], 10);
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  maxZoom: 19, attribution: "&copy; OpenStreetMap"
+}).addTo(map);
+
+function color(f) {
+  const st = notes[f.id]?.status;
+  if (st === "gidildi" || st === "teklif") return "#2e7d4f";
+  if (f.metal.length > 1) return "#7b4fa0";
+  return f.metal[0] === "bakir" ? "#c8642f" : "#6b7a8f";
+}
+const markers = {}, bounds = [];
+FACTORIES.filter(f => f.lat != null).forEach(f => {
+  const n = notes[f.id] || {};
+  const mk = L.circleMarker([f.lat, f.lng], { radius: 10, color: "#fff", weight: 2, fillColor: color(f), fillOpacity: .95 }).addTo(map);
+  mk.bindTooltip(f.name.split("(")[0].trim());
+  mk.bindPopup(`<h3>${esc(f.name)}</h3>
+    <b>${f.metal.map(m => METAL_LABEL[m]).join(" + ")}</b> · ${esc(f.area)}<br>
+    <small>${esc(f.address)}</small><br>
+    ${f.phones.map(p => `📞 <a href="${telHref(p)}">${esc(p)}</a>`).join("<br>")}
+    ${f.emails.length ? "<br>" + f.emails.map(e => `✉️ <a href="mailto:${esc(e)}">${esc(e)}</a>`).join("<br>") : ""}
+    <br><b>Ürünler:</b> ${esc(f.products.join(", "))}
+    ${n.status ? `<br><b>Durum:</b> ${esc(STATUS_LABEL[n.status])}` : ""}
+    ${n.price ? `<br><b>Fiyat:</b> ${esc(n.price)} USD/ton` : ""}
+    ${f.approxOnly ? "<br><i>Konum sadece bölge tahmini.</i>" : ""}
+    <br><a href="${mapsHref(f)}" target="_blank" rel="noopener">🧭 Google Maps'te aç</a>`);
+  markers[f.id] = mk; bounds.push([f.lat, f.lng]);
+});
+map.fitBounds(bounds, { padding: [30, 30] });
+
+const hash = location.hash.slice(1);
+if (markers[hash]) { map.setView(markers[hash].getLatLng(), 14); markers[hash].openPopup(); }
+
+let meLayer;
+document.getElementById("me").onchange = e => {
+  if (!e.target.checked) { meLayer && map.removeLayer(meLayer); return; }
+  navigator.geolocation?.getCurrentPosition(p => {
+    meLayer = L.circleMarker([p.coords.latitude, p.coords.longitude], { radius: 8, color: "#fff", weight: 3, fillColor: "#1a73e8", fillOpacity: 1 })
+      .addTo(map).bindTooltip("Buradasınız", { permanent: true });
+    map.setView(meLayer.getLatLng(), 12);
+  }, () => alert("Konum alınamadı."));
+};
+</script>
+</body>
+</html>
