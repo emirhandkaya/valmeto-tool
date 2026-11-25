@@ -39,7 +39,7 @@ const NAV = [
 ];
 function renderNav() {
   const h1 = document.querySelector(".top h1");
-  if (h1 && !h1.querySelector(".logo")) h1.insertAdjacentHTML("afterbegin", '<a href="index.html" class="logo-link"><img src="logo-header-v2.png" class="logo" alt="Valmeto Global Trade"></a>');
+  if (h1 && !h1.querySelector(".logo")) h1.insertAdjacentHTML("afterbegin", '<img src="logo-header-v2.png" class="logo" alt="Valmeto Global Trade">');
   const el = document.getElementById("nav"); if (!el) return;
   const here = location.pathname.split("/").pop() || "index.html";
   el.innerHTML = NAV.map(([h, l]) => `<a href="${h}"${h === here ? ' class="active"' : ""}>${l}</a>`).join("");
