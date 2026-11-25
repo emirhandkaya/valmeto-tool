@@ -145,3 +145,15 @@ document.addEventListener("visibilitychange", () => {
     setMailState(p.key, { status: p.st, date: new Date().toISOString().slice(0, 10) }); refreshTrackers(p.key, null);
   } }, 400);
 });
+
+// ---- Gidilecek fabrikalar (🚩). Kayıtlı seçim yoksa data.js'teki go:true varsayılanı geçerli.
+const GO_KEY = "valmeto-go";
+function isGo(f) { const g = lsGet(GO_KEY, {}); return f.id in g ? !!g[f.id] : !!f.go; }
+function setGo(id, v) { const g = lsGet(GO_KEY, {}); g[id] = !!v; lsSet(GO_KEY, g); }
+function goToggle(f) { return `<label class="gochk"><input type="checkbox" data-go="${f.id}" ${isGo(f) ? "checked" : ""}> 🚩 Gidilecek</label>`; }
+document.addEventListener("change", e => {
+  const id = e.target.dataset && e.target.dataset.go; if (!id) return;
+  setGo(id, e.target.checked);
+  document.querySelectorAll(`[data-go="${id}"]`).forEach(c => { if (c !== e.target) c.checked = e.target.checked; });
+  if (typeof onGoChange === "function") onGoChange();
+});

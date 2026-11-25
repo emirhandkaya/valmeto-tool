@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Valmeto">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="style.css?v=23">
+<link rel="stylesheet" href="style.css?v=24">
 </head>
 <body>
 <header class="top"><div class="inner">
@@ -70,8 +70,8 @@
 </main>
 <footer>Liste 25.11.2026'da firmaların kendi sitelerindeki ürünlere göre gözden geçirildi; sadece bakır/alüminyum/pirinç ürünü üretenler kaldı. Çıkarılanlar: ALUPCO (Suudi), Coppermelt (tatlıcı), Q-Bars ve ERAMCO (doğrulanamadı), Cairo Cables (kablo üreticisi = alıcı). Koordinatlar yaklaşıktır.</footer>
 
-<script src="data.js?v=23"></script>
-<script src="common.js?v=23"></script>
+<script src="data.js?v=24"></script>
+<script src="common.js?v=24"></script>
 <script>
 const notes = loadNotes();
 const visits = lsGet("valmeto-visits", {});
@@ -107,6 +107,7 @@ function card(f) {
   const emails = f.emails.map(e => `✉️ <a href="mailto:${esc(e)}">${esc(e)}</a>`).join("<br>");
   return `<article class="card" data-id="${f.id}">
     <h2>${f.star ? "★ " : ""}${esc(f.name)}</h2>
+    ${goToggle(f)}
     <div class="tags">${tags}</div>
     <div class="meta">📍 ${esc(f.area)}<br>${esc(f.address)}<br>🗓️ ${DAYS[f.day]}</div>
     <div class="contacts">${phones || "<span class='meta'>Telefon bulunamadı</span>"}<br>${emails || "<span class='meta'>E-posta bulunamadı</span>"}
@@ -147,13 +148,14 @@ function render() {
     items.sort((a, b) => (offerUsdT(a) || Infinity) - (offerUsdT(b) || Infinity));
     html = `<div class="grid">${items.map(card).join("")}</div>`;
   } else {
-    for (const tier of ["A", "B", "C"]) {
-      const g = items.filter(f => f.tier === tier).sort((a, b) => (b.star ? 1 : 0) - (a.star ? 1 : 0) || (a.day || 9) - (b.day || 9));
-      if (g.length) html += `<h2 class="group-h">${TIER_LABEL[tier]} <small>${g.length} kayıt</small></h2><div class="grid">${g.map(card).join("")}</div>`;
-    }
+    const contacted = f => !!mailState(contactKey(f)).status;
+    const sorter = (a, b) => (isGo(b) - isGo(a)) || a.tier.localeCompare(b.tier) || ((b.star ? 1 : 0) - (a.star ? 1 : 0)) || ((a.day || 9) - (b.day || 9));
+    const yes = items.filter(contacted).sort(sorter), no = items.filter(f => !contacted(f)).sort(sorter);
+    if (yes.length) html += `<h2 class="group-h contacted">📞 İrtibata geçilenler <small>${yes.length} kayıt</small></h2><div class="grid">${yes.map(card).join("")}</div>`;
+    if (no.length) html += `<h2 class="group-h">İrtibata geçilmeyenler <small>${no.length} kayıt</small></h2><div class="grid">${no.map(card).join("")}</div>`;
   }
   document.getElementById("list").innerHTML = html;
-  document.getElementById("count").textContent = `${items.length} kayıt gösteriliyor (toplam ${FACTORIES.length}). ★ = önce gidilecek.`;
+  document.getElementById("count").textContent = `${items.length} kayıt gösteriliyor (toplam ${FACTORIES.length}). 🚩 işaretliler grup içinde en üstte.`;
 }
 
 document.getElementById("list").addEventListener("change", e => {
@@ -174,6 +176,7 @@ document.getElementById("csv").onclick = () => {
   a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
   a.download = "misir-ureticiler.csv"; a.click();
 };
+window.onMailChange = render; window.onGoChange = render;
 try { render(); } catch (err) {
   document.getElementById("list").innerHTML = `<div class="warning danger">Liste yüklenemedi (eski önbellek olabilir). <button class="big-btn" onclick="(async()=>{try{for(const r of await navigator.serviceWorker.getRegistrations())await r.unregister();for(const k of await caches.keys())await caches.delete(k);}catch(e){}location.reload(true)})()">🔄 Önbelleği temizle ve yenile</button><br><small>${esc(err.message)}</small></div>`;
 }
