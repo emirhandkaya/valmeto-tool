@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Valmeto">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=17">
 </head>
 <body>
 <header class="top"><div class="inner">
@@ -70,8 +70,8 @@
 </main>
 <footer>Liste 25.11.2026'da firmaların kendi sitelerindeki ürünlere göre gözden geçirildi; sadece bakır/alüminyum/pirinç ürünü üretenler kaldı. Çıkarılanlar: ALUPCO (Suudi), Coppermelt (tatlıcı), Q-Bars ve ERAMCO (doğrulanamadı), Cairo Cables (kablo üreticisi = alıcı). Koordinatlar yaklaşıktır.</footer>
 
-<script src="data.js"></script>
-<script src="common.js"></script>
+<script src="data.js?v=17"></script>
+<script src="common.js?v=17"></script>
 <script>
 const notes = loadNotes();
 const visits = lsGet("valmeto-visits", {});
@@ -174,7 +174,9 @@ document.getElementById("csv").onclick = () => {
   a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
   a.download = "misir-ureticiler.csv"; a.click();
 };
-render();
+try { render(); } catch (err) {
+  document.getElementById("list").innerHTML = `<div class="warning danger">Liste yüklenemedi (eski önbellek olabilir). <button class="big-btn" onclick="(async()=>{try{for(const r of await navigator.serviceWorker.getRegistrations())await r.unregister();for(const k of await caches.keys())await caches.delete(k);}catch(e){}location.reload(true)})()">🔄 Önbelleği temizle ve yenile</button><br><small>${esc(err.message)}</small></div>`;
+}
 </script>
 </body>
 </html>

@@ -1,15 +1,17 @@
-// Basit çevrimdışı önbellek: önce ağ, ağ yoksa önbellek.
-const CACHE = "valmeto-v16";
+// Çevrimdışı önbellek. Her zaman önce ağdan TAZE dosya istenir (HTTP önbelleği atlanır);
+// ağ yoksa son kaydedilen sürüm kullanılır. Sürüm değişince eski önbellekler silinir.
+const CACHE = "valmeto-v17";
 const CORE = ["./", "index.html", "gezi.html", "ziyaret.html", "hesap.html", "arapca.html", "musteriler.html", "harita.html",
-  "style.css", "common.js", "data.js", "musteriler.js",
-  "manifest.webmanifest", "logo-header-v2.png", "logo-full.png", "icon-192-v2.png", "icon-512-v2.png", "icon-maskable-512-v2.png", "apple-touch-icon-v2.png", "favicon-32-v2.png",
+  "style.css?v=17", "common.js?v=17", "data.js?v=17", "musteriler.js?v=17",
+  "manifest.webmanifest?v=2", "icon-192-v2.png", "icon-512-v2.png", "icon-maskable-512-v2.png", "apple-touch-icon-v2.png", "favicon-32-v2.png", "logo-header-v2.png",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css", "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"];
-self.addEventListener("install", e => e.waitUntil(caches.open(CACHE).then(c => Promise.allSettled(CORE.map(u => c.add(u)))).then(() => self.skipWaiting())));
-self.addEventListener("activate", e => e.waitUntil(self.clients.claim()));
+self.addEventListener("install", e => e.waitUntil(caches.open(CACHE).then(c => Promise.allSettled(CORE.map(u => c.add(new Request(u, { cache: "reload" }))))).then(() => self.skipWaiting())));
+self.addEventListener("activate", e => e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())));
 self.addEventListener("fetch", e => {
   if (e.request.method !== "GET") return;
-  e.respondWith(fetch(e.request).then(r => {
+  const sameOrigin = new URL(e.request.url).origin === self.location.origin;
+  e.respondWith(fetch(sameOrigin ? new Request(e.request, { cache: "no-store" }) : e.request).then(r => {
     if (r.ok && (r.type === "basic" || r.type === "cors")) { const c = r.clone(); caches.open(CACHE).then(cc => cc.put(e.request, c)); }
     return r;
-  }).catch(() => caches.match(e.request, { ignoreSearch: true })));
+  }).catch(() => caches.match(e.request, { ignoreSearch: false }).then(m => m || caches.match(e.request, { ignoreSearch: true }))));
 });

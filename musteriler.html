@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Valmeto">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=17">
 <style>
   .country-h { margin: 24px 0 10px; font-size: 1.15rem; display: flex; gap: 8px; align-items: baseline; }
   .country-h small { color: var(--muted); font-weight: 400; font-size: .85rem; }
@@ -61,8 +61,8 @@
 </main>
 <footer>Koordinatlar şehir düzeyindedir. Fiyat ve teklif bilgilerini “Takip” bölümüne girin.</footer>
 
-<script src="musteriler.js"></script>
-<script src="common.js"></script>
+<script src="musteriler.js?v=17"></script>
+<script src="common.js?v=17"></script>
 <script>
 const KEY = "musteri-takip-v1";
 let crm = {}; try { crm = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
