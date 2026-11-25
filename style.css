@@ -1,13 +1,13 @@
 :root {
   --bg: #f6f4ef; --surface: #ffffff; --text: #1f2328; --muted: #5f6670;
-  --border: #e2ded4; --accent: #0f5c8c;
+  --border: #e2ded4; --accent: #84601f;
   --al: #6b7a8f; --al-bg: #e8edf3; --cu: #b5562a; --cu-bg: #f8e9e0;
   --ok: #2e7d4f; --warn: #a86a00;
 }
 @media (prefers-color-scheme: dark) {
   :root {
     --bg: #15171a; --surface: #1e2126; --text: #e8e6e1; --muted: #9aa1aa;
-    --border: #33373e; --accent: #5aa9dc;
+    --border: #33373e; --accent: #d9b46a;
     --al: #a9b6c8; --al-bg: #2a313b; --cu: #e8885a; --cu-bg: #3a2a22;
     --ok: #6fcf97; --warn: #f2b84b;
   }
@@ -98,6 +98,10 @@ table.cmp th, table.cmp td { border-bottom: 1px solid var(--border); padding: 6p
   .form .row, .visit .row { grid-template-columns: 1fr; }
 }
 .top h1 { display: flex; align-items: center; gap: 10px; }
-.logo { width: 34px; height: 34px; border-radius: 8px; display: block; }
+.logo { height: 38px; width: auto; display: block; }
 nav a.install { border: 1px solid var(--accent); color: var(--accent); }
 @media (display-mode: standalone) { header.top { padding-top: env(safe-area-inset-top); } }
+@media (prefers-color-scheme: dark) {
+  nav a.active, button.primary, .big-btn, .actions a.primary-link, .tag.current, .stop .num { color: #14171c !important; }
+  .big-btn.ghost { color: var(--accent) !important; }
+}

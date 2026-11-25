@@ -7,17 +7,58 @@
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#f6f4ef",
-  "theme_color": "#0f5c8c",
+  "background_color": "#14171c",
+  "theme_color": "#14171c",
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
-    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ],
   "shortcuts": [
-    { "name": "Ziyaret Formu", "url": "./ziyaret.html", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
-    { "name": "Fiyat Hesabı", "url": "./hesap.html", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] },
-    { "name": "Gezi Planı", "url": "./gezi.html", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] }
+    {
+      "name": "Ziyaret Formu",
+      "url": "./ziyaret.html",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Fiyat Hesabı",
+      "url": "./hesap.html",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Gezi Planı",
+      "url": "./gezi.html",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
   ]
 }
