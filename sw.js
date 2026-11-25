@@ -1,5 +1,5 @@
 // Basit çevrimdışı önbellek: önce ağ, ağ yoksa önbellek.
-const CACHE = "valmeto-v4";
+const CACHE = "valmeto-v5";
 const CORE = ["./", "index.html", "gezi.html", "ziyaret.html", "hesap.html", "arapca.html", "musteriler.html", "harita.html",
   "style.css", "common.js", "data.js", "musteriler.js",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css", "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"];
