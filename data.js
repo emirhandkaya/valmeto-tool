@@ -206,7 +206,7 @@ window.FACTORIES = [
     source: "hurda",
     active: "Faaliyet kanıtı yok; sadece Yellow Pages kaydı.",
     mapQuery: "Nile Copper Co. NCC, Shubra El Kheima, Qalyubia",
-    name: "Shubra El Kheima atölyeleri (Nile Copper NCC dahil)",
+    name: "Nile Copper Co. (NCC) – Shubra El Kheima",
     metal: ["bakir"],
     area: "Shubra El Kheima (Kuzey Kahire)",
     address: "Ring Road – Nazlet Shubra El Kheima, Qalyubia",
