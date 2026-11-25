@@ -14,7 +14,8 @@ function mapsHref(f) {
 }
 const METAL_LABEL = { aluminyum: "Alüminyum", bakir: "Bakır", pirinc: "Pirinç" };
 const STATUS_LABEL = { "": "Planlanmadı", plan: "Ziyaret planlandı", randevu: "Randevu alındı", gidildi: "Ziyaret edildi", teklif: "Teklif alındı", elendi: "Uygun değil" };
-const TIER_LABEL = { A: "A · Hedef – hurdadan filmaşin / tel", B: "B · Orta – külçe, bara, döküm, profil, kablo", C: "C · Referans – büyük / pahalı" };
+const TIER_LABEL = { A: "A · Hedef – bakır tel / filmaşin / çubuk", B: "B · Orta – bara, alaşım külçe, profil, döküm", C: "C · Referans – büyük / pahalı" };
+const OURS_LABEL = { evet: "✔ Bizim ürünleri üretiyor", kismen: "◐ Kısmen bizim ürünler", dogrulanamadi: "? Ürünler doğrulanamadı" };
 const SOURCE_LABEL = { hurda: "Hurdadan üretim", katot: "Katottan üretim", karisik: "Hurda + katot", birincil: "Birincil (cevherden)", bilinmiyor: "Kaynak bilinmiyor" };
 const DAYS = { 1: "Pazar 29 Kasım", 2: "Pazartesi 30 Kasım", 3: "Salı 1 Aralık", 4: "Çarşamba 2 Aralık", 0: "Telefonla" };
 const SENDER = { name: "Emirhan Durmuşkaya", company: "Valmeto İç ve Dış Ticaret Ltd. Şti.", companyEn: "Valmeto Domestic and Foreign Trade Ltd.", phone: "+90 552 433 26 53" };

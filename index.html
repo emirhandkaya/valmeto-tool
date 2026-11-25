@@ -22,9 +22,9 @@
 
 <main>
   <div class="warning" style="border-left-color:var(--ok)">
-    <b>🎯 Hedef ürün:</b> hurdadan üretilmiş <b>bakır filmaşin (8 mm) ve tel</b>. Hurda doğrudan alınmayacak.
-    “A” grubu bunu yapan veya yapabilecek firmalardır. Kablo fabrikası müşterilerin için kritik kalite ölçüleri: <b>saflık (% Cu ≥ 99,9), iletkenlik (% IACS, ideal ≥ 100), oksijen (ppm), çap toleransı ve kangal ağırlığı</b>.
-    Hurda bazlı filmaşinde iletkenlik düşük olabilir; numune alıp Türkiye'de test ettir.
+    <b>🎯 Ürün yelpazemiz:</b> bakır (filmaşin, tel, çubuk, şerit, bara, külçe), alüminyum (külçe, billet, filmaşin, profil, levha) ve pirinç.
+    Hurdadan üretilmiş ürünler de olur; hurda doğrudan alınmayacak. Liste firmaların kendi sitelerindeki ürünlere göre süzüldü: her kartta “✔ / ◐ / ?” işareti ve sitedeki tam ürün listesi var.
+    Kablo müşterileri için bakırda kritik ölçüler: <b>saflık (% Cu ≥ 99,9), iletkenlik (% IACS), oksijen (ppm), çap toleransı, kangal ağırlığı</b> – numune alıp Türkiye'de test ettir.
     <br><small>Not: Mısır'ın 2026 hurda ihracat yasağı (Karar 77/2026) mamul filmaşin/teli kapsamamalı, ama bazı bakır ürünleri için genelge bildirildiği için her fabrikaya ihracat iznini teyit ettir.
     <a href="https://www.goeic.gov.eg/en/laws-and-decisions/list/898" target="_blank" rel="noopener">GOEIC kararları</a></small>
   </div>
@@ -68,7 +68,7 @@
   <p class="meta" id="count"></p>
   <div id="list"></div>
 </main>
-<footer>Koordinatlar yaklaşıktır. ALUPCO (Suudi merkezli) listeden çıkarıldı; büyük kurumsallar “C – Referans” grubunda sadece fiyat karşılaştırması için duruyor.</footer>
+<footer>Liste 25.11.2026'da firmaların kendi sitelerindeki ürünlere göre gözden geçirildi; sadece bakır/alüminyum/pirinç ürünü üretenler kaldı. Çıkarılanlar: ALUPCO (Suudi), Coppermelt (tatlıcı), Q-Bars ve ERAMCO (doğrulanamadı), Cairo Cables (kablo üreticisi = alıcı). Koordinatlar yaklaşıktır.</footer>
 
 <script src="data.js"></script>
 <script src="common.js"></script>
@@ -110,7 +110,9 @@ function card(f) {
     <div class="meta">📍 ${esc(f.area)}<br>${esc(f.address)}<br>🗓️ ${DAYS[f.day]}</div>
     <div class="contacts">${phones || "<span class='meta'>Telefon bulunamadı</span>"}<br>${emails || "<span class='meta'>E-posta bulunamadı</span>"}
       ${f.contact ? `<br>👤 ${esc(f.contact)}` : ""}</div>
-    <div><b style="font-size:.85rem">Ürünler</b><ul class="products">${f.products.map(p => `<li>${esc(p)}</li>`).join("")}</ul></div>
+    <div class="ours ${f.ours}"><b>${OURS_LABEL[f.ours] || ""}</b>${f.oursNote ? `<br>${esc(f.oursNote)}` : ""}</div>
+    <div><b style="font-size:.85rem">Sitesindeki ürünler${f.official ? "" : " (rehber)"}</b><ul class="products">${f.products.map(p => `<li>${esc(p)}</li>`).join("")}</ul>
+      ${f.productsSource ? `<a class="meta" href="${esc(f.productsSource)}" target="_blank" rel="noopener">Ürün kaynağı ↗</a>` : ""}</div>
     ${f.notes ? `<div class="meta">ℹ️ ${esc(f.notes)}</div>` : ""}
     ${f.verifyNote ? `<div class="meta verify">🔎 <b>Teyit (${esc(f.checked || "")}):</b> ${esc(f.verifyNote)}</div>` : ""}
     <div class="actions">

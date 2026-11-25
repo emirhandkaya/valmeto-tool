@@ -107,3 +107,6 @@ nav a.install { border: 1px solid var(--accent); color: var(--accent); }
 }
 
 .meta.verify { border-top: 1px dashed var(--border); padding-top: 6px; }
+
+.ours { font-size: .88rem; padding: 6px 8px; border-radius: 6px; background: var(--bg); }
+.ours.evet b { color: var(--ok); } .ours.kismen b { color: var(--warn); } .ours.dogrulanamadi b { color: var(--danger); }
