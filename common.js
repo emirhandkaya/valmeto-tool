@@ -38,6 +38,8 @@ const NAV = [
   ["hesap.html", "Fiyat Hesabı"], ["arapca.html", "Arapça Kart"], ["musteriler.html", "Müşteriler"], ["harita.html", "Harita"]
 ];
 function renderNav() {
+  const h1 = document.querySelector(".top h1");
+  if (h1 && !h1.querySelector(".logo")) h1.insertAdjacentHTML("afterbegin", '<a href="index.html" class="logo-link"><img src="icon.svg" class="logo" alt="Valmeto"></a>');
   const el = document.getElementById("nav"); if (!el) return;
   const here = location.pathname.split("/").pop() || "index.html";
   el.innerHTML = NAV.map(([h, l]) => `<a href="${h}"${h === here ? ' class="active"' : ""}>${l}</a>`).join("");
@@ -73,3 +75,12 @@ ${signature()}
 `;
   return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
+
+// "Ana ekrana ekle" (Android/Chrome) – iOS'ta Safari > Paylaş > Ana Ekrana Ekle
+let installEvt = null;
+window.addEventListener("beforeinstallprompt", e => {
+  e.preventDefault(); installEvt = e;
+  const nav = document.getElementById("nav"); if (!nav || document.getElementById("installBtn")) return;
+  nav.insertAdjacentHTML("beforeend", '<a href="#" id="installBtn" class="install">📲 Uygulamayı yükle</a>');
+  document.getElementById("installBtn").onclick = async ev => { ev.preventDefault(); installEvt.prompt(); await installEvt.userChoice; installEvt = null; ev.target.remove(); };
+});

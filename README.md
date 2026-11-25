@@ -9,6 +9,7 @@
 - `hesap.html` – EGP/kg → LME %, varış maliyeti ve kâr hesabı
 - `arapca.html` – Arapça soru kartı
 - `harita.html` – Leaflet/OpenStreetMap haritası (Mısır üreticileri + müşteriler)
+- `manifest.webmanifest`, `icon*.png`, `icon.svg`, `sw.js` – web uygulaması (ana ekrana ekleme, çevrimdışı). Logoyu değiştirmek için `icon.svg` ve PNG ikonları yenileyin.
 - `data.js` / `musteriler.js` – veriler (yeni firma eklemek için burayı düzenleyin)
 
 Yayın: GitHub Pages → https://emirhandurmuskaya.com/valmeto-tool/

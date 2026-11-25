@@ -1,7 +1,8 @@
 // Basit çevrimdışı önbellek: önce ağ, ağ yoksa önbellek.
-const CACHE = "valmeto-v6";
+const CACHE = "valmeto-v7";
 const CORE = ["./", "index.html", "gezi.html", "ziyaret.html", "hesap.html", "arapca.html", "musteriler.html", "harita.html",
   "style.css", "common.js", "data.js", "musteriler.js",
+  "manifest.webmanifest", "icon.svg", "icon-192.png", "icon-512.png", "icon-maskable-512.png", "apple-touch-icon.png", "favicon-32.png",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css", "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"];
 self.addEventListener("install", e => e.waitUntil(caches.open(CACHE).then(c => Promise.allSettled(CORE.map(u => c.add(u)))).then(() => self.skipWaiting())));
 self.addEventListener("activate", e => e.waitUntil(self.clients.claim()));
