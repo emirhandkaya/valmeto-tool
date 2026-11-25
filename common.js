@@ -14,7 +14,7 @@ function mapsHref(f) {
 }
 const METAL_LABEL = { aluminyum: "Alüminyum", bakir: "Bakır", pirinc: "Pirinç" };
 const STATUS_LABEL = { "": "Planlanmadı", plan: "Ziyaret planlandı", randevu: "Randevu alındı", gidildi: "Ziyaret edildi", teklif: "Teklif alındı", elendi: "Uygun değil" };
-const TIER_LABEL = { A: "A · Hedef – ucuz / hurda bazlı", B: "B · Orta – yarı mamul / profil", C: "C · Referans – büyük / pahalı" };
+const TIER_LABEL = { A: "A · Hedef – hurdadan filmaşin / tel", B: "B · Orta – külçe, bara, döküm, profil, kablo", C: "C · Referans – büyük / pahalı" };
 const SOURCE_LABEL = { hurda: "Hurdadan üretim", katot: "Katottan üretim", karisik: "Hurda + katot", birincil: "Birincil (cevherden)", bilinmiyor: "Kaynak bilinmiyor" };
 const DAYS = { 1: "Pazar 29 Kasım", 2: "Pazartesi 30 Kasım", 3: "Salı 1 Aralık", 0: "Telefonla" };
 
@@ -51,10 +51,10 @@ function mailtoRFQ(f, email) {
   const subject = `Request for quotation & factory visit – ${metal} products`;
   const body = `Dear ${f.name} team,
 
-I am a buyer from Türkiye and will be in Cairo between 29 November and 1 December. We supply copper and aluminium to cable manufacturers in the Balkans and Türkiye, and we are interested in purchasing ${metal} products (wire rod, wire, ingots) from your company.
+I am a buyer from Türkiye and will be in Cairo between 29 November and 1 December. We supply copper and aluminium to cable manufacturers in the Balkans and Türkiye, and we are interested in purchasing ${metal} wire rod (8 mm) and drawn wire produced from recycled material.
 
 Could you please send me:
-- Your product list and specifications (purity, diameter)
+- Specifications: purity, conductivity (% IACS), oxygen content (ppm), diameter, coil weight
 - Price per ton (EXW / FOB Alexandria), minimum order quantity and lead time
 - Payment terms and whether you can issue EUR.1 certificate of origin
 

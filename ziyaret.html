@@ -48,6 +48,19 @@
       <label>Saflık (% Cu / % Al)<input data-k="purity" inputmode="decimal" placeholder="ör. 99.95"></label>
       <label>Analiz sertifikası<select data-k="cert"><option value="">– sor –</option><option>Var (gördüm)</option><option>Var (gönderecek)</option><option>Yok</option></select></label>
     </div>
+    <div class="row">
+      <label>İletkenlik (% IACS)<input data-k="iacs" inputmode="decimal" placeholder="ideal ≥ 100"></label>
+      <label>Oksijen (ppm)<input data-k="oxygen" inputmode="decimal" placeholder="OF/upcast: düşük"></label>
+    </div>
+    <div class="row">
+      <label>Çap (mm) ve tolerans<input data-k="diameter" placeholder="ör. 8 mm ±0,4"></label>
+      <label>Uzama (%)<input data-k="elongation" inputmode="decimal"></label>
+    </div>
+    <div class="row">
+      <label>Kangal / bobin ağırlığı (kg)<input data-k="coil" inputmode="decimal"></label>
+      <label>Ambalaj<input data-k="packing" placeholder="palet, streç, ahşap makara…"></label>
+    </div>
+    <label>Üretim yöntemi<select data-k="process"><option value="">– sor –</option><option>Upcast (oksijensiz)</option><option>Sürekli döküm-haddeleme (ETP)</option><option>Döküm + haddeleme (eski tip)</option><option>Sadece tel çekme (filmaşini dışarıdan alıyor)</option></select></label>
     <label>Kalite gözlemi (yüzey, oksit, renk, spektrometre var mı, standart: ETP/OF/EC…)<textarea data-k="quality" rows="2"></textarea></label>
   </div>
 
@@ -142,7 +155,7 @@
 <script src="data.js"></script>
 <script src="common.js"></script>
 <script>
-const PRODUCTS = ["Bakır filmaşin 8 mm", "Bakır tel (çekilmiş)", "Bakır külçe / ingot", "Bakır katot", "Bakır bara / lama", "Bakır hurda", "Alüminyum külçe", "Alüminyum filmaşin", "Alüminyum tel", "Alüminyum profil / billet", "Alüminyum hurda", "Pirinç çubuk / külçe"];
+const PRODUCTS = ["Bakır filmaşin 8 mm", "Bakır tel (çekilmiş)", "Tavlı (yumuşak) bakır tel", "Örgülü / çok telli bakır", "Bakır külçe / ingot", "Bakır bara / lama", "Alüminyum filmaşin", "Alüminyum tel", "Alüminyum külçe", "Pirinç çubuk / külçe"];
 let visits = lsGet("valmeto-visits", {});
 const facSel = document.getElementById("fac");
 const R = refs();
@@ -215,7 +228,8 @@ function summary(id) {
   add("👤", "Görüşülen", [v.person, v.personPhone].filter(Boolean).join(" · "));
   add("🏭", "Ürünler", [...(v.products || []), v.productsOther].filter(Boolean).join(", "));
   add("♻️", "Hammadde", [SOURCE_LABEL[v.source], v.scrapShare && `hurda %${v.scrapShare}`].filter(Boolean).join(" · "));
-  add("🔬", "Kalite", [v.purity && `%${v.purity} saflık`, v.cert && `sertifika: ${v.cert}`, v.quality].filter(Boolean).join(" · "));
+  add("🔬", "Kalite", [v.purity && `%${v.purity} Cu`, v.iacs && `%${v.iacs} IACS`, v.oxygen && `O₂ ${v.oxygen} ppm`, v.elongation && `uzama %${v.elongation}`, v.cert && `sertifika: ${v.cert}`, v.quality].filter(Boolean).join(" · "));
+  add("⚙️", "Üretim / ölçü", [v.process, v.diameter, v.coil && `kangal ${v.coil} kg`, v.packing].filter(Boolean).join(" · "));
   add("📦", "Kapasite", [v.capacity && `${v.capacity} t/ay`, v.moq && `min. sipariş ${v.moq} t`].filter(Boolean).join(" · "));
   add("⏱️", "Teslim süresi", v.leadDays && `${v.leadDays} gün`);
   add("💰", "Fiyat", [priceLine(v), v.priceVal && v.incoterm, v.payment && `ödeme: ${v.payment}`].filter(Boolean).join(" · "));
@@ -308,17 +322,17 @@ function renderCmp() {
   ids.sort((a, b) => (visits[a].priceUsdT && refFor(visits[a].metal) ? visits[a].priceUsdT / refFor(visits[a].metal) : 9) - (visits[b].priceUsdT && refFor(visits[b].metal) ? visits[b].priceUsdT / refFor(visits[b].metal) : 9));
   const t = document.getElementById("cmp");
   if (!ids.length) { t.innerHTML = "<tr><td class='meta'>Henüz doldurulmuş ziyaret yok.</td></tr>"; return; }
-  t.innerHTML = `<tr><th>Fabrika</th><th>Metal</th><th>Fiyat $/t</th><th>LME %</th><th>Kaynak</th><th>Saflık</th><th>t/ay</th><th>Teslim</th><th>İhracat izni</th><th>Puan</th></tr>` +
+  t.innerHTML = `<tr><th>Fabrika</th><th>Metal</th><th>Fiyat $/t</th><th>LME %</th><th>Kaynak</th><th>Saflık</th><th>IACS</th><th>t/ay</th><th>Teslim</th><th>İhracat izni</th><th>Puan</th></tr>` +
     ids.map(id => { const v = visits[id], p = v.priceUsdT, ref = refFor(v.metal);
       return `<tr><td><a href="#${id}" onclick="load('${id}');scrollTo(0,0)">${esc(nameOf(id))}</a></td><td>${METAL_LABEL[v.metal] || ""}</td>
       <td>${p ? Math.round(p).toLocaleString("tr-TR") : ""}</td><td>${p && ref ? "%" + (p / ref * 100).toFixed(1) : ""}</td>
-      <td>${esc(SOURCE_LABEL[v.source] || "")}</td><td>${esc(v.purity || "")}</td><td>${esc(v.capacity || "")}</td>
+      <td>${esc(SOURCE_LABEL[v.source] || "")}</td><td>${esc(v.purity || "")}</td><td>${esc(v.iacs || "")}</td><td>${esc(v.capacity || "")}</td>
       <td>${v.leadDays ? esc(v.leadDays) + " g" : ""}</td><td>${esc(v.exportPermit || "")}</td><td>${v.rating ? "⭐".repeat(+v.rating) : ""}</td></tr>`; }).join("");
 }
 function cmpText() {
   const ids = Object.keys(visits).filter(id => visits[id].priceVal || visits[id].products?.length);
   return "📊 *Kahire fabrika karşılaştırması*\n\n" + ids.map(id => { const v = visits[id], p = v.priceUsdT, ref = refFor(v.metal);
-    return `• ${nameOf(id)}: ${p ? Math.round(p) + " $/t" + (ref ? ` (LME %${(p / ref * 100).toFixed(1)})` : "") : "fiyat yok"} · ${SOURCE_LABEL[v.source] || "kaynak ?"} · ${v.capacity ? v.capacity + " t/ay" : ""} · ihracat: ${v.exportPermit || "?"} · ${v.rating ? v.rating + "/5" : ""}`; }).join("\n");
+    return `• ${nameOf(id)}: ${p ? Math.round(p) + " $/t" + (ref ? ` (LME %${(p / ref * 100).toFixed(1)})` : "") : "fiyat yok"} · ${SOURCE_LABEL[v.source] || "kaynak ?"} · ${v.iacs ? "%" + v.iacs + " IACS · " : ""} ${v.capacity ? v.capacity + " t/ay" : ""} · ihracat: ${v.exportPermit || "?"} · ${v.rating ? v.rating + "/5" : ""}`; }).join("\n");
 }
 document.getElementById("shareCmp").onclick = async () => {
   const text = cmpText(); await copy(text);

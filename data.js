@@ -1,7 +1,8 @@
 // Mısır (Kahire ve çevresi) bakır / alüminyum tedarikçileri.
 // Kaynak: firma siteleri ve iş rehberleri (Kasım 2026 web araştırması).
-// tier: "A" = HEDEF – hurda bazlı / orta-küçük üretici, pazarlık payı yüksek, uygun fiyat beklenir
-//       "B" = ORTA – yarı mamul / profil / kablo üreticisi (ham madde satışı ikincil)
+// HEDEF ÜRÜN: hurdadan üretilmiş bakır FİLMAŞİN ve TEL (hurda doğrudan alınmayacak).
+// tier: "A" = HEDEF – hurdadan filmaşin / tel üreten veya üretebilecek firmalar
+//       "B" = ORTA – külçe, bara, döküm, profil, kablo (filmaşin/tel ikincil; sorulacak)
 //       "C" = REFERANS – büyük kurumsal, LME + yüksek prim; sadece fiyat karşılaştırması için
 // source: "hurda" | "katot" | "karisik" | "birincil" | "bilinmiyor"
 // day: gezi planındaki gün (1 = Pazar 29 Kas, 2 = Pazartesi 30 Kas, 3 = Salı 1 Ara, 0 = sadece telefon)
@@ -19,7 +20,7 @@ window.FACTORIES = [
     emails: ["info@egyptianmetalworks.com"],
     website: "https://egyptianmetalworks.com/",
     products: ["Oksijensiz (OF) tavlı bakır tel", "Bakır filmaşin / çubuk (upcast)", "Bakır baralar (busbar)", "Bakır alaşımları (pirinç vb.)"],
-    notes: "Döner fırın + 3 upcast makinesi: HURDA eritip filmaşin/tel yapabiliyor. Kablo fabrikalarına bakır tel satıyor – Kosova'ya satacağın ürünün tam karşılığı. 1938'den beri aile şirketi, 40.000 m².",
+    notes: "EN GÜÇLÜ ADAY: döner fırın + 3 upcast makinesi = hurdadan oksijensiz filmaşin ve tel. Kablo fabrikalarına bakır tel satıyor – EuroCable'a satacağın ürünün tam karşılığı. 1938'den beri aile şirketi, 40.000 m².",
     verified: true
   },
   {
@@ -48,7 +49,7 @@ window.FACTORIES = [
     contact: "Mahmoud Maghawry – Sahibi / CEO",
     website: "https://arabmetals.com.eg/",
     products: ["Alüminyum alaşım külçe (ingot)", "Bakır tel ve bakır külçe", "Kurşun külçe", "Paslanmaz briket"],
-    notes: "Hurda geri dönüşümcüsü: yıllık ~10.500–13.500 t. Tam aradığın profil (hurdadan külçe/tel). Fabrika Anshas'ta (Şarkiye, ~40 km). Cep numarasından WhatsApp ile randevu al.",
+    notes: "Hurda geri dönüşümcüsü, yıllık ~10.500–13.500 t; bakır TEL üretiyor. Tel çapı, iletkenlik ve filmaşin yapıp yapmadığını sor. Fabrika Anshas'ta (Şarkiye, ~40 km). Cep numarasından WhatsApp ile randevu al.",
     verified: false
   },
   {
@@ -66,7 +67,7 @@ window.FACTORIES = [
     verified: false
   },
   {
-    id: "wadi-el-nile", tier: "A", source: "hurda", day: 2, order: 4, star: true,
+    id: "wadi-el-nile", tier: "B", source: "hurda", day: 2, order: 4,
     name: "Wadi El Nile for Metal Industries (WN Copper)",
     metal: ["bakir"],
     area: "10th of Ramadan, A1 Sanayi Bölgesi",
@@ -76,7 +77,7 @@ window.FACTORIES = [
     emails: ["info@wncopper.com"],
     website: "https://www.facebook.com/Wadielnilemetals/",
     products: ["Elektrik bakır baraları (busbar)", "Bakır lama / profil", "Bakır fabrikasyon parçaları", "Bakır hurda alım-satımı"],
-    notes: "Mısır'ın en büyük bakır bara üreticilerinden. Hurda alım-satımı da yapıyor → hurda kaynaklı ürün ve fiyat bilgisi için iyi.",
+    notes: "Bara/lama üreticisi – filmaşin/tel yapıyor mu sor. Hurda alım-satımı yaptığı için hurdadan filmaşin yapan firmaları tanır: 'Kim hurdadan filmaşin yapıyor?' diye sor.",
     verified: false
   },
   {
@@ -94,7 +95,7 @@ window.FACTORIES = [
     verified: false
   },
   {
-    id: "coppermelt", tier: "A", source: "hurda", day: 2, order: 6,
+    id: "coppermelt", tier: "B", source: "hurda", day: 2, order: 6,
     name: "Coppermelt",
     metal: ["bakir"],
     area: "10th of Ramadan, 3. Sanayi Bölgesi A6 Doğu",
@@ -107,7 +108,7 @@ window.FACTORIES = [
     verified: false
   },
   {
-    id: "hitech-casting", tier: "A", source: "hurda", day: 1, order: 3,
+    id: "hitech-casting", tier: "B", source: "hurda", day: 1, order: 3,
     name: "HiTech Casting for Metal Industries",
     metal: ["aluminyum"],
     area: "Yeni Maadi (Güney Kahire)",
@@ -116,7 +117,7 @@ window.FACTORIES = [
     phones: [], emails: [],
     website: "https://www.scrapmonster.com/company/hitech-casting-for-metal-industries/67895",
     products: ["İkincil (hurdadan) alüminyum alaşım külçe (ADC12 vb.)"],
-    notes: "Alüminyum geri dönüşümcüsü. Telefon bulunamadı; Helwan'a giderken yol üstü.",
+    notes: "Alüminyum alaşım külçe (döküm sanayi için) – kablo filmaşini değil. Vakit kalırsa uğra.",
     verified: false
   },
   {
@@ -129,12 +130,12 @@ window.FACTORIES = [
     phones: ["+20 2 4444 3963 (bölge firması, rehber)", "+20 2 4220 5043 (bölge firması, rehber)"],
     emails: [],
     website: "https://yellowpages.com.eg/ar/search/copper",
-    products: ["Kablo ve tel (NCC)", "Bölgede küçük bakır dökümhaneleri ve tel çekme atölyeleri"],
+    products: ["Kablo ve tel (NCC)", "Bölgede hurdadan bakır döküp tel çeken küçük atölyeler"],
     notes: "Mısır'ın küçük bakır dökümhanelerinin merkezi – en ucuz fiyat burada çıkar ama kalite/fatura riskli. Telefonlar eski rehberden (Shubra'daki metal firmaları). Arapça kartı kullan.",
     verified: false
   },
   {
-    id: "amana-copper", tier: "A", source: "hurda", day: 3, order: 3,
+    id: "amana-copper", tier: "B", source: "hurda", day: 3, order: 3,
     name: "Misr Copper Products – Al Amana Foundries (مسابك الأمانة)",
     metal: ["bakir", "pirinc"],
     area: "6th of October fabrika; Bulaq Abu El Ela şube",
@@ -148,7 +149,7 @@ window.FACTORIES = [
     verified: false
   },
   {
-    id: "egyptian-copper-works", tier: "A", source: "bilinmiyor", day: 0,
+    id: "egyptian-copper-works", tier: "A", source: "bilinmiyor", day: 0, star: true,
     name: "Egyptian Copper Works (İskenderiye)",
     metal: ["bakir"],
     area: "İskenderiye (telefonla / Kahire satış ofisi)",
@@ -158,11 +159,11 @@ window.FACTORIES = [
     emails: [],
     website: "https://egyptiancopperworks.com/contact-us/",
     products: ["8 mm bakır filmaşin / tel", "İhracat hizmeti"],
-    notes: "1934'ten beri. İskenderiye limana yakın → FOB fiyatı avantajlı olabilir. Kahire satış ofisini ara, belki Kahire'de görüşülür.",
+    notes: "8 mm filmaşin + ihracat – tam hedef ürün. 1934'ten beri, İskenderiye limana yakın (FOB avantajı). Pazar sabahı Kahire satış ofisini ara; Kahire'de görüşme veya numune iste.",
     verified: false
   },
   {
-    id: "al-haram-metals", tier: "A", source: "hurda", day: 0,
+    id: "al-haram-metals", tier: "B", source: "hurda", day: 0,
     name: "Al Haram Metals (الهرم للمعادن)",
     metal: ["bakir", "aluminyum"],
     area: "Kafr El Sheikh (Kahire'ye ~150 km) – Obour'da da kaydı var",
@@ -302,7 +303,7 @@ window.FACTORIES = [
     emails: ["info@egyptalum.com.eg"],
     website: "http://www.egyptalum.com.eg/",
     products: ["Birincil alüminyum külçe", "Billet", "Alüminyum filmaşin (kablo için)"],
-    notes: "Devlet şirketi, birincil üretici: LME + prim. Ama Mısır'da EC kalite alüminyum filmaşinin ana kaynağı. EMW ofisine 500 m – fiyat listesini sor, karşılaştırma için.",
+    notes: "ALÜMİNYUM İÇİN NOT: kablo kalitesi (EC) alüminyum filmaşin hurdadan pek yapılmaz; Mısır'daki gerçekçi kaynak bu devlet şirketi (LME + prim). EMW ofisine 500 m – alüminyum filmaşin fiyatını sor.",
     verified: false
   },
   {
