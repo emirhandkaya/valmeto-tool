@@ -51,6 +51,14 @@
   </div>
 
   <div class="section">
+    <h2>📧 Teklif e-postaları (Outlook – info@valmeto.com)</h2>
+    <p class="meta">Her satır Outlook'ta hazır bir e-posta açar: alıcı, konu ve metin dolu; imza “Emirhan Durmuşkaya – Valmeto İç ve Dış Ticaret Limited Şirketi”, telefon/WhatsApp yok.
+      <b>Telefonda/iPad'de:</b> “Outlook uygulaması” (uygulamada info@valmeto.com hesabı açık olmalı). <b>Bilgisayarda:</b> “Outlook Web” (tarayıcıda info@valmeto.com ile giriş yapılmış olmalı).
+      Birden fazla hesabın varsa göndermeden önce “Kimden” alanının info@valmeto.com olduğunu kontrol et.</p>
+    <div id="mails"></div>
+  </div>
+
+  <div class="section">
     <h2>💬 Randevu mesajı (kopyala / WhatsApp)</h2>
     <p class="meta">Arapça ve İngilizce birlikte. Adını yaz, sonra fabrikaların WhatsApp düğmeleri bu metni hazır açar.</p>
     <div class="form"><label>Adın<input id="myname"></label>
@@ -118,6 +126,11 @@ function render() {
       <a class="big-btn" href="${routeUrl(stops)}" target="_blank" rel="noopener">🧭 Günün rotasını Google Maps'te aç (${stops.length} durak)</a>
       ${stops.map(stopHtml).join("")}</div>`;
   }).join("");
+  const seen = new Set();
+  document.getElementById("mails").innerHTML = FACTORIES.filter(f => f.emails.length && !seen.has(f.emails[0]) && seen.add(f.emails[0])).sort((a, b) => a.tier.localeCompare(b.tier)).map(f =>
+    `<div class="stop"><div class="num">${f.tier}</div><div><b>${esc(f.name.split(" – ")[0])}</b><br><span class="meta">${esc(f.emails[0])}</span>
+      <div class="actions" style="margin-top:6px"><a class="primary-link" href="${outlookAppHref(f)}">📧 Outlook uygulaması</a>
+      <a href="${outlookWebHref(f)}" target="_blank" rel="noopener">🌐 Outlook Web</a><a href="${mailtoRFQ(f)}">✉️ Diğer e-posta uygulaması</a></div></div></div>`).join("");
   document.getElementById("phoneonly").innerHTML = FACTORIES.filter(f => f.day === 0).map((f, i) => stopHtml(f, i)).join("");
 }
 hotel.oninput = () => { lsSet("valmeto-hotel", hotel.value); render(); };

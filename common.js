@@ -17,9 +17,9 @@ const TIER_LABEL = { A: "A · Hedef – bakır tel / filmaşin / çubuk", B: "B 
 const OURS_LABEL = { evet: "✔ Bizim ürünleri üretiyor", kismen: "◐ Kısmen bizim ürünler", dogrulanamadi: "? Ürünler doğrulanamadı" };
 const SOURCE_LABEL = { hurda: "Hurdadan üretim", katot: "Katottan üretim", karisik: "Hurda + katot", birincil: "Birincil (cevherden)", bilinmiyor: "Kaynak bilinmiyor" };
 const DAYS = { 1: "Pazar 29 Kasım", 2: "Pazartesi 30 Kasım", 3: "Salı 1 Aralık", 4: "Çarşamba 2 Aralık", 0: "Telefonla" };
-const SENDER = { name: "Emirhan Durmuşkaya", company: "Valmeto İç ve Dış Ticaret Ltd. Şti.", companyEn: "Valmeto Domestic and Foreign Trade Ltd.", phone: "+90 552 433 26 53" };
+const SENDER = { name: "Emirhan Durmuşkaya", company: "Valmeto İç ve Dış Ticaret Limited Şirketi", email: "info@valmeto.com", companyEn: "Valmeto Domestic and Foreign Trade Ltd.", phone: "+90 552 433 26 53" };
 function senderPhone() { return lsGet("valmeto-phone", "") || SENDER.phone; }
-function signature() { return [SENDER.name, SENDER.company, senderPhone() && "Phone / WhatsApp: " + senderPhone()].filter(Boolean).join("\n"); }
+function signature() { return [SENDER.name, SENDER.company].join("\n"); }  // e-postada telefon/WhatsApp yok
 
 // Güncel referans fiyatlar (kullanıcının girdiği değer > data.js varsayılanı)
 function refs() {
@@ -51,7 +51,7 @@ if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
   window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
 }
 
-function mailtoRFQ(f, email) {
+function rfq(f) {
   const subject = "Request for quotation & factory visit – copper and aluminium products";
   const body = `Dear ${f.name.split(" – ")[0]} team,
 
@@ -73,8 +73,13 @@ I would also like to visit your factory during my stay. Please let me know a sui
 Best regards,
 ${signature()}
 `;
-  return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  return { to: f.emails[0] || "", subject, body };
 }
+// Outlook mobil/masaüstü uygulaması (iPhone, iPad, Android) – gönderen: uygulamadaki info@valmeto.com hesabı
+function outlookAppHref(f) { const r = rfq(f); return `ms-outlook://compose?to=${encodeURIComponent(r.to)}&subject=${encodeURIComponent(r.subject)}&body=${encodeURIComponent(r.body)}`; }
+// Outlook Web (Microsoft 365) – info@valmeto.com ile giriş yapılmış tarayıcıda açılır
+function outlookWebHref(f) { const r = rfq(f); return `https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(r.to)}&subject=${encodeURIComponent(r.subject)}&body=${encodeURIComponent(r.body)}`; }
+function mailtoRFQ(f) { const r = rfq(f); return `mailto:${r.to}?subject=${encodeURIComponent(r.subject)}&body=${encodeURIComponent(r.body)}`; }
 
 // "Ana ekrana ekle" (Android/Chrome) – iOS'ta Safari > Paylaş > Ana Ekrana Ekle
 let installEvt = null;
