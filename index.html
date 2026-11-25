@@ -114,6 +114,7 @@ function card(f) {
     <div><b style="font-size:.85rem">Sitesindeki ürünler${f.official ? "" : " (rehber)"}</b><ul class="products">${f.products.map(p => `<li>${esc(p)}</li>`).join("")}</ul>
       ${f.productsSource ? `<a class="meta" href="${esc(f.productsSource)}" target="_blank" rel="noopener">Ürün kaynağı ↗</a>` : ""}</div>
     ${f.notes ? `<div class="meta">ℹ️ ${esc(f.notes)}</div>` : ""}
+    ${f.active ? `<div class="meta">📅 <b>Faaliyet:</b> ${esc(f.active)}</div>` : ""}
     ${f.verifyNote ? `<div class="meta verify">🔎 <b>Teyit (${esc(f.checked || "")}):</b> ${esc(f.verifyNote)}</div>` : ""}
     <div class="actions">
       <a class="primary-link" href="ziyaret.html#${f.id}">📝 Ziyaret formu</a>

@@ -75,7 +75,7 @@ const DAY_INFO = {
 };
 
 function routeUrl(stops) {
-  const pts = stops.map(f => `${f.lat},${f.lng}`);
+  const pts = stops.map(mapQ);
   const dest = pts.pop();
   let u = `https://www.google.com/maps/dir/?api=1&travelmode=driving&destination=${encodeURIComponent(dest)}`;
   if (hotel.value.trim()) u += `&origin=${encodeURIComponent(hotel.value.trim())}`;

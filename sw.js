@@ -1,5 +1,5 @@
 // Basit çevrimdışı önbellek: önce ağ, ağ yoksa önbellek.
-const CACHE = "valmeto-v12";
+const CACHE = "valmeto-v13";
 const CORE = ["./", "index.html", "gezi.html", "ziyaret.html", "hesap.html", "arapca.html", "musteriler.html", "harita.html",
   "style.css", "common.js", "data.js", "musteriler.js",
   "manifest.webmanifest", "logo-header-v2.png", "logo-full.png", "icon-192-v2.png", "icon-512-v2.png", "icon-maskable-512-v2.png", "apple-touch-icon-v2.png", "favicon-32-v2.png",

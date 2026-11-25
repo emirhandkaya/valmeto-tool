@@ -8,10 +8,9 @@ function esc(s) { return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;
 function telHref(p) { return "tel:" + p.replace(/\(.*?\)/g, "").replace(/[^\d+]/g, ""); }
 function isMobile(p) { return /^\+20\s?1[0125]/.test(p); }
 function waHref(p, text) { return "https://wa.me/" + p.replace(/\(.*?\)/g, "").replace(/\D/g, "") + (text ? "?text=" + encodeURIComponent(text) : ""); }
-function mapsHref(f) {
-  if (f.lat != null && !f.approxOnly) return `https://www.google.com/maps/search/?api=1&query=${f.lat},${f.lng}`;
-  return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(f.name.split("–")[0] + " " + f.address);
-}
+function mapQ(f) { return f.mapQuery || (f.name.split(" – ")[0].split(" (")[0] + ", " + f.address); }
+// Google Maps'te firma adı + adresle aranır (koordinatlarımız yaklaşık olduğu için)
+function mapsHref(f) { return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(mapQ(f)); }
 const METAL_LABEL = { aluminyum: "Alüminyum", bakir: "Bakır", pirinc: "Pirinç" };
 const STATUS_LABEL = { "": "Planlanmadı", plan: "Ziyaret planlandı", randevu: "Randevu alındı", gidildi: "Ziyaret edildi", teklif: "Teklif alındı", elendi: "Uygun değil" };
 const TIER_LABEL = { A: "A · Hedef – bakır tel / filmaşin / çubuk", B: "B · Orta – bara, alaşım külçe, profil, döküm", C: "C · Referans – büyük / pahalı" };
