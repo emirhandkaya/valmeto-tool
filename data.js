@@ -184,8 +184,8 @@ window.FACTORIES = [
     approxOnly: true,
     name: "Egyptian Copper Works (ECW) – Kahire fabrikası (Tebbin)",
     metal: ["bakir", "pirinc", "aluminyum"],
-    area: "Kahire fabrikası: Nile Road – Tebbin, Helwan (merkez İskenderiye)",
-    address: "Kahire fabrikası: Nile Road – Tebbin, Helwan · İdare: 26 July St. · Merkez: Hagar El-Nawatia, Raml, İskenderiye",
+    area: "Kahire – Nile Road, Tebbin (Helwan)",
+    address: "Nile Road – Tebbin, Helwan, Cairo (idare: 26 July St.)",
     lat: 29.79,
     lng: 31.29,
     phones: ["+20 100 286 9836 (resmi site – WhatsApp müşteri hizmetleri)", "+20 2 2590 3829 (resmi site – Kahire satış müdürlüğü)", "+20 2 2544 0415 (resmi site – Kahire santral)", "+20 2 2591 6231 (resmi site – Kahire satış ofisi, 66 El Gomhourieh St.)", "+20 2 2590 1436 (resmi site – Kahire satış ofisi, 90 El-Azhar St.)", "+20 2 2591 6625 (resmi site – Kahire satış ofisi, El Fagala)"],
@@ -194,8 +194,8 @@ window.FACTORIES = [
     productsSource: "https://egyptiancopperworks.com/product-type/brass-products/",
     products: ["Elektrolitik bakır çubuk (%99,99, yumuşak/sert)", "Elektrolitik bakır tel", "Elektrolitik bakır şerit (2–15 mm)", "Pirinç otomat çubuğu (free-cutting)", "Pirinç alaşım billet", "Alüminyum levha ve bobin (1050)", "Ev tipi alüminyum folyo", "Alüminyum mutfak eşyası", "Çelik tel, çelik halat, çelik demet (strand)", "Kurşun oksit, evaporatör"],
     oursNote: "Sitesine göre bakır çubuk/tel/şerit, pirinç ve alüminyum levha üretiyor. 8 mm filmaşin sitede doğrulanamadı – sadece rehberde geçiyor.",
-    notes: "1935'ten beri, Metallurgical Industries Holding (devlet) grubunda. İskenderiye'ye gidilmeyecek: Kahire satış ofisini ara, Kahire'de görüşme/numune iste.",
-    verifyNote: "Resmi iletişim sayfası açılıp okundu: WhatsApp 'Customer Service' hattı, Kahire'de Tebbin (Helwan) fabrikası ve 3 Kahire satış ofisi var. Sitede genel e-posta adresi yok, sadece iletişim formu var.",
+    notes: "1935'ten beri, Metallurgical Industries Holding (devlet) grubunda. Kahire fabrikası ve Kahire satış ofisleri.",
+    verifyNote: "Resmi iletişim sayfası açılıp okundu: Kahire fabrikası Nile Road – Tebbin; Kahire satış müdürlüğü, santral ve 3 Kahire satış ofisi. WhatsApp müşteri hizmetleri hattı şirket geneli. Sitede genel e-posta yok, iletişim formu var.",
     checked: "25.11.2026 (site açıldı)"
   },
   {
@@ -214,7 +214,7 @@ window.FACTORIES = [
     go: true,
     name: "Egyptian Copper Works (ECW) – İskenderiye merkez ve fabrikalar",
     metal: ["bakir", "pirinc", "aluminyum"],
-    area: "İskenderiye – Hagar El-Nawatia, Raml (merkez + fabrikalar)",
+    area: "İskenderiye – Hagar El-Nawatia, Raml",
     address: "Hagar El-Nawatia, Raml, Alexandria",
     lat: 31.214,
     lng: 29.955,
@@ -224,8 +224,8 @@ window.FACTORIES = [
     productsSource: "https://egyptiancopperworks.com/product-type/brass-products/",
     products: ["Elektrolitik bakır çubuk (%99,99, yumuşak/sert)", "Elektrolitik bakır tel", "Elektrolitik bakır şerit (2–15 mm)", "Pirinç otomat çubuğu (free-cutting)", "Pirinç alaşım billet", "Alüminyum levha ve bobin (1050)", "Ev tipi alüminyum folyo", "Alüminyum mutfak eşyası", "Çelik tel, çelik halat, çelik demet (strand)", "Kurşun oksit, evaporatör"],
     oursNote: "Sitesine göre bakır çubuk/tel/şerit, pirinç ve alüminyum levha üretiyor. 8 mm filmaşin sitede doğrulanamadı – sadece rehberde geçiyor.",
-    notes: "1935'ten beri, Metallurgical Industries Holding (devlet) grubunda. İskenderiye'ye gidilmeyecek: Kahire satış ofisini ara, Kahire'de görüşme/numune iste.",
-    verifyNote: "Resmi iletişim sayfası açılıp okundu: WhatsApp 'Customer Service' hattı, Kahire'de Tebbin (Helwan) fabrikası ve 3 Kahire satış ofisi var. Sitede genel e-posta adresi yok, sadece iletişim formu var.",
+    notes: "1935'ten beri, Metallurgical Industries Holding (devlet) grubunda. Şirket merkezi ve fabrikalar İskenderiye'de.",
+    verifyNote: "Resmi iletişim sayfası açılıp okundu: merkez ve fabrikalar Hagar El-Nawatia, Raml; İskenderiye satış müdürlüğü, yönetim, santral ve 3 İskenderiye satış ofisi. WhatsApp müşteri hizmetleri hattı şirket geneli. Sitede genel e-posta yok, iletişim formu var.",
     checked: "25.11.2026 (site açıldı)"
   },
   {
