@@ -84,3 +84,15 @@ window.addEventListener("beforeinstallprompt", e => {
   nav.insertAdjacentHTML("beforeend", '<a href="#" id="installBtn" class="install">📲 Uygulamayı yükle</a>');
   document.getElementById("installBtn").onclick = async ev => { ev.preventDefault(); installEvt.prompt(); await installEvt.userChoice; installEvt = null; ev.target.remove(); };
 });
+
+// iPhone / iPad: Safari'de yükleme düğmesi yok; bir kez ipucu göster
+(function () {
+  const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const standalone = window.navigator.standalone || (window.matchMedia && matchMedia("(display-mode: standalone)").matches);
+  if (!ios || standalone || lsGet("valmeto-ios-hint", false)) return;
+  document.addEventListener("DOMContentLoaded", () => {
+    const main = document.querySelector("main"); if (!main) return;
+    main.insertAdjacentHTML("afterbegin", '<div class="warning" id="iosHint" style="border-left-color:var(--accent)">📲 <b>Uygulama olarak ekle:</b> Safari\'de adres çubuğundaki <b>Paylaş</b> (⬆️) düğmesine dokun → <b>Ana Ekrana Ekle</b>. Notlar her cihazda ayrı saklanır; cihazlar arası aktarım için Ziyaret Formu\'ndaki “Yedek indir / yükle”yi kullan. <a href="#" id="iosHintX">Kapat</a></div>');
+    document.getElementById("iosHintX").onclick = e => { e.preventDefault(); lsSet("valmeto-ios-hint", true); document.getElementById("iosHint").remove(); };
+  });
+})();

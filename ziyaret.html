@@ -153,12 +153,12 @@
     <div class="table-wrap"><table class="cmp" id="cmp"></table></div>
     <div class="actions" style="margin-top:10px">
       <button class="big-btn" id="shareCmp">📤 Karşılaştırmayı babama gönder</button>
-      <button class="big-btn ghost" id="backup">💾 Yedek indir (JSON)</button>
+      <button class="big-btn ghost" id="backup">💾 Yedek indir / paylaş</button>
       <label class="big-btn ghost">📂 Yedek yükle<input id="restore" type="file" accept="application/json" hidden></label>
     </div>
   </div>
 </main>
-<footer>Formdaki her değişiklik otomatik kaydedilir (bu cihazda). Fotoğraflar yedek dosyasına dahil değildir; paylaşarak saklayın.</footer>
+<footer>Formdaki her değişiklik otomatik kaydedilir (bu cihazda). Telefon ↔ iPad aktarımı: bir cihazda “Yedek indir / paylaş” (fotoğraflar dahil) → AirDrop/WhatsApp ile gönder → diğer cihazda “Yedek yükle”.</footer>
 
 <script src="data.js"></script>
 <script src="common.js"></script>
@@ -347,18 +347,41 @@ document.getElementById("shareCmp").onclick = async () => {
   try { if (navigator.share) await navigator.share({ text }); else window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank"); }
   catch (e) { if (e.name !== "AbortError") window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank"); }
 };
-document.getElementById("backup").onclick = () => {
-  const data = { visits, notes: loadNotes(), refs: lsGet("valmeto-refs", {}), crm: lsGet("musteri-takip-v1", {}), at: new Date().toISOString() };
-  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 1)], { type: "application/json" }));
-  a.download = `valmeto-yedek-${new Date().toISOString().slice(0, 10)}.json`; a.click();
+document.getElementById("backup").onclick = async () => {
+  const btn = document.getElementById("backup"); btn.textContent = "Hazırlanıyor…";
+  let photos = [];
+  if (confirm("Fotoğraflar da yedeğe eklensin mi? (Diğer cihaza – iPad/telefon – aktarmak için Evet. Dosya büyük olabilir.)")) {
+    try {
+      const d = await db();
+      const all = await new Promise((res, rej) => { const q = d.transaction("photos").objectStore("photos").getAll(); q.onsuccess = () => res(q.result); q.onerror = () => rej(q.error); });
+      photos = await Promise.all(all.map(p => new Promise(r => { const fr = new FileReader(); fr.onload = () => r({ visit: p.visit, at: p.at, data: fr.result }); fr.readAsDataURL(p.blob); })));
+    } catch (e) {}
+  }
+  const data = { visits, notes: loadNotes(), refs: lsGet("valmeto-refs", {}), crm: lsGet("musteri-takip-v1", {}), photos, at: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
+  const name = `valmeto-yedek-${new Date().toISOString().slice(0, 10)}.json`;
+  const file = new File([blob], name, { type: "application/json" });
+  btn.textContent = "💾 Yedek indir / paylaş";
+  try { if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: name }); return; } } catch (e) { if (e.name === "AbortError") return; }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; a.click();
 };
 document.getElementById("restore").onchange = async e => {
   try {
     const d = JSON.parse(await e.target.files[0].text());
-    if (!confirm("Yedek yüklensin mi? Bu cihazdaki aynı fabrikaların kayıtları yedektekiyle değiştirilir.")) return;
+    const np = (d.photos || []).length;
+    if (!confirm(`Yedek yüklensin mi? ${Object.keys(d.visits || {}).length} ziyaret${np ? ", " + np + " fotoğraf" : ""}. Bu cihazdaki aynı fabrikaların kayıtları yedektekiyle değiştirilir.`)) return;
     visits = { ...visits, ...(d.visits || {}) }; lsSet("valmeto-visits", visits);
     if (d.notes) saveNotes({ ...loadNotes(), ...d.notes });
     if (d.crm) lsSet("musteri-takip-v1", { ...lsGet("musteri-takip-v1", {}), ...d.crm });
+    if (np) {
+      const db_ = await db();
+      const have = await new Promise(r => { const q = db_.transaction("photos").objectStore("photos").getAll(); q.onsuccess = () => r(new Set(q.result.map(p => p.visit + "|" + p.at))); q.onerror = () => r(new Set()); });
+      for (const p of d.photos) {
+        if (have.has(p.visit + "|" + p.at)) continue;
+        const blob = await (await fetch(p.data)).blob();
+        await new Promise((res, rej) => { const t = db_.transaction("photos", "readwrite"); t.objectStore("photos").add({ visit: p.visit, at: p.at, blob }); t.oncomplete = res; t.onerror = () => rej(t.error); });
+      }
+    }
     location.reload();
   } catch (err) { alert("Yedek dosyası okunamadı."); }
 };
