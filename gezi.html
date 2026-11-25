@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kahire Gezi Planı</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top"><div class="inner">
+  <h1>Valmeto Tool · Gezi Planı</h1>
+  <nav id="nav"></nav>
+</div></header>
+
+<main>
+  <div class="section form">
+    <h2>🏨 Başlangıç noktası</h2>
+    <label>Otel adresi veya adı (rotalar buradan başlar; boş bırakırsan telefonun konumundan başlar)
+      <input id="hotel" placeholder="ör. Steigenberger Tahrir, Cairo"></label>
+  </div>
+
+  <div id="days"></div>
+
+  <div class="section">
+    <h2>📞 Telefonla görüşülecekler (Kahire dışı / büyük firmalar)</h2>
+    <div id="phoneonly"></div>
+  </div>
+
+  <div class="section">
+    <h2>✅ Gitmeden önce (Çarşamba – Cumartesi)</h2>
+    <ul>
+      <li><b>Bugünden itibaren randevu al:</b> Aşağıdaki hazır mesajı her fabrikaya WhatsApp'tan gönder. Mısır'da Cuma–Cumartesi hafta sonu; cevaplar Pazar sabahı gelebilir, <b>Pazar sabahı 9'da tekrar ara</b>.</li>
+      <li><b>Şoförlü araç tut (günlük):</b> 10th of Ramadan ve Anshas 50–60 km uzakta; dönüşte taksi bulmak zor. Otelden günlük “car with driver” iste. Arapça bilen bir şoför tercüman da olur.</li>
+      <li><b>Erken başla:</b> Fabrikalar ~08:00–16:00 çalışır. Kahire trafiği öğlen ağırlaşır. Günde 3–4 ★ öncelikli yeri hedefle, diğerleri vakit kalırsa.</li>
+      <li><b>Yanına al:</b> kartvizit (İngilizce), <b>kumpas</b> (tel/filmaşin çapı), <b>mıknatıs</b> (bakır/alüminyumda demir karışıklığı testi), numune poşeti ve etiket, telefonda şarj bankası.</li>
+      <li><b>Numune al:</b> Her fabrikadan küçük numune iste. Türkiye'de spektrometre ile saflık analizi yaptır. Fabrikanın verdiği analiz belgesine (mill test certificate) tek başına güvenme.</li>
+      <li><b>Firmayı doğrula:</b> Ticaret sicili (سجل تجاري) ve vergi kartı (بطاقة ضريبية) fotoğrafını iste. İlk ziyarette <b>avans/peşinat ödeme</b>.</li>
+      <li><b>İhracatı sor:</b> Hurda ihracat yasağı nedeniyle “ihraç edebilir misiniz?” sorusu her fabrikada ilk sorulardan olsun (Ziyaret Formu'nda var).</li>
+      <li><b>Mobil internet:</b> Havalimanında yerel SIM (Vodafone / Orange / WE) al. Bu site bir kez açıldıktan sonra internetsiz de çalışır (harita karoları hariç).</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>💬 Randevu mesajı (kopyala / WhatsApp)</h2>
+    <p class="meta">Arapça ve İngilizce birlikte. Adını yaz, sonra fabrikaların WhatsApp düğmeleri bu metni hazır açar.</p>
+    <div class="form"><label>Adın<input id="myname" placeholder="ör. Ahmet Yılmaz"></label></div>
+    <pre id="msg" style="white-space:pre-wrap;font:inherit;background:var(--bg);padding:10px;border-radius:8px;border:1px solid var(--border)"></pre>
+    <button class="big-btn" id="copy">Mesajı kopyala</button>
+  </div>
+</main>
+<footer>Sıra ve süreler tahminidir; trafik ve randevulara göre değiştir. Rota linkleri Google Maps'te açılır.</footer>
+
+<script src="data.js"></script>
+<script src="common.js"></script>
+<script>
+const hotel = document.getElementById("hotel"), myname = document.getElementById("myname");
+hotel.value = lsGet("valmeto-hotel", ""); myname.value = lsGet("valmeto-name", "");
+const DAY_INFO = {
+  1: { title: "Pazar 29 Kasım – Downtown + Güney Kahire (Helwan)", tip: "Sabah EMW merkez ofiste fiyat konuş; Egyptalum ofisi 500 m ötede (referans fiyat). Sonra güneye: HiTech Casting (Maadi) → Alu Misr (Wadi Houf) → EMW fabrikası (Al Tebbin). Toplam ~45 km." },
+  2: { title: "Pazartesi 30 Kasım – Kuzeydoğu: Obour → Anshas → 10th of Ramadan", tip: "En uzun gün (~70 km tek yön). 07:30'da çık. Arab Metals'ı önceden ara: ofis yerine doğrudan Anshas fabrikasında buluşmayı teklif et. 10th of Ramadan'da Wadi El Nile ★, sonra Sabaek ve Coppermelt kapı ziyareti." },
+  3: { title: "Salı 1 Aralık – Kuzey (Shubra El Kheima / Qalyub) + Batı (6th of October)", tip: "Sabah Shubra El Kheima'daki küçük dökümhaneler – en ucuz fiyat ama en çok risk; Arapça kartı kullan. Qalyub'da Cairo Cables'a 'bakırı kimden alıyorsunuz?' diye sor. Öğleden sonra ring yolla 6th of October: Al Amana dökümhanesi + InterCairo." }
+};
+
+function routeUrl(stops) {
+  const pts = stops.map(f => `${f.lat},${f.lng}`);
+  const dest = pts.pop();
+  let u = `https://www.google.com/maps/dir/?api=1&travelmode=driving&destination=${encodeURIComponent(dest)}`;
+  if (hotel.value.trim()) u += `&origin=${encodeURIComponent(hotel.value.trim())}`;
+  if (pts.length) u += `&waypoints=${encodeURIComponent(pts.join("|"))}`;
+  return u;
+}
+function apptText() {
+  const n = myname.value.trim() || "[اسمك / Your name]";
+  return `السلام عليكم،
+أنا ${n} من تركيا. نحن شركة تجارية نشتري النحاس والألومنيوم (سلك، خام، سبائك) ونوردها لمصانع الكابلات في تركيا والبلقان.
+سأكون في القاهرة من الأحد ٢٩ نوفمبر إلى الثلاثاء ١ ديسمبر، وأود زيارة مصنعكم والاطلاع على المنتجات والأسعار.
+ما هو اليوم والوقت المناسب لكم؟ شكراً جزيلاً.
+
+Hello,
+I am ${n} from Türkiye. We are a trading company buying copper and aluminium (wire rod, wire, ingots) for cable manufacturers in Türkiye and the Balkans.
+I will be in Cairo from Sunday 29 November to Tuesday 1 December and would like to visit your factory to see your products and prices.
+Which day and time would suit you? Thank you.`;
+}
+
+function stopHtml(f, i) {
+  const mob = f.phones.find(isMobile);
+  return `<div class="stop"><div class="num">${i + 1}</div><div>
+    <b>${f.star ? "★ " : ""}${esc(f.name)}</b> <span class="tag tier${f.tier}">${f.tier}</span><br>
+    <span class="meta">${esc(f.area)} · ${f.metal.map(m => METAL_LABEL[m]).join(" + ")} · ${SOURCE_LABEL[f.source]}</span><br>
+    <span class="meta">${esc(f.notes || "")}</span>
+    <div class="actions" style="margin-top:6px">
+      ${f.phones[0] ? `<a href="${telHref(f.phones[0])}">📞 Ara</a>` : ""}
+      ${mob ? `<a href="${waHref(mob, apptText())}" target="_blank" rel="noopener">💬 WhatsApp randevu</a>` : ""}
+      <a href="${mapsHref(f)}" target="_blank" rel="noopener">🧭 Konum</a>
+      <a class="primary-link" href="ziyaret.html#${f.id}">📝 Form</a>
+    </div></div></div>`;
+}
+
+function render() {
+  document.getElementById("msg").textContent = apptText();
+  document.getElementById("days").innerHTML = [1, 2, 3].map(d => {
+    const stops = FACTORIES.filter(f => f.day === d && f.lat != null).sort((a, b) => a.order - b.order);
+    return `<div class="section"><h2>🗓️ ${DAY_INFO[d].title}</h2>
+      <p class="meta">${DAY_INFO[d].tip}</p>
+      <a class="big-btn" href="${routeUrl(stops)}" target="_blank" rel="noopener">🧭 Günün rotasını Google Maps'te aç (${stops.length} durak)</a>
+      ${stops.map(stopHtml).join("")}</div>`;
+  }).join("");
+  document.getElementById("phoneonly").innerHTML = FACTORIES.filter(f => f.day === 0).map((f, i) => stopHtml(f, i)).join("");
+}
+hotel.oninput = () => { lsSet("valmeto-hotel", hotel.value); render(); };
+myname.oninput = () => { lsSet("valmeto-name", myname.value); render(); };
+document.getElementById("copy").onclick = async () => {
+  try { await navigator.clipboard.writeText(apptText()); document.getElementById("copy").textContent = "Kopyalandı ✓"; }
+  catch (e) { alert("Kopyalanamadı; metni basılı tutup kopyalayın."); }
+};
+render();
+</script>
+</body>
+</html>

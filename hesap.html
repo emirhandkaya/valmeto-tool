@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fiyat ve Kâr Hesabı</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top"><div class="inner">
+  <h1>Valmeto Tool · Fiyat Hesabı</h1>
+  <nav id="nav"></nav>
+</div></header>
+
+<main class="form">
+  <div class="section">
+    <h2>📈 Referanslar</h2>
+    <div class="row">
+      <label>LME bakır ($/t)<input id="cu" type="number" step="any" inputmode="decimal"></label>
+      <label>LME alüminyum ($/t)<input id="al" type="number" step="any" inputmode="decimal"></label>
+    </div>
+    <label>1 USD = ? EGP<input id="fx" type="number" step="any" inputmode="decimal"></label>
+    <p class="meta">Varsayılan: bakır ≈ 5,29 $/lb (25.11.2026), alüminyum ≈ 2.800 $/t, 1 $ ≈ 53,8 EGP (15.11.2026). Kaynaklar sayfa altında. Her sabah güncelle.</p>
+  </div>
+
+  <div class="section">
+    <h2>⚡ Hızlı çevirici (fabrikada)</h2>
+    <div class="row">
+      <label>Metal<select id="qm"><option value="cu">Bakır</option><option value="al">Alüminyum</option></select></label>
+      <label>Fiyat (EGP/kg)<input id="qegp" type="number" step="any" inputmode="decimal" placeholder="ör. 560"></label>
+    </div>
+    <div class="result" id="qout">EGP/kg gir → USD/ton ve LME yüzdesi.</div>
+  </div>
+
+  <div class="section">
+    <h2>🇪🇬 Mısır iç piyasa hurda fiyatları</h2>
+    <p class="meta">Pazarlıkta alt sınır fikri verir: hurdadan üretilen bir ürün bunun belirgin altında olamaz. Kaynak tarihi: <span id="scrapDate"></span>.</p>
+    <div class="table-wrap"><table class="cmp" id="scrap"></table></div>
+  </div>
+
+  <div class="section">
+    <h2>🚢 Varış maliyeti ve kâr</h2>
+    <div class="row">
+      <label>Metal<select id="m"><option value="cu">Bakır</option><option value="al">Alüminyum</option></select></label>
+      <label>Varış<select id="dest">
+        <option value="tr">Türkiye – Mersin</option><option value="ist">Türkiye – İstanbul / Marmara</option>
+        <option value="ks">Kosova – Selanik limanı + kamyon</option><option value="ks2">Kosova – Draç limanı + kamyon</option></select></label>
+    </div>
+    <div class="row">
+      <label>Alış fiyatı<input id="buy" type="number" step="any" inputmode="decimal"></label>
+      <label>Birim<select id="buyU"><option value="egpkg">EGP/kg</option><option value="usdt">USD/ton</option><option value="lmepct">LME %</option></select></label>
+    </div>
+    <div class="row">
+      <label>Fabrika → liman kamyon ($/t)<input id="truck" type="number" step="any"></label>
+      <label>Liman, gümrük, evrak ($/t)<input id="port" type="number" step="any"></label>
+    </div>
+    <div class="row">
+      <label>Navlun ($ / 20' konteyner)<input id="sea" type="number" step="any"></label>
+      <label>Konteyner başına ton<input id="tpc" type="number" step="any"></label>
+    </div>
+    <div class="row">
+      <label>Varış limanından müşteriye ($/t)<input id="last" type="number" step="any"></label>
+      <label>Sigorta (% mal bedeli)<input id="ins" type="number" step="any"></label>
+    </div>
+    <div class="row">
+      <label>Gümrük vergisi (%)<input id="duty" type="number" step="any"></label>
+      <label>Finansman / komisyon / diğer ($/t)<input id="other" type="number" step="any"></label>
+    </div>
+    <div class="row">
+      <label>Satış fiyatı (LME'nin %'si)<input id="sellPct" type="number" step="any"></label>
+      <label>Miktar (ton)<input id="qty" type="number" step="any"></label>
+    </div>
+    <div class="result" id="out"></div>
+    <p class="meta">Nakliye kalemleri <b>tahmini varsayılanlardır</b>; nakliyeci veya fabrikadan alınan gerçek rakamlarla değiştir.
+      İskenderiye → Mersin deniz yolu ~1–2 gün, sık sefer var. Selanik ~2–3 gün; Kosova'ya kamyonla +1 gün.
+      Türkiye–Mısır STA'sı (2007) kapsamında Mısır menşeli sanayi ürünleri <b>EUR.1 ile gümrüksüz</b> girer. Bu yüzden vergiyi %0 aldık; EUR.1 yoksa tarifeyi kontrol et.
+      Kosova için vergi oranını gümrük müşavirinden teyit et.</p>
+  </div>
+
+  <div class="section">
+    <h2>Kaynaklar</h2>
+    <ul class="meta">
+      <li><a href="https://www.egyin.com/article/162416/" target="_blank" rel="noopener">EgyIn – Mısır bakır hurda fiyatları (Kasım 2026)</a></li>
+      <li><a href="https://www.vetogate.com/5669980" target="_blank" rel="noopener">Vetogate – alüminyum hurda fiyatları (Ağustos 2026)</a></li>
+      <li><a href="https://www.arabfinance.com/en/news/newdetails/usd-egp-exchange-rate-on-november-15-2026" target="_blank" rel="noopener">Arab Finance – USD/EGP (15.11.2026)</a></li>
+      <li><a href="https://www.alcircle.com/news/lme-cash-aluminium-climbs-0-77-to-2-825-t-exchange-stocks-slip-0-37-116388" target="_blank" rel="noopener">AlCircle – LME alüminyum</a></li>
+      <li><a href="https://www.goeic.gov.eg/en/services-and-activities/conventions/conventions-countries" target="_blank" rel="noopener">GOEIC – Türkiye anlaşması, EUR.1</a></li>
+      <li><a href="https://fluentcargo.com/routes/alexandria-eg/mersin-tr" target="_blank" rel="noopener">Fluent Cargo – İskenderiye–Mersin seferleri</a></li>
+    </ul>
+  </div>
+</main>
+<footer>Bu hesap karar desteği içindir; kesin maliyet için nakliyeci ve gümrük müşaviri teklifi al.</footer>
+
+<script src="data.js"></script>
+<script src="common.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const DEST = {
+  tr:  { truck: 25, port: 30, sea: 900,  tpc: 24, last: 25, duty: 0 },
+  ist: { truck: 25, port: 30, sea: 1200, tpc: 24, last: 20, duty: 0 },
+  ks:  { truck: 25, port: 30, sea: 1300, tpc: 24, last: 80, duty: 0 },
+  ks2: { truck: 25, port: 30, sea: 1600, tpc: 24, last: 70, duty: 0 }
+};
+const saved = lsGet("valmeto-calc", {});
+let R = refs();
+$("cu").value = R.cu; $("al").value = R.al; $("fx").value = R.fx;
+const fields = ["m", "dest", "buy", "buyU", "truck", "port", "sea", "tpc", "last", "ins", "duty", "other", "sellPct", "qty", "qm", "qegp"];
+const defaults = { m: "cu", dest: "tr", buyU: "egpkg", ins: 0.15, other: 20, sellPct: 98, qty: 25, qm: "cu", ...DEST.tr };
+fields.forEach(k => $(k).value = saved[k] ?? defaults[k] ?? "");
+
+$("dest").onchange = () => { Object.entries(DEST[$("dest").value]).forEach(([k, v]) => $(k).value = v); calc(); };
+["cu", "al", "fx"].forEach(k => $(k).oninput = () => { saveRefs({ cu: +$("cu").value, al: +$("al").value, fx: +$("fx").value }); R = refs(); calc(); });
+fields.forEach(k => $(k).addEventListener("input", calc));
+
+const fmt = n => Math.round(n).toLocaleString("tr-TR");
+function calc() {
+  const s = {}; fields.forEach(k => s[k] = $(k).value); lsSet("valmeto-calc", s);
+  // hızlı çevirici
+  const qref = s.qm === "al" ? R.al : R.cu, qe = parseFloat(s.qegp);
+  $("qout").innerHTML = qe ? `<b>${qe} EGP/kg = ${fmt(qe / R.fx * 1000)} $/t</b> = LME'nin <b>%${(qe / R.fx * 1000 / qref * 100).toFixed(1)}</b>'i` : "EGP/kg gir → USD/ton ve LME yüzdesi.";
+  // hurda tablosu
+  $("scrapDate").textContent = EG_SCRAP.date;
+  $("scrap").innerHTML = "<tr><th>Tür</th><th>EGP/kg</th><th>$/t</th><th>LME %</th></tr>" + EG_SCRAP.items.map(i => {
+    const ref = i.metal === "aluminyum" ? R.al : i.metal === "bakir" ? R.cu : null;
+    const lo = i.min / R.fx * 1000, hi = i.max / R.fx * 1000;
+    return `<tr><td>${esc(i.name)}</td><td>${i.min}–${i.max}</td><td>${fmt(lo)}–${fmt(hi)}</td><td>${ref ? `%${(lo / ref * 100).toFixed(0)}–${(hi / ref * 100).toFixed(0)}` : "–"}</td></tr>`;
+  }).join("");
+  // varış maliyeti
+  const ref = s.m === "al" ? R.al : R.cu, b = parseFloat(s.buy);
+  if (!b) { $("out").innerHTML = "Alış fiyatını gir."; return; }
+  const buyT = s.buyU === "egpkg" ? b / R.fx * 1000 : s.buyU === "lmepct" ? ref * b / 100 : b;
+  const sea = (+s.sea || 0) / (+s.tpc || 24);
+  const ins = buyT * (+s.ins || 0) / 100;
+  const duty = (buyT + sea + ins) * (+s.duty || 0) / 100;
+  const landed = buyT + (+s.truck || 0) + (+s.port || 0) + sea + ins + duty + (+s.last || 0) + (+s.other || 0);
+  const sell = ref * (+s.sellPct || 0) / 100;
+  const margin = sell - landed, qty = +s.qty || 0;
+  $("out").innerHTML = `
+    Alış: <b>${fmt(buyT)} $/t</b> (LME %${(buyT / ref * 100).toFixed(1)})<br>
+    Nakliye + masraf: ${fmt(landed - buyT)} $/t <span class="meta">(navlun ${fmt(sea)} $/t)</span><br>
+    <b>Müşteriye teslim maliyet: ${fmt(landed)} $/t</b> = LME %${(landed / ref * 100).toFixed(1)}<br>
+    Satış (LME %${s.sellPct}): ${fmt(sell)} $/t<br>
+    <b style="color:${margin >= 0 ? "var(--ok)" : "var(--danger)"}">Kâr: ${fmt(margin)} $/t · ${qty} ton için ${fmt(margin * qty)} $</b>
+    ${margin < 0 ? "<br>⚠️ Bu fiyattan zarar: alış fiyatını düşürmeyi pazarlık et." : ""}
+    <br><span class="meta">Başa baş alış fiyatı: ${fmt(buyT + margin)} $/t = ${((buyT + margin) * R.fx / 1000).toFixed(0)} EGP/kg</span>`;
+}
+calc();
+</script>
+</body>
+</html>

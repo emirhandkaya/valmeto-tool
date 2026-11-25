@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arapça Soru Kartı</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .phrase { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; cursor: pointer; }
+  .phrase .tr { font-weight: 600; }
+  .phrase .en { color: var(--muted); font-size: .88rem; }
+  #big { position: fixed; inset: 0; background: var(--surface); z-index: 2000; display: none; flex-direction: column; justify-content: center; padding: 24px; gap: 18px; }
+  #big.on { display: flex; }
+  #big .ar { font-size: clamp(2rem, 8vw, 3.4rem); }
+  #big .tr { font-size: 1.1rem; color: var(--muted); }
+  .digits { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; text-align: center; }
+  .digits div { background: var(--bg); border-radius: 6px; padding: 6px; }
+  .digits b { display: block; font-size: 1.6rem; }
+</style>
+</head>
+<body>
+<header class="top"><div class="inner">
+  <h1>Valmeto Tool · Arapça Kart</h1>
+  <nav id="nav"></nav>
+</div></header>
+<main>
+  <div class="warning" style="border-left-color:var(--accent)">Bir cümleye dokun: tam ekran büyür, telefonu karşındakine göster. Kapatmak için tekrar dokun. Fiyatı yazdırmak için “Lütfen fiyatı buraya yazın” kartını kullan.</div>
+
+  <div class="section">
+    <h2>🔢 Arapça rakamlar (fiyat ve etiket okumak için)</h2>
+    <div class="digits" id="digits"></div>
+  </div>
+
+  <h2 class="group-h">Ürün adları</h2>
+  <div id="products"></div>
+  <h2 class="group-h">Sorular</h2>
+  <div id="phrases"></div>
+</main>
+<div id="big" role="dialog" aria-label="Büyük gösterim"><div class="ar" id="bigAr"></div><div class="tr" id="bigTr"></div></div>
+
+<script src="common.js"></script>
+<script>
+const P = [
+  ["أهلاً وسهلاً، أنا تاجر من تركيا. نشتري النحاس والألومنيوم لمصانع الكابلات.", "Merhaba, Türkiye'den tüccarım. Kablo fabrikaları için bakır ve alüminyum alıyoruz.", "Hello, I am a trader from Türkiye. We buy copper and aluminium for cable factories."],
+  ["ممكن أتكلم مع المدير أو مسؤول المبيعات؟", "Müdür veya satış sorumlusuyla konuşabilir miyim?", "Can I speak with the manager or sales person?"],
+  ["ما هي المنتجات التي تصنعونها؟", "Hangi ürünleri üretiyorsunuz?", "What products do you make?"],
+  ["هل تصنعون من الخردة أم من الكاثود؟", "Hurdadan mı, katottan mı üretiyorsunuz?", "Do you produce from scrap or from cathode?"],
+  ["ما نسبة نقاوة النحاس؟", "Bakırın saflık oranı nedir?", "What is the copper purity?"],
+  ["هل عندكم شهادة تحليل للمنتج؟", "Ürün için analiz sertifikanız var mı?", "Do you have an analysis certificate?"],
+  ["كم طن تنتجون في الشهر؟", "Ayda kaç ton üretiyorsunuz?", "How many tons do you produce per month?"],
+  ["ما هي أقل كمية للطلب؟", "Minimum sipariş miktarı nedir?", "What is the minimum order quantity?"],
+  ["كم يوم تحتاجون لتجهيز الطلبية؟", "Siparişi hazırlamak kaç gün sürer?", "How many days to prepare an order?"],
+  ["كم سعر الكيلو؟ وكم سعر الطن بالدولار؟", "Kilo fiyatı ne kadar? Ton fiyatı dolar olarak ne kadar?", "Price per kilo? Price per ton in dollars?"],
+  ["من فضلك اكتب السعر هنا.", "Lütfen fiyatı buraya yazın.", "Please write the price here."],
+  ["السعر تسليم المصنع أم تسليم ميناء الإسكندرية؟", "Fiyat fabrika teslim mi, İskenderiye limanı teslim mi?", "Is the price ex-works or FOB Alexandria?"],
+  ["ما هي طريقة الدفع؟", "Ödeme şekli nedir?", "What are the payment terms?"],
+  ["هل صدّرتم إلى تركيا من قبل؟ لأي دول تصدّرون؟", "Daha önce Türkiye'ye ihracat yaptınız mı? Hangi ülkelere ihracat yapıyorsunuz?", "Have you exported to Türkiye? Which countries do you export to?"],
+  ["هل عندكم ترخيص لتصدير هذا المنتج؟", "Bu ürünü ihraç etme izniniz var mı?", "Do you have a licence to export this product?"],
+  ["هل يمكنكم إصدار شهادة منشأ EUR.1؟", "EUR.1 menşe belgesi düzenleyebilir misiniz?", "Can you issue an EUR.1 certificate of origin?"],
+  ["هل يمكنكم ترتيب الشحن إلى تركيا؟ كم يوم يستغرق؟", "Türkiye'ye nakliyeyi ayarlayabilir misiniz? Kaç gün sürer?", "Can you arrange shipping to Türkiye? How many days?"],
+  ["هل ممكن آخذ عينة صغيرة؟", "Küçük bir numune alabilir miyim?", "Can I take a small sample?"],
+  ["هل ممكن أصوّر المنتج والمصنع؟", "Ürünün ve fabrikanın fotoğrafını çekebilir miyim?", "May I take photos of the product and factory?"],
+  ["ممكن صورة من السجل التجاري والبطاقة الضريبية؟", "Ticaret sicili ve vergi kartının fotoğrafını alabilir miyim?", "Can I have a copy of your commercial register and tax card?"],
+  ["السعر غالي. ما أفضل سعر لكمية كبيرة وتعامل دائم؟", "Fiyat yüksek. Büyük miktar ve sürekli iş için en iyi fiyat nedir?", "The price is high. What is your best price for large, regular orders?"],
+  ["ممكن رقم الواتساب؟", "WhatsApp numaranızı alabilir miyim?", "Can I have your WhatsApp number?"],
+  ["شكراً جزيلاً، سنتواصل معكم قريباً.", "Çok teşekkürler, yakında sizinle iletişime geçeceğiz.", "Thank you very much, we will contact you soon."]
+];
+const PROD = [
+  ["سلك نحاس", "Bakır tel"], ["سلك نحاس ٨ ملي (راد)", "8 mm bakır filmaşin"], ["كاثود نحاس", "Bakır katot"],
+  ["سبائك نحاس", "Bakır külçe"], ["بارات نحاس", "Bakır bara"], ["نحاس أحمر", "Kırmızı bakır (saf)"], ["نحاس أصفر", "Sarı bakır = pirinç"],
+  ["خردة نحاس", "Bakır hurda"], ["سبائك ألومنيوم", "Alüminyum külçe"], ["سلك ألومنيوم", "Alüminyum tel / filmaşin"], ["خردة ألومنيوم", "Alüminyum hurda"],
+  ["طن", "Ton"], ["كيلو", "Kilo"], ["جنيه", "Mısır lirası (EGP)"], ["دولار", "Dolar"]
+];
+const card = ([ar, tr, en]) => `<div class="phrase" data-ar="${esc(ar)}" data-tr="${esc(tr)}"><div class="ar">${esc(ar)}</div><div class="tr">${esc(tr)}</div>${en ? `<div class="en">${esc(en)}</div>` : ""}</div>`;
+document.getElementById("phrases").innerHTML = P.map(card).join("");
+document.getElementById("products").innerHTML = PROD.map(card).join("");
+document.getElementById("digits").innerHTML = "٠١٢٣٤٥٦٧٨٩".split("").map((d, i) => `<div><b>${d}</b>${i}</div>`).join("");
+const big = document.getElementById("big");
+document.querySelector("main").onclick = e => {
+  const p = e.target.closest(".phrase"); if (!p) return;
+  document.getElementById("bigAr").textContent = p.dataset.ar; document.getElementById("bigTr").textContent = p.dataset.tr;
+  big.classList.add("on");
+};
+big.onclick = () => big.classList.remove("on");
+</script>
+</body>
+</html>

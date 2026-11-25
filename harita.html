@@ -10,7 +10,7 @@
 <body>
 <header class="top"><div class="inner">
   <h1>Valmeto Tool · Harita</h1>
-  <nav><a href="index.html">Mısır Üreticileri</a><a href="musteriler.html">Müşteriler</a><a href="harita.html" class="active">Harita</a></nav>
+  <nav id="nav"></nav>
 </div></header>
 <main>
   <div class="legend">
@@ -52,7 +52,7 @@ const markers = {}, bounds = [];
 FACTORIES.filter(f => f.lat != null).forEach(f => {
   const n = notes[f.id] || {};
   const mk = L.circleMarker([f.lat, f.lng], { radius: 10, color: "#fff", weight: 2, fillColor: color(f), fillOpacity: .95 }).addTo(map);
-  mk.bindTooltip(f.name.split("(")[0].trim());
+  mk.bindTooltip(`${f.tier} · ` + f.name.split("(")[0].trim());
   mk.bindPopup(`<h3>${esc(f.name)}</h3>
     <b>${f.metal.map(m => METAL_LABEL[m]).join(" + ")}</b> · ${esc(f.area)}<br>
     <small>${esc(f.address)}</small><br>
@@ -62,8 +62,9 @@ FACTORIES.filter(f => f.lat != null).forEach(f => {
     ${n.status ? `<br><b>Durum:</b> ${esc(STATUS_LABEL[n.status])}` : ""}
     ${n.price ? `<br><b>Fiyat:</b> ${esc(n.price)} USD/ton` : ""}
     ${f.approxOnly ? "<br><i>Konum sadece bölge tahmini.</i>" : ""}
+    <br>🗓️ ${DAYS[f.day]} · <a href="ziyaret.html#${f.id}">📝 Ziyaret formu</a>
     <br><a href="${mapsHref(f)}" target="_blank" rel="noopener">🧭 Google Maps'te aç</a>`);
-  markers[f.id] = mk; bounds.push([f.lat, f.lng]);
+  markers[f.id] = mk; if (f.day > 0) bounds.push([f.lat, f.lng]);
 });
 // Müşteri katmanı (kare işaretler)
 let crm = {}; try { crm = JSON.parse(localStorage.getItem("musteri-takip-v1")) || {}; } catch (e) {}

@@ -3,126 +3,142 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kahire Fabrika Rehberi</title>
+<title>Valmeto Tool</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="top"><div class="inner">
   <h1>Valmeto Tool · Mısır Üreticileri</h1>
-  <nav><a href="index.html" class="active">Mısır Üreticileri</a><a href="musteriler.html">Müşteriler</a><a href="harita.html">Harita</a></nav>
+  <nav id="nav"></nav>
 </div></header>
 
 <main>
-  <div class="warning">
-    Bilgiler firmaların resmi siteleri ve iş rehberlerinden derlendi (Kasım 2026). <b>Turuncu “teyit edilmedi”</b> etiketli kayıtlar
-    üçüncü taraf rehberlerden gelir. Gitmeden önce telefon/WhatsApp ile randevu alın. Mısır'da hafta sonu genelde <b>Cuma–Cumartesi</b>.
-    Notlarınız ve fiyatlar sadece bu cihazın tarayıcısında saklanır; “CSV indir” ile yedekleyin.
+  <div class="warning danger">
+    <b>⚠️ İhracat kısıtı:</b> Mısır, Bakanlık Kararı 77/2026 ile bazı hurda türlerinin ihracatını yasakladı. Gümrük genelgesiyle bazı bakır ürünlerinin de kapsama alındığı bildiriliyor.
+    Kapsam net değil, bu yüzden <b>hurdayı olduğu gibi değil, hurdadan üretilmiş külçe, filmaşin veya tel almayı</b> hedefle.
+    Her fabrikaya <b>“Bu ürünü ihraç edebiliyor musunuz, izniniz var mı?”</b> diye sor.
+    <a href="https://www.goeic.gov.eg/en/laws-and-decisions/list/898" target="_blank" rel="noopener">GOEIC karar listesi</a>
+  </div>
+
+  <div class="warning" style="border-left-color:var(--accent)">
+    <b>Fiyat referansı:</b>
+    LME bakır <input id="lme" type="number" step="any" class="mini"> $/t ·
+    LME alüminyum <input id="lmeal" type="number" step="any" class="mini"> $/t ·
+    1 USD = <input id="fx" type="number" step="any" class="mini"> EGP
+    <br><small>Varsayılanlar 25.11.2026 civarı; gitmeden önce güncelle. Teklif girince kartta LME'ye göre % görünür.
+    Mısır iç piyasa hurda fiyatları ve detaylı hesap için <a href="hesap.html">Fiyat Hesabı</a>.</small>
   </div>
 
   <div class="toolbar">
     <input id="q" type="search" placeholder="Ara: firma, bölge, ürün…">
+    <select id="tier">
+      <option value="AB">A + B (önerilen)</option>
+      <option value="A">Sadece A – Hedef (ucuz)</option>
+      <option value="">Hepsi (referanslar dahil)</option>
+    </select>
     <select id="metal">
       <option value="">Tüm metaller</option>
-      <option value="aluminyum">Alüminyum</option>
       <option value="bakir">Bakır</option>
+      <option value="aluminyum">Alüminyum</option>
     </select>
-    <select id="status">
-      <option value="">Tüm durumlar</option>
+    <select id="day">
+      <option value="">Tüm günler</option>
+      <option value="1">Pazar 29 Kas</option>
+      <option value="2">Pazartesi 30 Kas</option>
+      <option value="3">Salı 1 Ara</option>
+      <option value="0">Telefonla</option>
     </select>
     <select id="sort">
-      <option value="">Sıralama: varsayılan</option>
+      <option value="">Sıra: öncelik</option>
       <option value="price">En ucuz teklif önce</option>
     </select>
     <button id="csv" class="primary">CSV indir</button>
-    <button onclick="window.print()">Yazdır</button>
   </div>
 
-  <div class="warning" style="border-left-color:var(--accent)">
-    <b>Fiyat karşılaştırma:</b> LME bakır referansı
-    <input id="lme" type="number" step="any" style="width:110px;font:inherit;padding:4px 6px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text)"> USD/ton
-    (<span id="lmeinfo"></span>). Alüminyum LME:
-    <input id="lmeal" type="number" step="any" placeholder="girin" style="width:110px;font:inherit;padding:4px 6px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text)"> USD/ton.
-    Aldığınız teklifleri notlara girince her kartta <b>LME'ye göre prim (%)</b> görünür; “En ucuz teklif önce” ile sıralayın.
-    Bakır katot/filmaşinde makul prim genelde LME'nin birkaç yüz dolar üstüdür; çok yüksek primde pazarlık yapın, LME'nin altındaki tekliflerde kalite/menşe/fatura konusunda dikkatli olun.
-  </div>
   <p class="meta" id="count"></p>
-  <div class="grid" id="list"></div>
+  <div id="list"></div>
 </main>
-<footer>Kişisel iş seyahati aracı. Harita koordinatları yaklaşıktır (sanayi bölgesi düzeyinde).</footer>
+<footer>Koordinatlar yaklaşıktır. ALUPCO (Suudi merkezli) listeden çıkarıldı; büyük kurumsallar “C – Referans” grubunda sadece fiyat karşılaştırması için duruyor.</footer>
 
 <script src="data.js"></script>
 <script src="common.js"></script>
 <script>
 const notes = loadNotes();
-const statusSel = document.getElementById("status");
-for (const [k, v] of Object.entries(STATUS_LABEL)) if (k) statusSel.add(new Option(v, k));
+const visits = lsGet("valmeto-visits", {});
+let R = refs();
+const lmeIn = document.getElementById("lme"), lmeAl = document.getElementById("lmeal"), fxIn = document.getElementById("fx");
+lmeIn.value = R.cu; lmeAl.value = R.al; fxIn.value = R.fx;
+[lmeIn, lmeAl, fxIn].forEach(i => i.onchange = () => { saveRefs({ cu: +lmeIn.value, al: +lmeAl.value, fx: +fxIn.value }); R = refs(); render(); });
 
-let lme = {};
-try { lme = JSON.parse(localStorage.getItem("kahire-lme")) || {}; } catch (e) {}
-if (!lme.cu) lme.cu = LME_REF.copper;
-const lmeIn = document.getElementById("lme"), lmeAl = document.getElementById("lmeal");
-lmeIn.value = lme.cu || ""; lmeAl.value = lme.al || "";
-document.getElementById("lmeinfo").innerHTML = `kaynak: <a href="${LME_REF.source}" target="_blank" rel="noopener">KME, ${LME_REF.date}</a> – güncel değeri girin`;
-function saveLme() { lme = { cu: +lmeIn.value || null, al: +lmeAl.value || null }; try { localStorage.setItem("kahire-lme", JSON.stringify(lme)); } catch (e) {} render(); }
-lmeIn.onchange = saveLme; lmeAl.onchange = saveLme;
-function premiumTag(f, n) {
-  const price = parseFloat(n.price); if (!price) return "";
-  const ref = f.metal[0] === "bakir" ? lme.cu : lme.al; if (!ref) return `<span class="tag ok">${price} $/t</span>`;
-  const d = price - ref, pct = (d / ref * 100).toFixed(1);
-  return `<span class="tag ${d > ref * 0.06 ? "unv" : "ok"}">${price} $/t · LME ${d >= 0 ? "+" : ""}${Math.round(d)} $ (${d >= 0 ? "+" : ""}${pct}%)</span>`;
+// Teklif: önce detaylı ziyaret formundan, yoksa karttaki hızlı nottan
+function offerUsdT(f) {
+  const v = visits[f.id];
+  if (v && v.priceUsdT) return v.priceUsdT;
+  return parseFloat(notes[f.id]?.price) || null;
+}
+function premiumTag(f) {
+  const price = offerUsdT(f); if (!price) return "";
+  const ref = f.metal[0] === "aluminyum" ? R.al : R.cu;
+  const pct = (price / ref * 100).toFixed(1);
+  return `<span class="tag ${price > ref * 1.03 ? "unv" : "ok"}">${Math.round(price)} $/t = LME'nin %${pct}'i</span>`;
 }
 
 function card(f) {
   const n = notes[f.id] || {};
-  const tags = f.metal.map(m => `<span class="tag ${m}">${METAL_LABEL[m]}</span>`).join("")
+  const v = visits[f.id];
+  const tags = `<span class="tag tier${f.tier}">${f.tier}</span>`
+    + f.metal.map(m => `<span class="tag ${m}">${METAL_LABEL[m]}</span>`).join("")
+    + `<span class="tag src">${SOURCE_LABEL[f.source] || ""}</span>`
     + (f.verified ? `<span class="tag ok">resmi siteden</span>` : `<span class="tag unv">teyit edilmedi</span>`)
-    + (n.status ? `<span class="tag visited">${esc(STATUS_LABEL[n.status])}</span>` : "")
-    + premiumTag(f, n);
+    + (v ? `<span class="tag visited">Ziyaret formu dolu</span>` : "")
+    + premiumTag(f);
   const phones = f.phones.map(p => `📞 <a href="${telHref(p)}">${esc(p)}</a>` + (isMobile(p) ? ` · <a href="${waHref(p)}" target="_blank" rel="noopener">WhatsApp</a>` : "")).join("<br>");
   const emails = f.emails.map(e => `✉️ <a href="mailto:${esc(e)}">${esc(e)}</a>`).join("<br>");
-  const rfq = f.emails[0] ? `<a href="${mailtoRFQ(f, f.emails[0])}">✉️ Teklif maili (İng.)</a>` : "";
   return `<article class="card" data-id="${f.id}">
-    <h2>${esc(f.name)}</h2>
+    <h2>${f.star ? "★ " : ""}${esc(f.name)}</h2>
     <div class="tags">${tags}</div>
-    <div class="meta">📍 ${esc(f.area)}<br>${esc(f.address)}</div>
-    <div class="contacts">${phones || "<span class='meta'>Telefon bulunamadı</span>"}${emails ? "<br>" + emails : "<br><span class='meta'>E-posta bulunamadı</span>"}
+    <div class="meta">📍 ${esc(f.area)}<br>${esc(f.address)}<br>🗓️ ${DAYS[f.day]}</div>
+    <div class="contacts">${phones || "<span class='meta'>Telefon bulunamadı</span>"}<br>${emails || "<span class='meta'>E-posta bulunamadı</span>"}
       ${f.contact ? `<br>👤 ${esc(f.contact)}` : ""}</div>
     <div><b style="font-size:.85rem">Ürünler</b><ul class="products">${f.products.map(p => `<li>${esc(p)}</li>`).join("")}</ul></div>
     ${f.notes ? `<div class="meta">ℹ️ ${esc(f.notes)}</div>` : ""}
     <div class="actions">
+      <a class="primary-link" href="ziyaret.html#${f.id}">📝 Ziyaret formu</a>
       <a href="${mapsHref(f)}" target="_blank" rel="noopener">🧭 Yol tarifi</a>
-      ${f.lat != null ? `<a href="harita.html#${f.id}">🗺️ Haritada gör</a>` : ""}
+      ${f.lat != null ? `<a href="harita.html#${f.id}">🗺️ Harita</a>` : ""}
       ${f.website ? `<a href="${esc(f.website)}" target="_blank" rel="noopener">🌐 Site</a>` : ""}
-      ${rfq}
+      ${f.emails[0] ? `<a href="${mailtoRFQ(f, f.emails[0])}">✉️ Teklif maili</a>` : ""}
     </div>
     <details class="visit" ${n.status || n.text ? "open" : ""}>
-      <summary>Ziyaret notlarım</summary>
-      <label>Durum<select data-k="status">${Object.entries(STATUS_LABEL).map(([k, v]) => `<option value="${k}" ${n.status === k ? "selected" : ""}>${v}</option>`).join("")}</select></label>
+      <summary>Hızlı not</summary>
+      <label>Durum<select data-k="status">${Object.entries(STATUS_LABEL).map(([k, l]) => `<option value="${k}" ${n.status === k ? "selected" : ""}>${l}</option>`).join("")}</select></label>
       <div class="row">
-        <label>Randevu tarihi<input type="datetime-local" data-k="date" value="${esc(n.date)}"></label>
-        <label>Görüşülen kişi<input data-k="person" value="${esc(n.person)}"></label>
+        <label>Randevu<input type="datetime-local" data-k="date" value="${esc(n.date)}"></label>
+        <label>Teklif (USD/ton)<input type="number" step="any" data-k="price" value="${esc(n.price)}"></label>
       </div>
-      <div class="row">
-        <label>Fiyat (USD/ton)<input type="number" step="any" data-k="price" value="${esc(n.price)}"></label>
-        <label>Min. sipariş / teslim<input data-k="moq" value="${esc(n.moq)}"></label>
-      </div>
-      <label>Notlar (ürün, kalite, ödeme şartı…)<textarea rows="3" data-k="text">${esc(n.text)}</textarea></label>
+      <label>Not<textarea rows="2" data-k="text">${esc(n.text)}</textarea></label>
     </details>
   </article>`;
 }
 
 function render() {
   const q = document.getElementById("q").value.toLowerCase();
-  const m = document.getElementById("metal").value;
-  const s = statusSel.value;
-  const items = FACTORIES.filter(f =>
-    (!m || f.metal.includes(m)) &&
-    (!s || (notes[f.id]?.status || "") === s) &&
-    (!q || JSON.stringify(f).toLowerCase().includes(q) || (notes[f.id]?.text || "").toLowerCase().includes(q)));
-  if (document.getElementById("sort").value === "price")
-    items.sort((a, b) => (parseFloat(notes[a.id]?.price) || Infinity) - (parseFloat(notes[b.id]?.price) || Infinity));
-  document.getElementById("list").innerHTML = items.map(card).join("");
-  document.getElementById("count").textContent = `${items.length} kayıt gösteriliyor (toplam ${FACTORIES.length})`;
+  const m = document.getElementById("metal").value, t = document.getElementById("tier").value, d = document.getElementById("day").value;
+  let items = FACTORIES.filter(f => (!t || t.includes(f.tier)) && (!m || f.metal.includes(m)) && (d === "" || String(f.day) === d)
+    && (!q || JSON.stringify(f).toLowerCase().includes(q) || (notes[f.id]?.text || "").toLowerCase().includes(q)));
+  const byPrice = document.getElementById("sort").value === "price";
+  let html = "";
+  if (byPrice) {
+    items.sort((a, b) => (offerUsdT(a) || Infinity) - (offerUsdT(b) || Infinity));
+    html = `<div class="grid">${items.map(card).join("")}</div>`;
+  } else {
+    for (const tier of ["A", "B", "C"]) {
+      const g = items.filter(f => f.tier === tier).sort((a, b) => (b.star ? 1 : 0) - (a.star ? 1 : 0) || (a.day || 9) - (b.day || 9));
+      if (g.length) html += `<h2 class="group-h">${TIER_LABEL[tier]} <small>${g.length} kayıt</small></h2><div class="grid">${g.map(card).join("")}</div>`;
+    }
+  }
+  document.getElementById("list").innerHTML = html;
+  document.getElementById("count").textContent = `${items.length} kayıt gösteriliyor (toplam ${FACTORIES.length}). ★ = önce gidilecek.`;
 }
 
 document.getElementById("list").addEventListener("change", e => {
@@ -132,15 +148,16 @@ document.getElementById("list").addEventListener("change", e => {
   saveNotes(notes);
   if (k === "status" || k === "price") render();
 });
-["q", "metal", "status", "sort"].forEach(id => document.getElementById(id).addEventListener("input", render));
+["q", "metal", "tier", "day", "sort"].forEach(id => document.getElementById(id).addEventListener("input", render));
 
 document.getElementById("csv").onclick = () => {
-  const head = ["Firma", "Metal", "Bölge", "Adres", "Telefon", "E-posta", "Ürünler", "Durum", "Randevu", "Görüşülen", "Fiyat USD/ton", "LME farkı USD", "MOQ/Teslim", "Notlar"];
-  const rows = FACTORIES.map(f => { const n = notes[f.id] || {}; return [f.name, f.metal.map(x => METAL_LABEL[x]).join("/"), f.area, f.address, f.phones.join(" | "), f.emails.join(" | "), f.products.join(" | "), STATUS_LABEL[n.status || ""], n.date, n.person, n.price, n.price && (f.metal[0] === "bakir" ? lme.cu : lme.al) ? Math.round(n.price - (f.metal[0] === "bakir" ? lme.cu : lme.al)) : "", n.moq, n.text]; });
+  const head = ["Sınıf", "Firma", "Metal", "Kaynak", "Gün", "Bölge", "Adres", "Telefon", "E-posta", "Ürünler", "Durum", "Teklif USD/t", "LME %", "Not"];
+  const rows = FACTORIES.map(f => { const n = notes[f.id] || {}; const p = offerUsdT(f); const ref = f.metal[0] === "aluminyum" ? R.al : R.cu;
+    return [f.tier, f.name, f.metal.map(x => METAL_LABEL[x]).join("/"), SOURCE_LABEL[f.source], DAYS[f.day], f.area, f.address, f.phones.join(" | "), f.emails.join(" | "), f.products.join(" | "), STATUS_LABEL[n.status || ""], p ? Math.round(p) : "", p ? (p / ref * 100).toFixed(1) : "", n.text]; });
   const csv = "﻿" + [head, ...rows].map(r => r.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(";")).join("\n");
   const a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
-  a.download = "kahire-fabrikalar.csv"; a.click();
+  a.download = "misir-ureticiler.csv"; a.click();
 };
 render();
 </script>

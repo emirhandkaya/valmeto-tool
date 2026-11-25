@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fabrika Ziyaret Formu</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top"><div class="inner">
+  <h1>Valmeto Tool · Ziyaret Formu</h1>
+  <nav id="nav"></nav>
+</div></header>
+
+<main class="form">
+  <div class="section">
+    <h2>🏭 Fabrika</h2>
+    <select id="fac"></select>
+    <div id="newfac" hidden>
+      <label>Fabrika adı<input data-k="customName" placeholder="Listede olmayan fabrika"></label>
+      <label>Bölge / adres<input data-k="customArea"></label>
+    </div>
+    <div class="row">
+      <label>Ziyaret tarihi<input type="date" data-k="date"></label>
+      <label>Metal<select data-k="metal"><option value="bakir">Bakır</option><option value="aluminyum">Alüminyum</option><option value="pirinc">Pirinç</option></select></label>
+    </div>
+    <div class="row">
+      <label>Görüşülen kişi / görevi<input data-k="person"></label>
+      <label>Telefon / WhatsApp<input data-k="personPhone" type="tel"></label>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>📦 Ürünler ve hammadde</h2>
+    <label>Hangi ürünleri yapıyorlar? (birden fazla seçebilirsin)</label>
+    <div class="chips" id="products"></div>
+    <label>Diğer ürün / ölçüler (ör. 8 mm filmaşin, 1,5 mm tel)<input data-k="productsOther"></label>
+    <div class="row">
+      <label>Hammadde kaynağı<select data-k="source">
+        <option value="">– sor –</option><option value="hurda">Hurdadan</option><option value="katot">Katottan</option><option value="karisik">Hurda + katot</option><option value="birincil">Birincil (cevher)</option></select></label>
+      <label>Hurda oranı (%)<input data-k="scrapShare" type="number" inputmode="decimal"></label>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🔬 Kalite</h2>
+    <div class="row">
+      <label>Saflık (% Cu / % Al)<input data-k="purity" inputmode="decimal" placeholder="ör. 99.95"></label>
+      <label>Analiz sertifikası<select data-k="cert"><option value="">– sor –</option><option>Var (gördüm)</option><option>Var (gönderecek)</option><option>Yok</option></select></label>
+    </div>
+    <label>Kalite gözlemi (yüzey, oksit, renk, spektrometre var mı, standart: ETP/OF/EC…)<textarea data-k="quality" rows="2"></textarea></label>
+  </div>
+
+  <div class="section">
+    <h2>⏱️ Kapasite ve süre</h2>
+    <div class="row">
+      <label>Aylık kapasite (ton)<input data-k="capacity" type="number" inputmode="decimal"></label>
+      <label>Minimum sipariş (ton)<input data-k="moq" type="number" inputmode="decimal"></label>
+    </div>
+    <label>Siparişten teslime kaç gün?<input data-k="leadDays" type="number" inputmode="numeric"></label>
+  </div>
+
+  <div class="section">
+    <h2>💰 Fiyat</h2>
+    <div class="row">
+      <label>Teklif<input data-k="priceVal" type="number" step="any" inputmode="decimal"></label>
+      <label>Birim<select data-k="priceUnit">
+        <option value="egpkg">EGP / kg</option><option value="usdt">USD / ton</option><option value="usdkg">USD / kg</option>
+        <option value="lmepct">LME'nin %'si</option><option value="lmeplus">LME + prim (USD/t)</option><option value="egpt">EGP / ton</option></select></label>
+    </div>
+    <div class="row">
+      <label>Teslim şekli<select data-k="incoterm"><option>EXW (fabrikada)</option><option>FOB İskenderiye</option><option>FOB Damietta</option><option>FOB Port Said</option><option>CIF Mersin</option><option>CIF İstanbul</option><option>Diğer</option></select></label>
+      <label>Ödeme şartı<input data-k="payment" placeholder="ör. %30 peşin, %70 yüklemede / LC"></label>
+    </div>
+    <div class="result" id="priceOut">Teklif girince USD/ton ve LME yüzdesi burada görünür.</div>
+  </div>
+
+  <div class="section">
+    <h2>🇹🇷 Türkiye, ihracat ve nakliye</h2>
+    <div class="row">
+      <label>Türkiye'ye mal verdiler mi?<select data-k="turkey"><option value="">– sor –</option><option>Evet</option><option>Hayır</option><option>Bilmiyor / söylemedi</option></select></label>
+      <label>Kime / hangi firmaya?<input data-k="turkeyWho"></label>
+    </div>
+    <label>İhracat yaptıkları diğer ülkeler<input data-k="exportCountries"></label>
+    <div class="row">
+      <label>İhracat izni var mı? (hurda yasağı)<select data-k="exportPermit"><option value="">– sor –</option><option>Evet, ihraç edebiliyor</option><option>Hayır</option><option>Emin değil</option></select></label>
+      <label>EUR.1 menşe belgesi?<select data-k="eur1"><option value="">– sor –</option><option>Evet</option><option>Hayır</option><option>Bilmiyor</option></select></label>
+    </div>
+    <div class="row">
+      <label>Nakliyeyi biliyor / ayarlıyor mu?<select data-k="shipKnow"><option value="">– sor –</option><option>Evet, kendileri ayarlıyor</option><option>Bilgisi var, biz ayarlarız</option><option>Bilmiyor</option></select></label>
+      <label>Liman<input data-k="shipPort" placeholder="İskenderiye / Damietta / Port Said"></label>
+    </div>
+    <div class="row">
+      <label>Nakliye süresi (gün)<input data-k="shipDays" type="number" inputmode="numeric"></label>
+      <label>Nakliye maliyeti (söyledikleri)<input data-k="shipCost" placeholder="ör. 900 $/konteyner"></label>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>📋 Güven ve sonuç</h2>
+    <div class="row">
+      <label>Numune verir mi?<select data-k="sample"><option value="">– sor –</option><option>Evet, aldım</option><option>Evet, gönderecek</option><option>Hayır</option></select></label>
+      <label>Ticaret sicili / vergi kartı<select data-k="regDocs"><option value="">– sor –</option><option>Gördüm / fotoğrafladım</option><option>Gönderecek</option><option>Vermedi</option></select></label>
+    </div>
+    <label>Genel puan<select data-k="rating"><option value="">–</option><option value="5">⭐⭐⭐⭐⭐ Çok iyi</option><option value="4">⭐⭐⭐⭐ İyi</option><option value="3">⭐⭐⭐ Orta</option><option value="2">⭐⭐ Zayıf</option><option value="1">⭐ Uygun değil</option></select></label>
+    <label>Notlar (izlenim, pazarlık, sonraki adım)<textarea data-k="notes" rows="3"></textarea></label>
+  </div>
+
+  <div class="section">
+    <h2>📷 Fotoğraflar</h2>
+    <p class="meta">Ürün, etiket, fırın/makine, depo, sertifika, kartvizit. Fotoğraflar küçültülüp bu telefonda saklanır.</p>
+    <label class="big-btn" style="color:#fff">📷 Fotoğraf çek / ekle<input id="photoIn" type="file" accept="image/*" capture="environment" multiple hidden></label>
+    <label class="big-btn ghost">🖼️ Galeriden seç<input id="photoGal" type="file" accept="image/*" multiple hidden></label>
+    <div class="photos" id="photos"></div>
+    <p class="meta" id="photoMsg"></p>
+  </div>
+
+  <div class="section">
+    <h2>📤 Babama gönder</h2>
+    <p class="meta">“Hepsini paylaş” telefonun paylaşım menüsünü açar; WhatsApp'ı seç, rapor ve fotoğraflar birlikte gider.
+      Metin fotoğraflarla gelmezse rapor panoya kopyalanmış olur; mesaj kutusuna yapıştır.</p>
+    <div class="actions">
+      <button class="big-btn" id="shareAll">📤 Hepsini paylaş (rapor + fotoğraflar)</button>
+      <a class="big-btn ghost" id="waText" target="_blank" rel="noopener">💬 Sadece raporu WhatsApp'la</a>
+      <button class="big-btn ghost" id="copyText">📋 Raporu kopyala</button>
+    </div>
+    <pre id="summary" style="white-space:pre-wrap;font:inherit;font-size:.9rem;background:var(--bg);padding:10px;border-radius:8px;border:1px solid var(--border);margin-top:10px"></pre>
+  </div>
+
+  <div class="section">
+    <h2>📊 Tüm ziyaretler – karşılaştırma</h2>
+    <div class="table-wrap"><table class="cmp" id="cmp"></table></div>
+    <div class="actions" style="margin-top:10px">
+      <button class="big-btn" id="shareCmp">📤 Karşılaştırmayı babama gönder</button>
+      <button class="big-btn ghost" id="backup">💾 Yedek indir (JSON)</button>
+      <label class="big-btn ghost">📂 Yedek yükle<input id="restore" type="file" accept="application/json" hidden></label>
+    </div>
+  </div>
+</main>
+<footer>Formdaki her değişiklik otomatik kaydedilir (bu cihazda). Fotoğraflar yedek dosyasına dahil değildir; paylaşarak saklayın.</footer>
+
+<script src="data.js"></script>
+<script src="common.js"></script>
+<script>
+const PRODUCTS = ["Bakır filmaşin 8 mm", "Bakır tel (çekilmiş)", "Bakır külçe / ingot", "Bakır katot", "Bakır bara / lama", "Bakır hurda", "Alüminyum külçe", "Alüminyum filmaşin", "Alüminyum tel", "Alüminyum profil / billet", "Alüminyum hurda", "Pirinç çubuk / külçe"];
+let visits = lsGet("valmeto-visits", {});
+const facSel = document.getElementById("fac");
+const R = refs();
+
+// ---- Fabrika seçimi ----
+FACTORIES.slice().sort((a, b) => a.tier.localeCompare(b.tier) || (a.day || 9) - (b.day || 9))
+  .forEach(f => facSel.add(new Option(`${f.tier} · ${f.name}`, f.id)));
+Object.keys(visits).filter(id => id.startsWith("custom-")).forEach(id => facSel.add(new Option(`+ ${visits[id].customName || id}`, id)));
+facSel.add(new Option("➕ Listede olmayan yeni fabrika…", "__new"));
+document.getElementById("products").innerHTML = PRODUCTS.map(p => `<label><input type="checkbox" value="${esc(p)}"> ${esc(p)}</label>`).join("");
+
+let cur = location.hash.slice(1) || lsGet("valmeto-lastvisit", FACTORIES[0].id);
+function facOf(id) { return FACTORIES.find(f => f.id === id); }
+function nameOf(id) { const f = facOf(id); return f ? f.name : (visits[id]?.customName || "Yeni fabrika"); }
+
+function load(id) {
+  if (id === "__new") { id = "custom-" + Date.now(); visits[id] = { customName: "", date: new Date().toISOString().slice(0, 10) }; facSel.add(new Option("+ Yeni fabrika", id), facSel.options.length - 1); }
+  cur = id; facSel.value = id; lsSet("valmeto-lastvisit", id); history.replaceState(null, "", "#" + id);
+  const f = facOf(id), v = visits[id] || {};
+  document.getElementById("newfac").hidden = !!f;
+  document.querySelectorAll("[data-k]").forEach(el => {
+    let val = v[el.dataset.k];
+    if (val == null) val = el.dataset.k === "metal" ? (f?.metal[0] === "aluminyum" ? "aluminyum" : f?.metal[0] || "bakir") : el.dataset.k === "date" ? new Date().toISOString().slice(0, 10) : "";
+    el.value = val;
+    if (el.tagName === "SELECT" && el.selectedIndex < 0) el.selectedIndex = 0;
+  });
+  document.querySelectorAll("#products input").forEach(c => c.checked = (v.products || []).includes(c.value));
+  update(false); showPhotos();
+}
+
+function collect() {
+  const v = visits[cur] || {};
+  document.querySelectorAll("[data-k]").forEach(el => v[el.dataset.k] = el.value);
+  v.products = [...document.querySelectorAll("#products input:checked")].map(c => c.value);
+  v.priceUsdT = priceUsdT(v);
+  v.updated = new Date().toISOString();
+  visits[cur] = v; lsSet("valmeto-visits", visits);
+}
+
+// ---- Fiyat ----
+function refFor(metal) { return metal === "aluminyum" ? R.al : metal === "bakir" ? R.cu : null; }
+function priceUsdT(v) {
+  const x = parseFloat(v.priceVal); if (!x) return null;
+  const ref = refFor(v.metal);
+  switch (v.priceUnit) {
+    case "egpkg": return x / R.fx * 1000;
+    case "egpt": return x / R.fx;
+    case "usdt": return x;
+    case "usdkg": return x * 1000;
+    case "lmepct": return ref ? ref * x / 100 : null;
+    case "lmeplus": return ref ? ref + x : null;
+  }
+  return null;
+}
+function priceLine(v) {
+  const p = priceUsdT(v); if (!p) return "";
+  const ref = refFor(v.metal);
+  const unit = { egpkg: "EGP/kg", egpt: "EGP/t", usdt: "$/t", usdkg: "$/kg", lmepct: "% LME", lmeplus: "$ LME üstü" }[v.priceUnit];
+  return `${v.priceVal} ${unit} = ${Math.round(p).toLocaleString("tr-TR")} $/t` + (ref ? ` = LME'nin %${(p / ref * 100).toFixed(1)}'i` : "");
+}
+
+// ---- Özet metni ----
+function summary(id) {
+  const v = visits[id] || {}, f = facOf(id);
+  const L = [];
+  const add = (icon, label, val) => { if (val) L.push(`${icon} ${label}: ${val}`); };
+  L.push(`📍 *${nameOf(id)}*`);
+  const d = v.date ? v.date.split("-").reverse().join(".") : "";
+  L.push(`${f ? f.area : (v.customArea || "")} – ${d}`.trim());
+  add("👤", "Görüşülen", [v.person, v.personPhone].filter(Boolean).join(" · "));
+  add("🏭", "Ürünler", [...(v.products || []), v.productsOther].filter(Boolean).join(", "));
+  add("♻️", "Hammadde", [SOURCE_LABEL[v.source], v.scrapShare && `hurda %${v.scrapShare}`].filter(Boolean).join(" · "));
+  add("🔬", "Kalite", [v.purity && `%${v.purity} saflık`, v.cert && `sertifika: ${v.cert}`, v.quality].filter(Boolean).join(" · "));
+  add("📦", "Kapasite", [v.capacity && `${v.capacity} t/ay`, v.moq && `min. sipariş ${v.moq} t`].filter(Boolean).join(" · "));
+  add("⏱️", "Teslim süresi", v.leadDays && `${v.leadDays} gün`);
+  add("💰", "Fiyat", [priceLine(v), v.priceVal && v.incoterm, v.payment && `ödeme: ${v.payment}`].filter(Boolean).join(" · "));
+  add("🇹🇷", "Türkiye'ye satış", [v.turkey, v.turkeyWho].filter(Boolean).join(" – "));
+  add("🌍", "İhracat ülkeleri", v.exportCountries);
+  add("📄", "İhracat izni / EUR.1", [v.exportPermit, v.eur1 && `EUR.1: ${v.eur1}`].filter(Boolean).join(" · "));
+  add("🚢", "Nakliye", [v.shipKnow, v.shipPort, v.shipDays && `${v.shipDays} gün`, v.shipCost].filter(Boolean).join(" · "));
+  add("🧪", "Numune", v.sample);
+  add("🗂️", "Sicil / vergi kartı", v.regDocs);
+  add("⭐", "Puan", v.rating && `${v.rating}/5`);
+  add("📝", "Not", v.notes);
+  L.push(`(LME bakır ${R.cu} $/t · alüminyum ${R.al} $/t · 1$=${R.fx} EGP)`);
+  return L.join("\n");
+}
+
+function update(save = true) {
+  if (save) collect();
+  const v = visits[cur] || {};
+  document.getElementById("priceOut").innerHTML = priceLine({ ...v, ...Object.fromEntries([...document.querySelectorAll("[data-k]")].map(e => [e.dataset.k, e.value])) }) || "Teklif girince USD/ton ve LME yüzdesi burada görünür.";
+  const s = summary(cur);
+  document.getElementById("summary").textContent = s;
+  document.getElementById("waText").href = "https://wa.me/?text=" + encodeURIComponent(s);
+  renderCmp();
+}
+document.querySelector("main").addEventListener("input", e => { if (e.target.closest("[data-k], #products")) update(); });
+facSel.onchange = () => load(facSel.value);
+
+// ---- Fotoğraflar (IndexedDB) ----
+let dbp;
+function db() {
+  return dbp ||= new Promise((res, rej) => {
+    const r = indexedDB.open("valmeto", 1);
+    r.onupgradeneeded = () => r.result.createObjectStore("photos", { keyPath: "id", autoIncrement: true }).createIndex("visit", "visit");
+    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+  });
+}
+async function photosOf(id) {
+  try {
+    const d = await db();
+    return await new Promise((res, rej) => { const q = d.transaction("photos").objectStore("photos").index("visit").getAll(id); q.onsuccess = () => res(q.result); q.onerror = () => rej(q.error); });
+  } catch (e) { return []; }
+}
+async function shrink(file) {
+  const bmp = await createImageBitmap(file);
+  const s = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+  const c = document.createElement("canvas"); c.width = Math.round(bmp.width * s); c.height = Math.round(bmp.height * s);
+  c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
+  return await new Promise(r => c.toBlob(r, "image/jpeg", 0.78));
+}
+async function addPhotos(files) {
+  const msg = document.getElementById("photoMsg"); msg.textContent = "Kaydediliyor…";
+  try {
+    const d = await db();
+    for (const file of files) {
+      const blob = await shrink(file);
+      await new Promise((res, rej) => { const t = d.transaction("photos", "readwrite"); t.objectStore("photos").add({ visit: cur, blob, at: Date.now() }); t.oncomplete = res; t.onerror = () => rej(t.error); });
+    }
+    msg.textContent = "";
+  } catch (e) { msg.textContent = "Fotoğraf kaydedilemedi (tarayıcı depolaması kapalı olabilir). Fotoğrafları telefon galerisinden doğrudan WhatsApp'la gönder."; }
+  showPhotos();
+}
+async function showPhotos() {
+  const list = await photosOf(cur);
+  document.getElementById("photos").innerHTML = list.map(p => `<figure><img src="${URL.createObjectURL(p.blob)}" alt="Ziyaret fotoğrafı"><button data-del="${p.id}" aria-label="Sil">✕</button></figure>`).join("");
+}
+document.getElementById("photos").onclick = async e => {
+  const id = e.target.dataset.del; if (!id || !confirm("Fotoğraf silinsin mi?")) return;
+  const d = await db(); const t = d.transaction("photos", "readwrite"); t.objectStore("photos").delete(+id); t.oncomplete = showPhotos;
+};
+["photoIn", "photoGal"].forEach(id => document.getElementById(id).onchange = e => { addPhotos([...e.target.files]); e.target.value = ""; });
+
+// ---- Paylaşım ----
+async function copy(t) { try { await navigator.clipboard.writeText(t); return true; } catch (e) { return false; } }
+document.getElementById("copyText").onclick = async () => alert(await copy(summary(cur)) ? "Rapor kopyalandı." : "Kopyalanamadı; metni basılı tutup kopyalayın.");
+document.getElementById("shareAll").onclick = async () => {
+  collect();
+  const text = summary(cur);
+  const files = (await photosOf(cur)).map((p, i) => new File([p.blob], `${cur}-${i + 1}.jpg`, { type: "image/jpeg" }));
+  await copy(text);
+  try {
+    if (files.length && navigator.canShare && navigator.canShare({ files })) await navigator.share({ files, text, title: nameOf(cur) });
+    else if (navigator.share) await navigator.share({ text, title: nameOf(cur) });
+    else window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank");
+  } catch (e) { if (e.name !== "AbortError") window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank"); }
+};
+
+// ---- Karşılaştırma ----
+function renderCmp() {
+  const ids = Object.keys(visits).filter(id => { const v = visits[id]; return v && (v.priceVal || v.products?.length || v.notes || v.person); });
+  ids.sort((a, b) => (visits[a].priceUsdT && refFor(visits[a].metal) ? visits[a].priceUsdT / refFor(visits[a].metal) : 9) - (visits[b].priceUsdT && refFor(visits[b].metal) ? visits[b].priceUsdT / refFor(visits[b].metal) : 9));
+  const t = document.getElementById("cmp");
+  if (!ids.length) { t.innerHTML = "<tr><td class='meta'>Henüz doldurulmuş ziyaret yok.</td></tr>"; return; }
+  t.innerHTML = `<tr><th>Fabrika</th><th>Metal</th><th>Fiyat $/t</th><th>LME %</th><th>Kaynak</th><th>Saflık</th><th>t/ay</th><th>Teslim</th><th>İhracat izni</th><th>Puan</th></tr>` +
+    ids.map(id => { const v = visits[id], p = v.priceUsdT, ref = refFor(v.metal);
+      return `<tr><td><a href="#${id}" onclick="load('${id}');scrollTo(0,0)">${esc(nameOf(id))}</a></td><td>${METAL_LABEL[v.metal] || ""}</td>
+      <td>${p ? Math.round(p).toLocaleString("tr-TR") : ""}</td><td>${p && ref ? "%" + (p / ref * 100).toFixed(1) : ""}</td>
+      <td>${esc(SOURCE_LABEL[v.source] || "")}</td><td>${esc(v.purity || "")}</td><td>${esc(v.capacity || "")}</td>
+      <td>${v.leadDays ? esc(v.leadDays) + " g" : ""}</td><td>${esc(v.exportPermit || "")}</td><td>${v.rating ? "⭐".repeat(+v.rating) : ""}</td></tr>`; }).join("");
+}
+function cmpText() {
+  const ids = Object.keys(visits).filter(id => visits[id].priceVal || visits[id].products?.length);
+  return "📊 *Kahire fabrika karşılaştırması*\n\n" + ids.map(id => { const v = visits[id], p = v.priceUsdT, ref = refFor(v.metal);
+    return `• ${nameOf(id)}: ${p ? Math.round(p) + " $/t" + (ref ? ` (LME %${(p / ref * 100).toFixed(1)})` : "") : "fiyat yok"} · ${SOURCE_LABEL[v.source] || "kaynak ?"} · ${v.capacity ? v.capacity + " t/ay" : ""} · ihracat: ${v.exportPermit || "?"} · ${v.rating ? v.rating + "/5" : ""}`; }).join("\n");
+}
+document.getElementById("shareCmp").onclick = async () => {
+  const text = cmpText(); await copy(text);
+  try { if (navigator.share) await navigator.share({ text }); else window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank"); }
+  catch (e) { if (e.name !== "AbortError") window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank"); }
+};
+document.getElementById("backup").onclick = () => {
+  const data = { visits, notes: loadNotes(), refs: lsGet("valmeto-refs", {}), crm: lsGet("musteri-takip-v1", {}), at: new Date().toISOString() };
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 1)], { type: "application/json" }));
+  a.download = `valmeto-yedek-${new Date().toISOString().slice(0, 10)}.json`; a.click();
+};
+document.getElementById("restore").onchange = async e => {
+  try {
+    const d = JSON.parse(await e.target.files[0].text());
+    if (!confirm("Yedek yüklensin mi? Bu cihazdaki aynı fabrikaların kayıtları yedektekiyle değiştirilir.")) return;
+    visits = { ...visits, ...(d.visits || {}) }; lsSet("valmeto-visits", visits);
+    if (d.notes) saveNotes({ ...loadNotes(), ...d.notes });
+    if (d.crm) lsSet("musteri-takip-v1", { ...lsGet("musteri-takip-v1", {}), ...d.crm });
+    location.reload();
+  } catch (err) { alert("Yedek dosyası okunamadı."); }
+};
+
+window.addEventListener("hashchange", () => { const h = location.hash.slice(1); if (h && h !== cur) load(h); });
+load(facOf(cur) || visits[cur] ? cur : FACTORIES[0].id);
+</script>
+</body>
+</html>
