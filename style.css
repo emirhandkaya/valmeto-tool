@@ -105,3 +105,5 @@ nav a.install { border: 1px solid var(--accent); color: var(--accent); }
   nav a.active, button.primary, .big-btn, .actions a.primary-link, .tag.current, .stop .num { color: #14171c !important; }
   .big-btn.ghost { color: var(--accent) !important; }
 }
+
+.meta.verify { border-top: 1px dashed var(--border); padding-top: 6px; }

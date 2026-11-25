@@ -99,10 +99,10 @@ function card(f) {
   const tags = `<span class="tag tier${f.tier}">${f.tier}</span>`
     + f.metal.map(m => `<span class="tag ${m}">${METAL_LABEL[m]}</span>`).join("")
     + `<span class="tag src">${SOURCE_LABEL[f.source] || ""}</span>`
-    + (f.verified ? `<span class="tag ok">resmi siteden</span>` : `<span class="tag unv">teyit edilmedi</span>`)
+    + (f.official ? `<span class="tag ok">✅ resmi site</span>` : `<span class="tag unv">⚠️ resmi site yok</span>`)
     + (v ? `<span class="tag visited">Ziyaret formu dolu</span>` : "")
     + premiumTag(f);
-  const phones = f.phones.map(p => `📞 <a href="${telHref(p)}">${esc(p)}</a>` + (isMobile(p) ? ` · <a href="${waHref(p)}" target="_blank" rel="noopener">WhatsApp</a>` : "")).join("<br>");
+  const phones = f.phones.map(p => `📞 <a href="${telHref(p)}">${esc(p)}</a>` + (isMobile(p) ? ` · <a href="${waHref(p)}" target="_blank" rel="noopener">💬 WhatsApp</a>` : "")).join("<br>");
   const emails = f.emails.map(e => `✉️ <a href="mailto:${esc(e)}">${esc(e)}</a>`).join("<br>");
   return `<article class="card" data-id="${f.id}">
     <h2>${f.star ? "★ " : ""}${esc(f.name)}</h2>
@@ -112,6 +112,7 @@ function card(f) {
       ${f.contact ? `<br>👤 ${esc(f.contact)}` : ""}</div>
     <div><b style="font-size:.85rem">Ürünler</b><ul class="products">${f.products.map(p => `<li>${esc(p)}</li>`).join("")}</ul></div>
     ${f.notes ? `<div class="meta">ℹ️ ${esc(f.notes)}</div>` : ""}
+    ${f.verifyNote ? `<div class="meta verify">🔎 <b>Teyit (${esc(f.checked || "")}):</b> ${esc(f.verifyNote)}</div>` : ""}
     <div class="actions">
       <a class="primary-link" href="ziyaret.html#${f.id}">📝 Ziyaret formu</a>
       <a href="${mapsHref(f)}" target="_blank" rel="noopener">🧭 Yol tarifi</a>
