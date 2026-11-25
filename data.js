@@ -135,7 +135,7 @@ window.FACTORIES = [
     verified: false
   },
   {
-    id: "amana-copper", tier: "B", source: "hurda", day: 3, order: 3,
+    id: "amana-copper", tier: "B", source: "hurda", day: 4, order: 1,
     name: "Misr Copper Products – Al Amana Foundries (مسابك الأمانة)",
     metal: ["bakir", "pirinc"],
     area: "6th of October fabrika; Bulaq Abu El Ela şube",
@@ -149,7 +149,7 @@ window.FACTORIES = [
     verified: false
   },
   {
-    id: "egyptian-copper-works", tier: "A", source: "bilinmiyor", day: 4, order: 1, star: true,
+    id: "egyptian-copper-works", tier: "A", source: "bilinmiyor", day: 0, star: true,
     name: "Egyptian Copper Works (İskenderiye)",
     metal: ["bakir"],
     area: "İskenderiye (telefonla / Kahire satış ofisi)",
@@ -159,7 +159,7 @@ window.FACTORIES = [
     emails: [],
     website: "https://egyptiancopperworks.com/contact-us/",
     products: ["8 mm bakır filmaşin / tel", "İhracat hizmeti"],
-    notes: "8 mm filmaşin + ihracat – tam hedef ürün. 1934'ten beri, İskenderiye limana yakın (FOB avantajı). Pazar sabahı Kahire satış ofisini ara; Kahire'de görüşme veya numune iste.",
+    notes: "8 mm filmaşin + ihracat – tam hedef ürün. İskenderiye'ye gidilmeyecek: Pazar sabahı Kahire satış ofisini ara, Kahire'de (otelde veya ofislerinde) görüşme, numune ve yazılı teklif iste. İskenderiye limana yakın olması FOB fiyatında avantaj.",
     verified: false
   },
   {
@@ -207,7 +207,7 @@ window.FACTORIES = [
     verified: true
   },
   {
-    id: "intercairo", tier: "B", source: "bilinmiyor", day: 3, order: 4,
+    id: "intercairo", tier: "B", source: "bilinmiyor", day: 4, order: 2,
     name: "InterCairo Aluminium Extrusion",
     metal: ["aluminyum"],
     area: "6th of October Sanayi Bölgesi",
@@ -217,7 +217,7 @@ window.FACTORIES = [
     emails: ["muhab@intercairo.com"],
     website: "https://www.intercairo.com/",
     products: ["Alüminyum ekstrüzyon profilleri"],
-    notes: "Profil üreticisi. Al Amana dökümhanesiyle aynı gün.",
+    notes: "Profil üreticisi. Al Amana dökümhanesiyle aynı gün (Çarşamba).",
     verified: true
   },
   {
