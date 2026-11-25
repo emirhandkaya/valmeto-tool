@@ -71,8 +71,7 @@ Could you please send me:
 I would also like to visit your factory during my stay. Please let me know a suitable date and time.
 
 Best regards,
-${signature()}
-`;
+`;  // imza yok: Outlook'taki info@valmeto.com imzası kullanılır
   return { to: f.emails[0] || "", subject, body };
 }
 // Outlook mobil/masaüstü uygulaması (iPhone, iPad, Android) – gönderen: uygulamadaki info@valmeto.com hesabı
