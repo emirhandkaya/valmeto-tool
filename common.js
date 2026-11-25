@@ -16,7 +16,10 @@ const METAL_LABEL = { aluminyum: "Alüminyum", bakir: "Bakır", pirinc: "Pirinç
 const STATUS_LABEL = { "": "Planlanmadı", plan: "Ziyaret planlandı", randevu: "Randevu alındı", gidildi: "Ziyaret edildi", teklif: "Teklif alındı", elendi: "Uygun değil" };
 const TIER_LABEL = { A: "A · Hedef – hurdadan filmaşin / tel", B: "B · Orta – külçe, bara, döküm, profil, kablo", C: "C · Referans – büyük / pahalı" };
 const SOURCE_LABEL = { hurda: "Hurdadan üretim", katot: "Katottan üretim", karisik: "Hurda + katot", birincil: "Birincil (cevherden)", bilinmiyor: "Kaynak bilinmiyor" };
-const DAYS = { 1: "Pazar 29 Kasım", 2: "Pazartesi 30 Kasım", 3: "Salı 1 Aralık", 0: "Telefonla" };
+const DAYS = { 1: "Pazar 29 Kasım", 2: "Pazartesi 30 Kasım", 3: "Salı 1 Aralık", 4: "Çarşamba 2 Aralık", 0: "Telefonla" };
+const SENDER = { name: "Emirhan Durmuşkaya", company: "Valmeto İç ve Dış Ticaret Ltd. Şti.", companyEn: "Valmeto Domestic and Foreign Trade Ltd." };
+function senderPhone() { return lsGet("valmeto-phone", ""); }
+function signature() { return [SENDER.name, SENDER.company, senderPhone() && "Phone / WhatsApp: " + senderPhone()].filter(Boolean).join("\n"); }
 
 // Güncel referans fiyatlar (kullanıcının girdiği değer > data.js varsayılanı)
 function refs() {
@@ -48,9 +51,9 @@ if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
 
 function mailtoRFQ(f, email) {
   const subject = "Request for quotation & factory visit – copper and aluminium products";
-  const body = `Dear ${f.name} team,
+  const body = `Dear ${f.name.split(" – ")[0]} team,
 
-I am a buyer from Türkiye and will be in Cairo from 29 November to 1 December. We supply copper and aluminium products to cable and metal manufacturers in Türkiye and the Balkans, and we are looking for reliable producers in Egypt.
+My name is ${SENDER.name} from ${SENDER.company} (${SENDER.companyEn}), Türkiye. I will be in Cairo from Sunday 29 November to Wednesday 2 December. We supply copper and aluminium products to cable and metal manufacturers in Türkiye and the Balkans, and we are looking for reliable producers in Egypt.
 
 We are interested in a wide range of copper and aluminium products, for example:
 - Copper: wire rod (8 mm), drawn and annealed wire, stranded / bunched wire, busbars and flat bars, ingots
@@ -66,6 +69,7 @@ Could you please send me:
 I would also like to visit your factory during my stay. Please let me know a suitable date and time.
 
 Best regards,
+${signature()}
 `;
   return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }

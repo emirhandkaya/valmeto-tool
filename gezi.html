@@ -29,6 +29,7 @@
   <div class="section">
     <h2>✅ Gitmeden önce (Çarşamba – Cumartesi)</h2>
     <ul>
+      <li><b>Tarihler:</b> Pazar 29 Kasım – Çarşamba 2 Aralık (4 iş günü; Mısır'da Pazar–Perşembe çalışılır).</li>
       <li><b>Bugünden itibaren randevu al:</b> Aşağıdaki hazır mesajı her fabrikaya WhatsApp'tan gönder. Mısır'da Cuma–Cumartesi hafta sonu; cevaplar Pazar sabahı gelebilir, <b>Pazar sabahı 9'da tekrar ara</b>.</li>
       <li><b>Şoförlü araç tut (günlük):</b> 10th of Ramadan ve Anshas 50–60 km uzakta; dönüşte taksi bulmak zor. Otelden günlük “car with driver” iste. Arapça bilen bir şoför tercüman da olur.</li>
       <li><b>Erken başla:</b> Fabrikalar ~08:00–16:00 çalışır. Kahire trafiği öğlen ağırlaşır. Günde 3–4 ★ öncelikli yeri hedefle, diğerleri vakit kalırsa.</li>
@@ -44,7 +45,8 @@
   <div class="section">
     <h2>💬 Randevu mesajı (kopyala / WhatsApp)</h2>
     <p class="meta">Arapça ve İngilizce birlikte. Adını yaz, sonra fabrikaların WhatsApp düğmeleri bu metni hazır açar.</p>
-    <div class="form"><label>Adın<input id="myname" placeholder="ör. Ahmet Yılmaz"></label></div>
+    <div class="form"><label>Adın<input id="myname"></label>
+      <label>Telefon / WhatsApp numaran (mesaj ve e-postalara eklenir)<input id="myphone" type="tel" placeholder="+90 5xx xxx xx xx"></label></div>
     <pre id="msg" style="white-space:pre-wrap;font:inherit;background:var(--bg);padding:10px;border-radius:8px;border:1px solid var(--border)"></pre>
     <button class="big-btn" id="copy">Mesajı kopyala</button>
   </div>
@@ -55,10 +57,12 @@
 <script src="common.js"></script>
 <script>
 const hotel = document.getElementById("hotel"), myname = document.getElementById("myname");
-hotel.value = lsGet("valmeto-hotel", ""); myname.value = lsGet("valmeto-name", "");
+const myphone = document.getElementById("myphone");
+hotel.value = lsGet("valmeto-hotel", ""); myname.value = lsGet("valmeto-name", "") || SENDER.name; myphone.value = senderPhone();
 const DAY_INFO = {
   1: { title: "Pazar 29 Kasım – Downtown + Güney Kahire (Helwan)", tip: "Sabah EMW merkez ofiste fiyat konuş; Egyptalum ofisi 500 m ötede (referans fiyat). Sonra güneye: HiTech Casting (Maadi) → Alu Misr (Wadi Houf) → EMW fabrikası (Al Tebbin). Toplam ~45 km." },
   2: { title: "Pazartesi 30 Kasım – Kuzeydoğu: Obour → Anshas → 10th of Ramadan", tip: "En uzun gün (~70 km tek yön). 07:30'da çık. Arab Metals'ı önceden ara: ofis yerine doğrudan Anshas fabrikasında buluşmayı teklif et. 10th of Ramadan'da Wadi El Nile ★, sonra Sabaek ve Coppermelt kapı ziyareti." },
+  4: { title: "Çarşamba 2 Aralık – İskenderiye günü veya Kahire'de ikinci tur", tip: "Seçenek 1: İskenderiye'ye günübirlik (~220 km, 2,5–3 saat): Egyptian Copper Works (8 mm filmaşin, ihracatçı) + limanda bir nakliyeci/forwarder ile Mersin ve Kosova navlunu konuş. Seçenek 2: İlk 3 günün en iyi 2 fabrikasına geri dön, son fiyat pazarlığı ve numune teslimi." },
   3: { title: "Salı 1 Aralık – Kuzey (Shubra El Kheima / Qalyub) + Batı (6th of October)", tip: "Sabah Shubra El Kheima'daki küçük dökümhaneler – en ucuz fiyat ama en çok risk; Arapça kartı kullan. Qalyub'da Cairo Cables'a 'bakırı kimden alıyorsunuz?' diye sor. Öğleden sonra ring yolla 6th of October: Al Amana dökümhanesi + InterCairo." }
 };
 
@@ -71,16 +75,16 @@ function routeUrl(stops) {
   return u;
 }
 function apptText() {
-  const n = myname.value.trim() || "[اسمك / Your name]";
+  const n = myname.value.trim() || SENDER.name, ph = myphone.value.trim();
   return `السلام عليكم،
-أنا ${n} من تركيا. نحن شركة تجارية نشتري النحاس والألومنيوم (سلك، خام، سبائك) ونوردها لمصانع الكابلات في تركيا والبلقان.
-سأكون في القاهرة من الأحد ٢٩ نوفمبر إلى الثلاثاء ١ ديسمبر، وأود زيارة مصنعكم والاطلاع على المنتجات والأسعار.
-ما هو اليوم والوقت المناسب لكم؟ شكراً جزيلاً.
+أنا ${n} من شركة ${SENDER.companyEn} – تركيا. نحن نشتري منتجات النحاس والألومنيوم بأنواعها (سلك، راد، بارات، سبائك، نحاس أصفر) ونوردها لمصانع الكابلات والمعادن في تركيا والبلقان.
+سأكون في القاهرة من الأحد ٢٩ نوفمبر إلى الأربعاء ٢ ديسمبر، وأود زيارة مصنعكم والاطلاع على المنتجات والأسعار.
+ما هو اليوم والوقت المناسب لكم؟ شكراً جزيلاً.${ph ? "\nواتساب: " + ph : ""}
 
 Hello,
-I am ${n} from Türkiye. We are a trading company buying copper and aluminium (wire rod, wire, ingots) for cable manufacturers in Türkiye and the Balkans.
-I will be in Cairo from Sunday 29 November to Tuesday 1 December and would like to visit your factory to see your products and prices.
-Which day and time would suit you? Thank you.`;
+I am ${n} from ${SENDER.company} (${SENDER.companyEn}), Türkiye. We buy a wide range of copper and aluminium products (wire rod, wire, busbars, ingots, brass) for cable and metal manufacturers in Türkiye and the Balkans.
+I will be in Cairo from Sunday 29 November to Wednesday 2 December and would like to visit your factory to see your products and prices.
+Which day and time would suit you? Thank you.${ph ? "\nWhatsApp: " + ph : ""}`;
 }
 
 function stopHtml(f, i) {
@@ -99,7 +103,7 @@ function stopHtml(f, i) {
 
 function render() {
   document.getElementById("msg").textContent = apptText();
-  document.getElementById("days").innerHTML = [1, 2, 3].map(d => {
+  document.getElementById("days").innerHTML = [1, 2, 3, 4].map(d => {
     const stops = FACTORIES.filter(f => f.day === d && f.lat != null).sort((a, b) => a.order - b.order);
     return `<div class="section"><h2>🗓️ ${DAY_INFO[d].title}</h2>
       <p class="meta">${DAY_INFO[d].tip}</p>
@@ -110,6 +114,7 @@ function render() {
 }
 hotel.oninput = () => { lsSet("valmeto-hotel", hotel.value); render(); };
 myname.oninput = () => { lsSet("valmeto-name", myname.value); render(); };
+myphone.oninput = () => { lsSet("valmeto-phone", myphone.value); render(); };
 document.getElementById("copy").onclick = async () => {
   try { await navigator.clipboard.writeText(apptText()); document.getElementById("copy").textContent = "Kopyalandı ✓"; }
   catch (e) { alert("Kopyalanamadı; metni basılı tutup kopyalayın."); }

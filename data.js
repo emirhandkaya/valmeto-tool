@@ -149,7 +149,7 @@ window.FACTORIES = [
     verified: false
   },
   {
-    id: "egyptian-copper-works", tier: "A", source: "bilinmiyor", day: 0, star: true,
+    id: "egyptian-copper-works", tier: "A", source: "bilinmiyor", day: 4, order: 1, star: true,
     name: "Egyptian Copper Works (İskenderiye)",
     metal: ["bakir"],
     area: "İskenderiye (telefonla / Kahire satış ofisi)",
