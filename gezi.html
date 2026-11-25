@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Valmeto">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="style.css?v=24">
+<link rel="stylesheet" href="style.css?v=25">
 </head>
 <body>
 <header class="top"><div class="inner">
@@ -70,13 +70,14 @@
 </main>
 <footer>Sıra ve süreler tahminidir; trafik ve randevulara göre değiştir. Rota linkleri Google Maps'te açılır.</footer>
 
-<script src="data.js?v=24"></script>
-<script src="common.js?v=24"></script>
+<script src="data.js?v=25"></script>
+<script src="common.js?v=25"></script>
 <script>
 const hotel = document.getElementById("hotel"), myname = document.getElementById("myname");
 const myphone = document.getElementById("myphone");
 hotel.value = lsGet("valmeto-hotel", ""); myname.value = lsGet("valmeto-name", "") || SENDER.name; myphone.value = senderPhone();
 const DAY_INFO = {
+  5: { title: "İskenderiye – Kahire'den önce", tip: "Önce İskenderiye: ★ Egyptian Copper Works merkez ve fabrikaları (Hagar El-Nawatia, Raml). WhatsApp müşteri hizmetleri +20 100 286 9836, satış müdürlüğü 03 500 6032. Ardından çöl yoluyla Kahire'ye (~220 km, 2,5–3 saat)." },
   1: { title: "Pazar 29 Kasım – Downtown + Güney Kahire (Helwan / Tebbin)", tip: "Sabah EMW merkez ofisi (Downtown); Egyptalum ve Egyptian Copper Works'ün Kahire satış ofisleri de aynı bölgede. Sonra güneye: HiTech Casting (Maadi) → Alu Misr (Wadi Houf) → ★ EMW fabrikası (Al Tebbin) → ★ Egyptian Copper Works Kahire fabrikası (Nile Road – Tebbin). Toplam ~45 km." },
   2: { title: "Pazartesi 30 Kasım – Kuzeydoğu: Obour → Anshas → 10th of Ramadan", tip: "En uzun gün (~70 km tek yön), 07:30'da çık. ★ Arab Metals: resmi sitedeki cep numaralarından WhatsApp'la ara, Anshas fabrikasında buluş (upcast 8 mm filmaşin hattı). 10th of Ramadan'da ★ Sabaek El Ashir (saf bakır tel/çubuk/bara), Wadi El Nile (bara) ve United Metals Egypt (alüminyum külçe, bakır çubuk) aynı bölgede." },
   4: { title: "Çarşamba 2 Aralık – 6th of October + ikinci tur pazarlık", tip: "Sabah 6th of October: Al Amana dökümhanesi ve InterCairo. Öğleden sonra ilk 3 günün en iyi 1–2 fabrikasına geri dön: son fiyat, numune, yazılı teklif. Egyptian Copper Works Kahire'de görüşmeyi kabul ettiyse bu güne koy. Kahire'deki bir nakliye firmasıyla (forwarder) Mersin ve Kosova navlununu konuş." },
@@ -126,7 +127,7 @@ function mailSummary() {
 function onMailChange() { mailSummary(); }
 function render() {
   document.getElementById("msg").textContent = apptText();
-  document.getElementById("days").innerHTML = [1, 2, 3, 4].map(d => {
+  document.getElementById("days").innerHTML = [5, 1, 2, 3, 4].map(d => {
     const stops = FACTORIES.filter(f => f.day === d && f.lat != null).sort((a, b) => a.order - b.order);
     return `<div class="section"><h2>🗓️ ${DAY_INFO[d].title}</h2>
       <p class="meta">${DAY_INFO[d].tip}</p>

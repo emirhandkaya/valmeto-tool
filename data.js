@@ -201,7 +201,7 @@ window.FACTORIES = [
   {
     id: "ecw-alex",
     tier: "A",
-    day: 0,
+    day: 5,
     star: true,
     official: true,
     ours: "kismen",
