@@ -32,8 +32,8 @@ window.FACTORIES = [
     products: ["Oksijensiz (OF) tavlı bakır tel – kablo üreticileri için", "Bakır baralar (busbar) – elektrik panoları için", "Bakır ve pirinç çubuk (bar)", "Bakır ve pirinç külçe (ingot)", "Grade-A elektrolitik bakır katot (7.000 t/yıl rafineri, 2016)"],
     oursNote: "Sitesine göre bakır tel, bara, çubuk, külçe ve katot üretiyor – tam bizim alanımız. Döner fırın + upcast ile hurda da işliyor.",
     notes: "EN GÜÇLÜ ADAY. 1938'den beri aile şirketi, 40.000 m².",
-    verifyNote: "Resmi sitede sadece sabit hat ve e-posta var; cep/WhatsApp yok. Görüşmede satış sorumlusunun WhatsApp'ını iste.",
-    checked: "25.11.2026"
+    verifyNote: "egyptianmetalworks.com 25.11.2026'da açılmadı (sunucu 500 hatası veriyor). Numaralar daha önce arama motorunun kaydettiği site sayfasından; gitmeden telefonla teyit et. Sitede WhatsApp numarası görülmedi.",
+    checked: "25.11.2026 (site açılmadı)"
   },
   {
     id: "emw-hq",
@@ -57,8 +57,8 @@ window.FACTORIES = [
     products: ["Satış ve teklif ofisi – ürünler için fabrika kaydına bak"],
     oursNote: "Fiyat görüşmesi burada; üretim Helwan fabrikasında.",
     notes: "Sabah burada fiyat konuş, öğleden sonra Helwan fabrikasını gez.",
-    verifyNote: "Numaralar resmi siteden.",
-    checked: "25.11.2026"
+    verifyNote: "egyptianmetalworks.com 25.11.2026'da açılmadı (sunucu 500 hatası veriyor). Numaralar daha önce arama motorunun kaydettiği site sayfasından; gitmeden telefonla teyit et. Sitede WhatsApp numarası görülmedi.",
+    checked: "25.11.2026 (site açılmadı)"
   },
   {
     id: "arab-metals-office",
@@ -77,7 +77,7 @@ window.FACTORIES = [
     lat: 30.02,
     lng: 31.47,
     approxOnly: true,
-    phones: ["+20 122 420 2077 (resmi site, cep)", "+20 101 075 3379 (resmi site, cep)", "+20 2 2757 5750 (resmi site)", "+20 2 2271 4445 (resmi site)", "+20 122 214 7682 (eski rehber)"],
+    phones: ["+20 122 420 2077 (resmi site, cep)", "+20 101 075 3379 (resmi site, cep)", "+20 2 2757 5750 (resmi site)", "+20 2 2757 5238 (resmi site)", "+20 2 2757 5438 (resmi site)", "+20 2 2350 7136 (resmi site – ücretsiz hat)"],
     emails: ["arabmetals@arabmetals.com.eg"],
     contact: "Mahmoud Maghawry – Sahibi / CEO",
     website: "https://arabmetals.com.eg/contacts.html",
@@ -85,8 +85,8 @@ window.FACTORIES = [
     products: ["Bakır tel – upcast makinesinde 8 mm bakır filmaşin", "Bakır külçe (ingot)", "Alüminyum döküm alaşımları / külçe (EN AC-43200, EN AC-46200 vb.)", "Pirinç alaşımları", "Ön alaşımlar (master alloys)", "Kurşun", "Paslanmaz çelik (briket)"],
     oursNote: "Sitesine göre 8 mm bakır filmaşin (upcast), bakır külçe, alüminyum külçe ve pirinç üretiyor – bizim ürünlerimiz. Hurda geri dönüşümcüsü, yıllık ~10.500–13.500 t.",
     notes: "Şirket profiline göre güncel ofis Yeni Kahire'de (eski Nasr City adresi geçersiz olabilir). Randevuyu doğrudan Anshas fabrikasına al.",
-    verifyNote: "Resmi iletişim sayfasında iki cep var. 01222147682 sadece eski rehberde. Sitenin bir SSS sayfasında şablon metin (lorem ipsum) var; ürün bilgisini ürün sayfasından aldım.",
-    checked: "25.11.2026"
+    verifyNote: "Resmi iletişim sayfası açılıp okundu: adres 84 West Arabella, Yeni Kahire; sabit hatlar ve iki cep numarası. Sitede e-posta ve WhatsApp düğmesi yok – arabmetals@ adresi eski bir rehberden. Cep numaralarını WhatsApp'ta dene.",
+    checked: "25.11.2026 (site açıldı)"
   },
   {
     id: "arab-metals-factory",
@@ -114,7 +114,7 @@ window.FACTORIES = [
     oursNote: "Upcast filmaşin hattını ve alaşım fırınlarını burada gör.",
     notes: "10th of Ramadan yolu üzerinde.",
     verifyNote: "Konum köy düzeyinde tahmin.",
-    checked: "25.11.2026"
+    checked: "25.11.2026 (site açıldı)"
   },
   {
     id: "sabaek",
@@ -160,41 +160,43 @@ window.FACTORIES = [
     lat: 31.1107,
     lng: 30.9388,
     approxOnly: true,
-    phones: ["+20 100 535 3453 (resmi site, cep)", "+20 47 325 9105 (resmi site)"],
-    emails: ["sales@alharmmetals.com"],
+    phones: ["+20 100 535 3453 (resmi site – telefon ve WhatsApp)", "+20 47 325 9105 (resmi site)"],
+    emails: ["sales@alharmmetals.com", "fady.kamel@alharmmetals.com"],
     website: "https://alharam-metals.com/contact-us/",
     productsSource: "https://alharam-metals.com/products/",
     products: ["Çıplak bakır tel – Grade A katottan, 17 mm'den 0,6 mm'ye", "Alüminyum külçe ve yarım-top külçe", "Alüminyum billet", "Çinko, kurşun, kalay külçe", "Hurda: bakır (tel, levha, karışık), alüminyum, kablo hurdası"],
     oursNote: "Sitesine göre bakır tel (17–0,6 mm) ve alüminyum külçe/billet üretiyor – bizim ürünlerimiz. Bakır teli katottan yapıyor. 9 ülkeye ihracat.",
     notes: "Kahire'de/Obour'da görüşülebilecek yer var mı sor; numune ve teklif iste.",
-    verifyNote: "Numaralar resmi sitenin iletişim sayfasından. E-posta orada 'alharmmetals' diye yazılı; dönmezse telefonla sor.",
-    checked: "25.11.2026"
+    verifyNote: "Resmi iletişim sayfası açılıp okundu: WhatsApp bağlantısı +20 100 535 3453'e gidiyor. Satış e-postası sales@alharmmetals.com, ana ofis fady.kamel@alharmmetals.com. Site ©2025.",
+    checked: "25.11.2026 (site açıldı)"
   },
   {
     id: "egyptian-copper-works",
     tier: "A",
-    day: 0,
+    day: 1,
     star: true,
     official: true,
     ours: "kismen",
     source: "bilinmiyor",
     active: "AKTİF: 2025/26 mali yılında 200 milyon EGP üzeri kâra geçtiği raporlandı (Temmuz 2026).",
-    mapQuery: "The Egyptian Copper Works, Hagar El Nawatia, Alexandria",
-    name: "Egyptian Copper Works (İskenderiye)",
+    mapQuery: "Egyptian Copper Works, Nile Road, Tebbin, Helwan, Cairo",
+    order: 6,
+    approxOnly: true,
+    name: "Egyptian Copper Works (ECW)",
     metal: ["bakir", "pirinc", "aluminyum"],
-    area: "İskenderiye – telefonla / Kahire satış ofisi",
-    address: "Hagar El-Nawatia, Raml, Alexandria",
-    lat: 31.196,
-    lng: 29.903,
-    phones: ["+20 2 2590 3829 (resmi site – Kahire satış)", "+20 3 500 6032 (resmi site – İskenderiye satış)"],
+    area: "Kahire fabrikası: Nile Road – Tebbin, Helwan (merkez İskenderiye)",
+    address: "Kahire fabrikası: Nile Road – Tebbin, Helwan · İdare: 26 July St. · Merkez: Hagar El-Nawatia, Raml, İskenderiye",
+    lat: 29.79,
+    lng: 31.29,
+    phones: ["+20 100 286 9836 (resmi site – WhatsApp müşteri hizmetleri)", "+20 2 2590 3829 (resmi site – Kahire satış müdürlüğü)", "+20 2 2544 0415 (resmi site – Kahire santral)", "+20 2 2591 6231 (resmi site – Kahire satış ofisi, 66 El Gomhourieh St.)", "+20 2 2590 1436 (resmi site – Kahire satış ofisi, 90 El-Azhar St.)", "+20 2 2591 6625 (resmi site – Kahire satış ofisi, El Fagala)", "+20 3 500 6032 (resmi site – İskenderiye satış müdürlüğü)"],
     emails: [],
     website: "https://egyptiancopperworks.com/contact-us/",
     productsSource: "https://egyptiancopperworks.com/product-type/brass-products/",
     products: ["Elektrolitik bakır çubuk (%99,99, yumuşak/sert)", "Elektrolitik bakır tel", "Elektrolitik bakır şerit (2–15 mm)", "Pirinç otomat çubuğu (free-cutting)", "Pirinç alaşım billet", "Alüminyum levha ve bobin (1050)", "Ev tipi alüminyum folyo", "Alüminyum mutfak eşyası", "Çelik tel, çelik halat, çelik demet (strand)", "Kurşun oksit, evaporatör"],
     oursNote: "Sitesine göre bakır çubuk/tel/şerit, pirinç ve alüminyum levha üretiyor. 8 mm filmaşin sitede doğrulanamadı – sadece rehberde geçiyor.",
     notes: "1935'ten beri, Metallurgical Industries Holding (devlet) grubunda. İskenderiye'ye gidilmeyecek: Kahire satış ofisini ara, Kahire'de görüşme/numune iste.",
-    verifyNote: "Cep/WhatsApp yayınlanmamış.",
-    checked: "25.11.2026"
+    verifyNote: "Resmi iletişim sayfası açılıp okundu: WhatsApp 'Customer Service' hattı, Kahire'de Tebbin (Helwan) fabrikası ve 3 Kahire satış ofisi var. Sitede genel e-posta adresi yok, sadece iletişim formu var.",
+    checked: "25.11.2026 (site açıldı)"
   },
   {
     id: "nile-copper",
@@ -225,28 +227,29 @@ window.FACTORIES = [
   },
   {
     id: "wadi-el-nile",
-    tier: "B",
+    tier: "A",
     day: 2,
     order: 4,
     official: true,
-    ours: "kismen",
+    ours: "evet",
     source: "hurda",
-    active: "AKTİF: 2023 sürdürülebilirlik raporu (Ocak 2024'te yayınlandı); site yayında.",
+    active: "AKTİF: resmi site ©2025, 2023 sürdürülebilirlik raporu.",
+    mapQuery: "Wadi El Nile for Metal Industries, Quraysh St, 10th of Ramadan City",
     name: "Wadi El Nile for Metal Industries (WN Copper)",
     metal: ["bakir"],
     area: "10th of Ramadan, A1",
-    address: "Plot 31-3G, Industrial Zone A1, 10th of Ramadan City, Sharqia",
+    address: "Quraysh St., 10th of Ramadan City (Plot 31-3G, Industrial Zone A1)",
     lat: 30.285,
     lng: 31.73,
-    phones: ["+20 102 533 3369 (resmi site, cep)", "+20 102 533 3361 (Facebook/rehber, cep)"],
-    emails: ["sales@wncopper.com", "info@wncopper.com"],
-    website: "https://erp-wn.wncopper.com/contactus",
-    productsSource: "https://wncopper.com/yptoogoa/2024/01/SE_Sustainability.pdf",
-    products: ["Bakır baralar (busbar)", "Bakır fabrikasyon parçaları"],
-    oursNote: "Kendi raporuna göre bakır bara üreticisi (1990'dan beri). Filmaşin/tel üretmiyor; bara bizim ürün yelpazemizde.",
+    phones: ["+20 102 533 3369 (resmi site, cep)"],
+    emails: ["sales@wncopper.com"],
+    website: "https://wncopper.com/",
+    productsSource: "https://wncopper.com/",
+    products: ["Bakır bara (bar / busbar)", "Bakır şerit (strip)", "Bakır çubuk (rod)", "Bakır fabrikasyon parçaları"],
+    oursNote: "Resmi sitenin ürün menüsünde bakır bara, şerit ve çubuk var – bizim ürünlerimiz. 1990'dan beri, 10th of Ramadan.",
     notes: "Hurdadan filmaşin yapan firmaları tanır – sor.",
-    verifyNote: "Resmi site numarası 3369; Facebook'ta 3361.",
-    checked: "25.11.2026"
+    verifyNote: "Resmi site (wncopper.com) açılıp okundu: telefon +20 102 533 3369, e-posta sales@wncopper.com, adres Quraysh St. Site ©2025 – aktif. Ayrıca bir WhatsApp düğmesi var ama numarası sayfada görünmüyor; aynı cep numarasını WhatsApp'ta dene. Facebook'taki 3361 numarası resmi sitede yok.",
+    checked: "25.11.2026 (site açıldı)"
   },
   {
     id: "united-metals-eg",
@@ -257,7 +260,7 @@ window.FACTORIES = [
     ours: "evet",
     source: "hurda",
     active: "Site yayında (2026 hurda fiyat sayfası var); Yellow Pages kaydı mevcut.",
-    contact: "Enas Magdy (eski rehber kaydı)",
+    contact: "",
     mapQuery: "United Metals, A6, 10th of Ramadan City",
     name: "United Metals Egypt (يونايتد للمعادن)",
     metal: ["aluminyum", "bakir", "pirinc"],
@@ -266,15 +269,15 @@ window.FACTORIES = [
     lat: 30.31,
     lng: 31.77,
     approxOnly: true,
-    phones: ["+20 100 007 1018 (eski ihracat rehberi, cep)", "+20 106 663 5680 (eski ihracat rehberi, cep)"],
-    emails: ["gest@gest.com.eg"],
+    phones: ["+20 111 288 0008 (resmi site – telefon)", "+20 107 025 0015 (resmi site – WhatsApp)"],
+    emails: ["info@unitedmetalseg.com", "arwa@gest.com.eg"],
     website: "https://unitedmetals.com.eg/en/",
     productsSource: "https://unitedmetals.com.eg/%D8%A7%D9%84%D9%85%D9%86%D8%AA%D8%AC%D8%A7%D8%AA/",
     products: ["Alüminyum alaşım külçe (ADC12 vb.)", "Bakır alaşımları (pirinç/bronz)", "Bakır çubuk (bar) imalatı", "Hizmet: pres döküm, alaşım testi, kalıp tasarımı"],
     oursNote: "Sitesine göre alüminyum alaşım külçe, bakır alaşımları ve bakır çubuk üretiyor. 2007, ISO 9001, indüksiyon ergitme. Elsewedy'nin UMC'si DEĞİL.",
     notes: "Telefon bulunamadı – sitedeki formdan veya kapıdan. Wadi El Nile ve Sabaek ile aynı gün.",
-    verifyNote: "Adres ve e-posta resmi sitenin iletişim sayfasından. Cep numaraları ~8 yıllık bir ihracat rehberinden – değişmiş olabilir; sitedeki WhatsApp düğmesini de dene.",
-    checked: "25.11.2026"
+    verifyNote: "Resmi site açılıp okundu: telefon 01112880008, WhatsApp düğmesi +20 107 025 0015'e gidiyor, e-postalar info@unitedmetalseg.com ve arwa@gest.com.eg. Adres Area A6, Plot 5, 10th of Ramadan.",
+    checked: "25.11.2026 (site açıldı)"
   },
   {
     id: "hitech-casting",
@@ -299,7 +302,7 @@ window.FACTORIES = [
     products: ["İkincil alüminyum alaşım külçe (alüminyum hurdasından) – pres döküm ve dökümhane alaşımları", "Alüminyum döküm parçalar"],
     oursNote: "Sitesine göre hurdadan alüminyum alaşım külçe üretiyor – alüminyum külçe bizim alanımızda (kablo filmaşini değil).",
     notes: "Helwan yolu üstü.",
-    verifyNote: "Adres ve telefon resmi site + 2025 sevkiyat kaydında aynı. Aynı bölgedeki 'Hitech Egypt' (petrol servis) ile karıştırma.",
+    verifyNote: "hitech.com.eg sadece güvensiz (http) bağlantıyla yayında olduğu için bu ortamdan açılamadı. Adres ve telefon, arama kaydı ve 2025 sevkiyat kaydında aynı. Aynı bölgedeki 'Hitech Egypt' (petrol servis) ile karıştırma.",
     checked: "25.11.2026"
   },
   {
@@ -326,8 +329,8 @@ window.FACTORIES = [
     products: ["Bronz ve bakır alaşımı çubuk, profil, boru (dolu/içi boş; yuvarlak, kare, altıgen)", "Santrifüj döküm ürünleri (burç vb.)", "Saf bakır, pirinç, bronz, alüminyum bronz, nikel gümüş alaşımları", "Bakır baralar (rehber)"],
     oursNote: "Sitesine göre bronz/pirinç/bakır alaşım döküm çubuk ve profil üretiyor; elektrik teli/filmaşin yok. Pirinç tarafı bizim alanımızda.",
     notes: "Çarşamba sabahı.",
-    verifyNote: "Site içeriği 2019–2020 tarihli görünüyor.",
-    checked: "25.11.2026"
+    verifyNote: "misrcopper.co 25.11.2026'da açılmadı (sunucu 500 hatası). Cep numaraları iki ayrı rehberde aynı; gitmeden ara.",
+    checked: "25.11.2026 (site açılmadı)"
   },
   {
     id: "alumisr",
@@ -344,15 +347,15 @@ window.FACTORIES = [
     address: "Wadi Houf Industrial Zone, Helwan, Cairo",
     lat: 29.8655,
     lng: 31.327,
-    phones: ["+20 2 2367 1363 (resmi site)", "+20 2 2367 1350 (resmi site)", "+20 2 2367 1321 (rehber)"],
-    emails: ["sales@alumisr.com", "tech.office@alumisr.com"],
+    phones: ["+20 2 2367 1363 (resmi site)", "+20 2 2367 1350 (resmi site)", "+20 2 2367 1322 (resmi site)", "+20 2 2367 1321 (resmi site)", "+20 2 2367 1323 (resmi site – satış telefaks)", "+20 2 2367 1331 (resmi site – ihracat)"],
+    emails: ["sales@alumisr.com", "export@alumisr.com", "plant@alumisr.com", "fab@alumisr.com"],
     website: "https://alumisr.com/en/",
     productsSource: "https://alumisr.com/en/",
     products: ["Alüminyum ekstrüzyon profilleri (mimari, endüstriyel, ulaşım, elektrik, sulama)", "Alüminyum boru", "Kapı-pencere sürgülü/katlanır sistemler", "Isı emici (heat sink), kablo kanalı ürünleri", "Eloksal ve toz boya, fabrikasyon, kalıp imalatı, alüminyum alaşım döküm"],
     oursNote: "Alüminyum profil üreticisi (1977, Reynolds ortaklığı, >12.000 t/yıl, ihracat >%20). Billet satışı doğrulanmadı.",
     notes: "Helwan yolu üstü.",
-    verifyNote: "Ürünler firma sitesi + iş veritabanlarından.",
-    checked: "25.11.2026"
+    verifyNote: "Resmi iletişim sayfası açılıp okundu: Wadi Houf, Helwan, PK 39/11432. Satış, ihracat ve fabrika e-postaları ayrı. Sitede WhatsApp simgesi var ama numara görünmüyor.",
+    checked: "25.11.2026 (site açıldı)"
   },
   {
     id: "eurotal",
@@ -369,15 +372,15 @@ window.FACTORIES = [
     address: "Factory No. 4A, Block 27002, B&C Industrial Zone, Obour City",
     lat: 30.228,
     lng: 31.47,
-    phones: ["+20 106 164 4444 (resmi site, cep)"],
+    phones: ["+20 106 164 4444 (resmi site – telefon, WhatsApp dene)"],
     emails: ["info@eurotal-eg.com"],
     website: "https://eurotal-eg.com/",
     productsSource: "https://www.alcircle.com/biz/profile/eurotal-37813",
     products: ["Alüminyum sürgülü pencere profilleri", "Alüminyum menteşeli pencere profilleri"],
     oursNote: "Mimari alüminyum profil üreticisi; ürün listesi rehberden (sitede katalog görünmedi).",
     notes: "10th of Ramadan yolu üstü, vakit kalırsa.",
-    verifyNote: "Telefon resmi sitede.",
-    checked: "25.11.2026"
+    verifyNote: "Resmi iletişim sayfası açılıp okundu: tek numara +20 106 164 4444 ve info@eurotal-eg.com; ayrı WhatsApp düğmesi yok (numara cep, WhatsApp'ta deneyebilirsin).",
+    checked: "25.11.2026 (site açıldı)"
   },
   {
     id: "intercairo",
@@ -401,7 +404,7 @@ window.FACTORIES = [
     products: ["Kapı ve pencere profilleri", "Seramik/zemin bitiş profilleri", "Boru ve tüp", "Ray profilleri", "LED şerit ve ısı emici profilleri", "Alüminyum kulplar", "Ham, toz boyalı ve eloksallı profil; kesme-delme fabrikasyon"],
     oursNote: "Alüminyum profil üreticisi (2001, üretim 2004). Sitesine göre hurda değil standart külçe kullanıyor.",
     notes: "Çarşamba, Al Amana ile.",
-    verifyNote: "Sitede anlamsız şablon metinler var; ürün listesi yine de net.",
+    verifyNote: "intercairo.com'un güvenlik sertifikası hatalı olduğu için bu ortamdan açılamadı. Numaralar arama motorunun kaydettiği resmi iletişim sayfasından. Ofis numarası cep – WhatsApp'ta dene.",
     checked: "25.11.2026"
   },
   {
@@ -469,15 +472,15 @@ window.FACTORIES = [
     address: "48-50 Abdel Khalek Tharwat Street, Downtown, Cairo (merkez ve tesis: Nag Hammadi, Qena)",
     lat: 30.052,
     lng: 31.244,
-    phones: ["+20 2 2390 4787 (resmi site – Kahire)", "+20 2 2390 4710 (resmi site – Kahire)", "+20 2 2391 9623 (resmi site – Kahire)"],
-    emails: ["info@egyptalum.com.eg"],
+    phones: ["+20 2 2390 4787 (resmi site – Kahire ofisi)", "+20 2 2390 4710 (resmi site – Kahire ofisi)", "+20 2 2391 9623 (resmi site – Kahire ofisi)", "+20 96 259 0001 (resmi site – Nag Hammadi merkez)"],
+    emails: ["info@egyptalum.com.eg", "markting@egyptalum.com.eg"],
     website: "https://www.egyptalum.com.eg/contactus.aspx",
     productsSource: "https://www.egyptalum.com.eg/staticPages.aspx?LId=3&PID=29",
     products: ["Alüminyum külçe %99,7 ve %99,8 (18–22 kg, 1 t demet)", "Dökümhane külçesi (8–10 kg)", "T-bar", "Slab", "Billet", "Alüminyum filmaşin 9 mm ve 9,5 mm (1,5–2 t kangal)", "Ekstrüzyon profilleri; soğuk haddelenmiş levha"],
     oursNote: "Mısır'ın tek birincil üreticisi; döküm hanesi 320.000 t/yıl. Kablo için alüminyum filmaşinin asıl kaynağı – LME + prim.",
     notes: "EMW ofisine 500 m – alüminyum filmaşin fiyatını sor.",
-    verifyNote: "Ürünler resmi sitenin döküm hanesi ve ürün sayfalarından.",
-    checked: "25.11.2026"
+    verifyNote: "Resmi iletişim sayfası açılıp okundu: Kahire ofisi 48-50 Abdel Khalek Tharwat St.; info@ Kahire idare, markting@ (sitede bu yazımla) pazarlama. WhatsApp yok.",
+    checked: "25.11.2026 (site açıldı)"
   }
 ];
 
