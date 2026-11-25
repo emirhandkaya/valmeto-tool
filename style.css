@@ -119,3 +119,8 @@ nav a.install { border: 1px solid var(--accent); color: var(--accent); }
 .mailsum { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
 .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font-size: .8rem; }
 .stat b { display: block; font-size: 1.1rem; }
+
+/* Boşluksuz kart düzeni: kartlar kendi boyunda, sütunlar halinde üst üste dizilir */
+.grid { display: block; columns: 3 300px; column-gap: 14px; }
+.grid > .card { break-inside: avoid; -webkit-column-break-inside: avoid; margin: 0 0 14px; width: 100%; display: flex; }
+.card .actions { margin-top: 0; }
