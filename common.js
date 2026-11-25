@@ -47,16 +47,21 @@ if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
 }
 
 function mailtoRFQ(f, email) {
-  const metal = f.metal.map(m => ({ bakir: "copper", aluminyum: "aluminium", pirinc: "brass" }[m])).join(" / ");
-  const subject = `Request for quotation & factory visit – ${metal} products`;
+  const subject = "Request for quotation & factory visit – copper and aluminium products";
   const body = `Dear ${f.name} team,
 
-I am a buyer from Türkiye and will be in Cairo between 29 November and 1 December. We supply copper and aluminium to cable manufacturers in the Balkans and Türkiye, and we are interested in purchasing ${metal} wire rod (8 mm) and drawn wire produced from recycled material.
+I am a buyer from Türkiye and will be in Cairo from 29 November to 1 December. We supply copper and aluminium products to cable and metal manufacturers in Türkiye and the Balkans, and we are looking for reliable producers in Egypt.
+
+We are interested in a wide range of copper and aluminium products, for example:
+- Copper: wire rod (8 mm), drawn and annealed wire, stranded / bunched wire, busbars and flat bars, ingots
+- Aluminium: wire rod, wire, ingots and billets, profiles
+- Brass rods and brass products
+Products made from recycled material are also welcome.
 
 Could you please send me:
-- Specifications: purity, conductivity (% IACS), oxygen content (ppm), diameter, coil weight
+- Your product list with specifications (purity, conductivity, dimensions, packaging)
 - Price per ton (EXW / FOB Alexandria), minimum order quantity and lead time
-- Payment terms and whether you can issue EUR.1 certificate of origin
+- Payment terms and whether you can issue an EUR.1 certificate of origin
 
 I would also like to visit your factory during my stay. Please let me know a suitable date and time.
 
