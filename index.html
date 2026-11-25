@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Valmeto">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="style.css?v=19">
+<link rel="stylesheet" href="style.css?v=20">
 </head>
 <body>
 <header class="top"><div class="inner">
@@ -70,8 +70,8 @@
 </main>
 <footer>Liste 25.11.2026'da firmaların kendi sitelerindeki ürünlere göre gözden geçirildi; sadece bakır/alüminyum/pirinç ürünü üretenler kaldı. Çıkarılanlar: ALUPCO (Suudi), Coppermelt (tatlıcı), Q-Bars ve ERAMCO (doğrulanamadı), Cairo Cables (kablo üreticisi = alıcı). Koordinatlar yaklaşıktır.</footer>
 
-<script src="data.js?v=19"></script>
-<script src="common.js?v=19"></script>
+<script src="data.js?v=20"></script>
+<script src="common.js?v=20"></script>
 <script>
 const notes = loadNotes();
 const visits = lsGet("valmeto-visits", {});
@@ -113,7 +113,6 @@ function card(f) {
     <div class="ours ${f.ours}"><b>${OURS_LABEL[f.ours] || ""}</b>${f.oursNote ? `<br>${esc(f.oursNote)}` : ""}</div>
     <div><b style="font-size:.85rem">Sitesindeki ürünler${f.official ? "" : " (rehber)"}</b><ul class="products">${f.products.map(p => `<li>${esc(p)}</li>`).join("")}</ul>
       ${f.productsSource ? `<a class="meta" href="${esc(f.productsSource)}" target="_blank" rel="noopener">Ürün kaynağı ↗</a>` : ""}</div>
-    ${f.notes ? `<div class="meta">ℹ️ ${esc(f.notes)}</div>` : ""}
     ${f.active ? `<div class="meta">📅 <b>Faaliyet:</b> ${esc(f.active)}</div>` : ""}
     ${f.verifyNote ? `<div class="meta verify">🔎 <b>Teyit (${esc(f.checked || "")}):</b> ${esc(f.verifyNote)}</div>` : ""}
     <div class="actions">
