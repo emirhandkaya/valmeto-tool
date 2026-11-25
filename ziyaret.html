@@ -357,7 +357,7 @@ document.getElementById("backup").onclick = async () => {
       photos = await Promise.all(all.map(p => new Promise(r => { const fr = new FileReader(); fr.onload = () => r({ visit: p.visit, at: p.at, data: fr.result }); fr.readAsDataURL(p.blob); })));
     } catch (e) {}
   }
-  const data = { visits, notes: loadNotes(), refs: lsGet("valmeto-refs", {}), crm: lsGet("musteri-takip-v1", {}), photos, at: new Date().toISOString() };
+  const data = { visits, notes: loadNotes(), refs: lsGet("valmeto-refs", {}), crm: lsGet("musteri-takip-v1", {}), mail: lsGet("valmeto-mail", {}), photos, at: new Date().toISOString() };
   const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
   const name = `valmeto-yedek-${new Date().toISOString().slice(0, 10)}.json`;
   const file = new File([blob], name, { type: "application/json" });
@@ -373,6 +373,7 @@ document.getElementById("restore").onchange = async e => {
     visits = { ...visits, ...(d.visits || {}) }; lsSet("valmeto-visits", visits);
     if (d.notes) saveNotes({ ...loadNotes(), ...d.notes });
     if (d.crm) lsSet("musteri-takip-v1", { ...lsGet("musteri-takip-v1", {}), ...d.crm });
+    if (d.mail) lsSet("valmeto-mail", { ...lsGet("valmeto-mail", {}), ...d.mail });
     if (np) {
       const db_ = await db();
       const have = await new Promise(r => { const q = db_.transaction("photos").objectStore("photos").getAll(); q.onsuccess = () => r(new Set(q.result.map(p => p.visit + "|" + p.at))); q.onerror = () => r(new Set()); });

@@ -110,3 +110,12 @@ nav a.install { border: 1px solid var(--accent); color: var(--accent); }
 
 .ours { font-size: .88rem; padding: 6px 8px; border-radius: 6px; background: var(--bg); }
 .ours.evet b { color: var(--ok); } .ours.kismen b { color: var(--warn); } .ours.dogrulanamadi b { color: var(--danger); }
+
+.mailtrack { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; padding: 8px; margin-top: 6px; border: 1px dashed var(--border); border-radius: 8px; font-size: .85rem; }
+.mailtrack label { color: var(--muted); display: block; }
+.mailtrack .wide { grid-column: 1 / -1; }
+.mailtrack select, .mailtrack input { width: 100%; font: inherit; padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--text); }
+.mailtrack .tag { grid-column: 1 / -1; justify-self: start; }
+.mailsum { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+.stat { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font-size: .8rem; }
+.stat b { display: block; font-size: 1.1rem; }

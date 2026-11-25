@@ -55,6 +55,7 @@
     <p class="meta">Her satır Outlook'ta hazır bir e-posta açar: alıcı, konu ve metin dolu; imza “Emirhan Durmuşkaya – Valmeto İç ve Dış Ticaret Limited Şirketi”, telefon/WhatsApp yok.
       <b>Telefonda/iPad'de:</b> “Outlook uygulaması” (uygulamada info@valmeto.com hesabı açık olmalı). <b>Bilgisayarda:</b> “Outlook Web” (tarayıcıda info@valmeto.com ile giriş yapılmış olmalı).
       Birden fazla hesabın varsa göndermeden önce “Kimden” alanının info@valmeto.com olduğunu kontrol et.</p>
+    <div class="mailsum" id="mailsum"></div>
     <div id="mails"></div>
   </div>
 
@@ -117,6 +118,12 @@ function stopHtml(f, i) {
     </div></div></div>`;
 }
 
+function mailSummary() {
+  const seen = new Set(), list = FACTORIES.filter(f => f.emails.length && !seen.has(f.emails[0]) && seen.add(f.emails[0]));
+  const cnt = k => list.filter(f => (mailState(f.emails[0]).status || "") === k).length;
+  document.getElementById("mailsum").innerHTML = Object.entries(MAIL_STATUS).map(([k, v]) => `<span class="stat"><b>${cnt(k)}</b>${v}</span>`).join("");
+}
+function onMailChange() { mailSummary(); }
 function render() {
   document.getElementById("msg").textContent = apptText();
   document.getElementById("days").innerHTML = [1, 2, 3, 4].map(d => {
@@ -129,8 +136,10 @@ function render() {
   const seen = new Set();
   document.getElementById("mails").innerHTML = FACTORIES.filter(f => f.emails.length && !seen.has(f.emails[0]) && seen.add(f.emails[0])).sort((a, b) => a.tier.localeCompare(b.tier)).map(f =>
     `<div class="stop"><div class="num">${f.tier}</div><div><b>${esc(f.name.split(" – ")[0])}</b><br><span class="meta">${esc(f.emails[0])}</span>
-      <div class="actions" style="margin-top:6px"><a class="primary-link" href="${outlookAppHref(f)}">📧 Outlook uygulaması</a>
-      <a href="${outlookWebHref(f)}" target="_blank" rel="noopener">🌐 Outlook Web</a><a href="${mailtoRFQ(f)}">✉️ Diğer e-posta uygulaması</a></div></div></div>`).join("");
+      <div class="actions" style="margin-top:6px"><a class="primary-link" data-send="${esc(f.emails[0])}" href="${outlookAppHref(f)}">📧 Outlook uygulaması</a>
+      <a data-send="${esc(f.emails[0])}" href="${outlookWebHref(f)}" target="_blank" rel="noopener">🌐 Outlook Web</a><a data-send="${esc(f.emails[0])}" href="${mailtoRFQ(f)}">✉️ Diğer e-posta uygulaması</a></div>
+      ${mailTracker(f)}</div></div>`).join("");
+  mailSummary();
   document.getElementById("phoneonly").innerHTML = FACTORIES.filter(f => f.day === 0).map((f, i) => stopHtml(f, i)).join("");
 }
 hotel.oninput = () => { lsSet("valmeto-hotel", hotel.value); render(); };

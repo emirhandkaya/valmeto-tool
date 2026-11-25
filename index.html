@@ -121,8 +121,9 @@ function card(f) {
       <a href="${mapsHref(f)}" target="_blank" rel="noopener">🧭 Yol tarifi</a>
       ${f.lat != null ? `<a href="harita.html#${f.id}">🗺️ Harita</a>` : ""}
       ${f.website ? `<a href="${esc(f.website)}" target="_blank" rel="noopener">🌐 Site</a>` : ""}
-      ${f.emails[0] ? `<a href="${outlookAppHref(f)}">📧 Outlook uygulaması</a><a href="${outlookWebHref(f)}" target="_blank" rel="noopener">🌐 Outlook Web</a>` : ""}
+      ${f.emails[0] ? `<a data-send="${esc(f.emails[0])}" href="${outlookAppHref(f)}">📧 Outlook uygulaması</a><a data-send="${esc(f.emails[0])}" href="${outlookWebHref(f)}" target="_blank" rel="noopener">🌐 Outlook Web</a>` : ""}
     </div>
+    ${mailTracker(f)}
     <details class="visit" ${n.status || n.text ? "open" : ""}>
       <summary>Hızlı not</summary>
       <label>Durum<select data-k="status">${Object.entries(STATUS_LABEL).map(([k, l]) => `<option value="${k}" ${n.status === k ? "selected" : ""}>${l}</option>`).join("")}</select></label>
