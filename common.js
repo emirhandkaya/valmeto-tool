@@ -101,41 +101,47 @@ window.addEventListener("beforeinstallprompt", e => {
   });
 })();
 
-// ---- E-posta takibi (firma e-posta adresine göre; ofis/fabrika kayıtları ortak) ----
+// ---- İletişim takibi (e-posta, telefon, WhatsApp). Anahtar: firmanın e-postası; yoksa firma kimliği.
 const MAIL_KEY = "valmeto-mail";
-const MAIL_STATUS = { "": "Gönderilmedi", atildi: "📤 Mail atıldı", cevap: "📥 Cevap geldi", gorusme: "💬 Mail ile görüşülüyor", teklif: "💰 Teklif alındı", olumsuz: "✖ Olumsuz / cevap yok" };
-function mailState(email) { return (lsGet(MAIL_KEY, {})[email]) || {}; }
-function setMailState(email, patch) { const all = lsGet(MAIL_KEY, {}); all[email] = { ...(all[email] || {}), ...patch }; lsSet(MAIL_KEY, all); }
+const MAIL_STATUS = { "": "Henüz iletişim yok", atildi: "📤 Mail atıldı", tel: "📞 Telefonla arandı", wa: "💬 WhatsApp yazıldı",
+  cevap: "📥 Cevap geldi", gorusme: "🤝 Görüşülüyor", teklif: "💰 Teklif alındı", olumsuz: "✖ Olumsuz / cevap yok" };
+function contactKey(f) { return f.emails && f.emails[0] ? f.emails[0] : "firma:" + f.id; }
+function mailState(key) { return (lsGet(MAIL_KEY, {})[key]) || {}; }
+function setMailState(key, patch) { const all = lsGet(MAIL_KEY, {}); all[key] = { ...(all[key] || {}), ...patch }; lsSet(MAIL_KEY, all); }
 function daysSince(d) { return d ? Math.floor((Date.now() - new Date(d).getTime()) / 864e5) : null; }
-function mailTracker(f) {
-  const email = f.emails[0]; if (!email) return "";
-  const m = mailState(email), d = daysSince(m.date);
-  const warn = m.status === "atildi" && d >= 3 ? `<span class="tag unv">⏰ ${d} gündür cevap yok – telefonla ara</span>` : "";
-  return `<div class="mailtrack" data-mail="${esc(email)}">
-    <label>E-posta durumu <select data-mk="status">${Object.entries(MAIL_STATUS).map(([k, v]) => `<option value="${k}" ${(m.status || "") === k ? "selected" : ""}>${v}</option>`).join("")}</select></label>
+function trackerHtml(key) {
+  const m = mailState(key), d = daysSince(m.date);
+  const warn = ["atildi", "tel", "wa"].includes(m.status) && d >= 3 ? `<span class="tag unv">⏰ ${d} gündür cevap yok – tekrar ulaş</span>` : "";
+  return `<div class="mailtrack" data-mail="${esc(key)}">
+    <label>İletişim durumu <select data-mk="status">${Object.entries(MAIL_STATUS).map(([k, v]) => `<option value="${k}" ${(m.status || "") === k ? "selected" : ""}>${v}</option>`).join("")}</select></label>
     <label>Tarih <input type="date" data-mk="date" value="${esc(m.date || "")}"></label>
-    <label class="wide">Not (kiminle yazışıldı, ne dediler) <input data-mk="note" value="${esc(m.note || "")}"></label>
+    <label class="wide">Not (kiminle konuşuldu, ne dediler) <input data-mk="note" value="${esc(m.note || "")}"></label>
     ${warn}
   </div>`;
 }
+function mailTracker(f) { return trackerHtml(contactKey(f)); }
+function refreshTrackers(key, except) {
+  document.querySelectorAll(`[data-mail="${CSS.escape(key)}"]`).forEach(o => { if (o !== except) o.outerHTML = trackerHtml(key); });
+  if (typeof onMailChange === "function") onMailChange();
+}
 document.addEventListener("change", e => {
   const box = e.target.closest("[data-mail]"); const k = e.target.dataset.mk; if (!box || !k) return;
-  const patch = { [k]: e.target.value };
-  if (k === "status" && e.target.value && !box.querySelector('[data-mk="date"]').value) { patch.date = new Date().toISOString().slice(0, 10); box.querySelector('[data-mk="date"]').value = patch.date; }
-  setMailState(box.dataset.mail, patch);
-  document.querySelectorAll(`[data-mail="${CSS.escape(box.dataset.mail)}"]`).forEach(o => { if (o !== box || k !== "note") o.outerHTML = mailTracker({ emails: [box.dataset.mail] }); });
-  if (typeof onMailChange === "function") onMailChange();
+  const key = box.dataset.mail, patch = { [k]: e.target.value };
+  if (k === "status" && e.target.value && !box.querySelector('[data-mk="date"]').value) patch.date = new Date().toISOString().slice(0, 10);
+  setMailState(key, patch);
+  refreshTrackers(key, k === "note" ? box : null);
 });
-// Outlook düğmesine basınca: dönüşte "gönderdin mi?" diye sor
-let pendingMail = null;
-document.addEventListener("click", e => { const a = e.target.closest("a[data-send]"); if (a) pendingMail = a.dataset.send; });
+// Outlook / telefon / WhatsApp düğmesine basınca: dönüşte "yaptın mı?" diye sor
+let pendingAct = null;
+document.addEventListener("click", e => {
+  const a = e.target.closest("a[data-send], a[data-call], a[data-wa]"); if (!a) return;
+  pendingAct = a.dataset.send ? { key: a.dataset.send, st: "atildi", q: "maili gönderdin mi" } : a.dataset.call ? { key: a.dataset.call, st: "tel", q: "telefonla görüştün mü" } : { key: a.dataset.wa, st: "wa", q: "WhatsApp'tan yazdın mı" };
+});
 document.addEventListener("visibilitychange", () => {
-  if (document.visibilityState !== "visible" || !pendingMail) return;
-  const email = pendingMail; pendingMail = null;
-  if (mailState(email).status) return;
-  setTimeout(() => { if (confirm(`${email} adresine maili gönderdin mi? “Mail atıldı” olarak işaretleyeyim mi?`)) {
-    setMailState(email, { status: "atildi", date: new Date().toISOString().slice(0, 10) });
-    document.querySelectorAll(`[data-mail="${CSS.escape(email)}"]`).forEach(o => o.outerHTML = mailTracker({ emails: [email] }));
-    if (typeof onMailChange === "function") onMailChange();
+  if (document.visibilityState !== "visible" || !pendingAct) return;
+  const p = pendingAct; pendingAct = null;
+  if (mailState(p.key).status) return;
+  setTimeout(() => { if (confirm(`Bu firmaya ${p.q}? “${MAIL_STATUS[p.st]}” olarak işaretleyeyim mi?`)) {
+    setMailState(p.key, { status: p.st, date: new Date().toISOString().slice(0, 10) }); refreshTrackers(p.key, null);
   } }, 400);
 });

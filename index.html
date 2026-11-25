@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Valmeto">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="style.css?v=21">
+<link rel="stylesheet" href="style.css?v=22">
 </head>
 <body>
 <header class="top"><div class="inner">
@@ -70,8 +70,8 @@
 </main>
 <footer>Liste 25.11.2026'da firmaların kendi sitelerindeki ürünlere göre gözden geçirildi; sadece bakır/alüminyum/pirinç ürünü üretenler kaldı. Çıkarılanlar: ALUPCO (Suudi), Coppermelt (tatlıcı), Q-Bars ve ERAMCO (doğrulanamadı), Cairo Cables (kablo üreticisi = alıcı). Koordinatlar yaklaşıktır.</footer>
 
-<script src="data.js?v=21"></script>
-<script src="common.js?v=21"></script>
+<script src="data.js?v=22"></script>
+<script src="common.js?v=22"></script>
 <script>
 const notes = loadNotes();
 const visits = lsGet("valmeto-visits", {});
@@ -102,7 +102,8 @@ function card(f) {
     + (f.official ? `<span class="tag ok">✅ resmi site</span>` : `<span class="tag unv">⚠️ resmi site yok</span>`)
     + (v ? `<span class="tag visited">Ziyaret formu dolu</span>` : "")
     + premiumTag(f);
-  const phones = f.phones.map(p => `📞 <a href="${telHref(p)}">${esc(p)}</a>` + (isMobile(p) ? ` · <a href="${waHref(p)}" target="_blank" rel="noopener">💬 WhatsApp</a>` : "")).join("<br>");
+  const ck = esc(contactKey(f));
+  const phones = f.phones.map(p => `📞 <a data-call="${ck}" href="${telHref(p)}">${esc(p)}</a>` + (isMobile(p) ? ` · <a data-wa="${ck}" href="${waHref(p)}" target="_blank" rel="noopener">💬 WhatsApp</a>` : "")).join("<br>");
   const emails = f.emails.map(e => `✉️ <a href="mailto:${esc(e)}">${esc(e)}</a>`).join("<br>");
   return `<article class="card" data-id="${f.id}">
     <h2>${f.star ? "★ " : ""}${esc(f.name)}</h2>
