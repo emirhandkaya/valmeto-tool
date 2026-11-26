@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>İskenderiye Lojistik</title>
+<link rel="manifest" href="manifest.webmanifest?v=2">
+<meta name="theme-color" content="#14171c">
+<link rel="icon" href="favicon-32-v2.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon-v2.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Valmeto">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="stylesheet" href="style.css?v=27">
+</head>
+<body>
+<header class="top"><div class="inner">
+  <h1>Valmeto Tool · Lojistik</h1>
+  <nav id="nav"></nav>
+</div></header>
+
+<main>
+  <div class="section">
+    <h2>🚢 İskenderiye çıkışlı konteyner (FCL 20') – hat ve fiyat bilgisi</h2>
+    <div class="table-wrap"><table class="cmp" id="lanes"></table></div>
+    <h2 style="margin-top:14px">⚖️ Bakır için dikkat</h2>
+    <ul id="copper" style="margin:0;padding-left:18px;font-size:.92rem"></ul>
+    <p class="meta">Fiyatlar tahmini/göstergedir (<span id="fdate"></span>); kesin fiyatı aşağıdaki firmalardan teklif olarak al. İndirimli fiyat için en az 2–3 forwarder'dan teklif karşılaştır.</p>
+  </div>
+
+  <div class="section form">
+    <h2>✉️ Fiyat isteme mesajı (İngilizce)</h2>
+    <div class="row">
+      <label>Varış<select id="dest"><option value="both">Selanik + Draç</option><option value="skg">Selanik (Yunanistan)</option><option value="drz">Draç (Arnavutluk)</option></select></label>
+      <label>Konteyner sayısı (20')<input id="qty" type="number" value="1" min="1"></label>
+    </div>
+    <div class="row">
+      <label>Ton / konteyner<input id="tons" type="number" step="any" value="23"></label>
+      <label>Yükleme tarihi<input id="ready" value="December 2026"></label>
+    </div>
+    <label><input type="checkbox" id="door" style="width:auto"> Kosova'ya (Priştine) kapı teslim fiyatı da iste</label>
+    <pre id="msg" style="white-space:pre-wrap;font:inherit;font-size:.9rem;background:var(--bg);padding:10px;border-radius:8px;border:1px solid var(--border)"></pre>
+    <button class="big-btn" id="copy">📋 Mesajı kopyala</button>
+    <p class="meta">Kartlardaki “💬 WhatsApp ile fiyat iste” ve “📧 Outlook” düğmeleri bu metni hazır açar.</p>
+  </div>
+
+  <div class="toolbar">
+    <select id="type"><option value="">Tümü</option><option value="forwarder">Forwarder (kapıdan kapıya, gümrük dahil)</option><option value="hat">Gemi hatları (acente)</option></select>
+  </div>
+  <p class="meta" id="count"></p>
+  <div id="list"></div>
+  <p class="meta">Hepsi İskenderiye merkezinde (Sultan Hussein Cd., Azarita, Bab Sharq, Raml) – birbirine yürüme mesafesinde. 🚩 işaretlediklerin Harita → Gidilecekler rotasına İskenderiye durağı olarak eklenir.</p>
+</main>
+<footer>Kaynaklar: firmaların resmi siteleri, İskenderiye Denizcilik Odası (acs.org.eg), gümrük platformu ve rehberler (Kasım 2026). “(rehber)” yazan numaraları ilk temasta teyit et.</footer>
+
+<script src="lojistik.js?v=27"></script>
+<script src="common.js?v=27"></script>
+<script>
+const $ = id => document.getElementById(id);
+const DEST = { skg: "Thessaloniki (Greece)", drz: "Durrës (Albania)" };
+const st = lsGet("valmeto-lj-form", {});
+["dest", "qty", "tons", "ready"].forEach(k => { if (st[k] != null) $(k).value = st[k]; }); $("door").checked = !!st.door;
+
+function message() {
+  const d = $("dest").value, dests = d === "both" ? [DEST.skg, DEST.drz] : [DEST[d]];
+  return `Dear team,
+
+My name is ${SENDER.name} from ${SENDER.company} (${SENDER.companyEn}), Türkiye. We are exporting copper products from Egypt and need a sea freight quotation:
+
+- Service: FCL, ${$("qty").value} x 20' dry container
+- Port of loading: Alexandria, Egypt
+- Destination: ${dests.join(" / ")}
+- Cargo: copper wire rod / copper wire coils on pallets (non-hazardous), approx. ${$("tons").value} tons per container
+- Ready date: ${$("ready").value}${$("door").checked ? "\n- Please also quote door delivery to Prishtina, Kosovo (via " + (d === "drz" ? "Durrës" : d === "skg" ? "Thessaloniki" : "Thessaloniki or Durrës") + ")" : ""}
+
+Please include: ocean freight, origin THC and documentation, heavy weight surcharge (if any), destination charges, transit time, sailing frequency and the shipping line. I am in Alexandria and can visit your office.
+
+Best regards,`;
+}
+function render() {
+  lsSet("valmeto-lj-form", { dest: $("dest").value, qty: $("qty").value, tons: $("tons").value, ready: $("ready").value, door: $("door").checked });
+  const msg = message(); $("msg").textContent = msg;
+  const t = $("type").value;
+  const contacted = f => !!mailState(contactKey(f)).status;
+  const items = LOGISTICS.filter(f => !t || f.type === t);
+  const sorter = (a, b) => (isGo(b) - isGo(a)) || ((b.star ? 1 : 0) - (a.star ? 1 : 0)) || a.type.localeCompare(b.type);
+  const card = f => {
+    const ck = esc(contactKey(f));
+    const phones = f.phones.map(p => `📞 <a data-call="${ck}" href="${telHref(p)}">${esc(p)}</a>` + ((isMobile(p) || /WhatsApp/i.test(p)) ? ` · <a data-wa="${ck}" href="${waHref(p, msg)}" target="_blank" rel="noopener">💬 WhatsApp ile fiyat iste</a>` : "")).join("<br>");
+    const subj = encodeURIComponent("Sea freight quotation – FCL 20' Alexandria to " + ($("dest").value === "drz" ? "Durrës" : $("dest").value === "skg" ? "Thessaloniki" : "Thessaloniki / Durrës"));
+    const mails = f.emails.map(e => `✉️ ${esc(e)} · <a data-send="${ck}" href="ms-outlook://compose?to=${encodeURIComponent(e)}&subject=${subj}&body=${encodeURIComponent(msg)}">📧 Outlook</a> · <a data-send="${ck}" href="https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(e)}&subject=${subj}&body=${encodeURIComponent(msg)}" target="_blank" rel="noopener">🌐 Outlook Web</a>`).join("<br>");
+    return `<article class="card">
+      <h2>${f.star ? "★ " : ""}${esc(f.name)}</h2>
+      ${goToggle(f)}
+      <div class="tags"><span class="tag ${f.type === "hat" ? "tierB" : "tierA"}">${f.type === "hat" ? "Gemi hattı" : "Forwarder"}</span>
+        ${f.official ? `<span class="tag ok">✅ resmi site</span>` : `<span class="tag unv">⚠️ rehber kaydı</span>`}</div>
+      <div class="meta">📍 ${esc(f.address)}</div>
+      <div class="contacts">${phones || "<span class='meta'>Telefon bulunamadı</span>"}${mails ? "<br>" + mails : ""}</div>
+      <div style="font-size:.9rem"><b>Ne yapıyor:</b> ${esc(f.does)}<br><b>Selanik / Draç:</b> ${esc(f.routes)}</div>
+      ${f.note ? `<div class="meta">ℹ️ ${esc(f.note)}</div>` : ""}
+      <div class="actions"><a href="${mapsHref(f)}" target="_blank" rel="noopener">🧭 Konum</a><a href="${esc(f.website)}" target="_blank" rel="noopener">🌐 Site / kaynak</a></div>
+      ${mailTracker(f)}
+    </article>`;
+  };
+  const yes = items.filter(contacted).sort(sorter), no = items.filter(f => !contacted(f)).sort(sorter);
+  $("list").innerHTML = (yes.length ? `<h2 class="group-h contacted">📞 İrtibata geçilenler <small>${yes.length}</small></h2><div class="grid">${yes.map(card).join("")}</div>` : "")
+    + (no.length ? `<h2 class="group-h">İrtibata geçilmeyenler <small>${no.length}</small></h2><div class="grid">${no.map(card).join("")}</div>` : "");
+  $("count").textContent = `${items.length} lojistik firması`;
+}
+$("fdate").textContent = FREIGHT_INFO.date;
+$("lanes").innerHTML = "<tr><th>Hat</th><th>Servis</th><th>Süre</th><th>Fiyat</th><th>Not</th></tr>" + FREIGHT_INFO.lanes.map(l => `<tr><td><b>${esc(l.lane)}</b></td><td>${esc(l.service)}</td><td>${esc(l.transit)}</td><td>${esc(l.price)}</td><td>${esc(l.extra)}</td></tr>`).join("");
+$("copper").innerHTML = FREIGHT_INFO.copper.map(c => `<li>${esc(c)}</li>`).join("");
+["dest", "qty", "tons", "ready", "door", "type"].forEach(k => $(k).addEventListener("input", render));
+$("copy").onclick = async () => { try { await navigator.clipboard.writeText(message()); $("copy").textContent = "Kopyalandı ✓"; } catch (e) { alert("Kopyalanamadı; metni basılı tutup kopyala."); } };
+window.onMailChange = render; window.onGoChange = render;
+render();
+</script>
+</body>
+</html>

@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Valmeto">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="style.css?v=26">
+<link rel="stylesheet" href="style.css?v=27">
 </head>
 <body>
 <header class="top"><div class="inner">
@@ -99,15 +99,15 @@
 </main>
 <footer>Bu hesap karar desteği içindir; kesin maliyet için nakliyeci ve gümrük müşaviri teklifi al.</footer>
 
-<script src="data.js?v=26"></script>
-<script src="common.js?v=26"></script>
+<script src="data.js?v=27"></script>
+<script src="common.js?v=27"></script>
 <script>
 const $ = id => document.getElementById(id);
 const DEST = {
   tr:  { truck: 25, port: 30, sea: 900,  tpc: 24, last: 25, duty: 0 },
   ist: { truck: 25, port: 30, sea: 1200, tpc: 24, last: 20, duty: 0 },
   ks:  { truck: 25, port: 30, sea: 1300, tpc: 24, last: 80, duty: 0 },
-  ks2: { truck: 25, port: 30, sea: 1600, tpc: 24, last: 70, duty: 0 }
+  ks2: { truck: 25, port: 30, sea: 2000, tpc: 24, last: 70, duty: 0 }
 };
 const saved = lsGet("valmeto-calc", {});
 let R = refs();

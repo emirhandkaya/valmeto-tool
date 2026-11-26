@@ -35,7 +35,7 @@ function saveRefs(r) { lsSet("valmeto-refs", r); }
 // Ortak menü
 const NAV = [
   ["index.html", "Mısır Üreticileri"], ["gezi.html", "Gezi Planı"], ["ziyaret.html", "Ziyaret Formu"],
-  ["hesap.html", "Fiyat Hesabı"], ["arapca.html", "Arapça Kart"], ["musteriler.html", "Müşteriler"], ["harita.html", "Harita"]
+  ["hesap.html", "Fiyat Hesabı"], ["arapca.html", "Arapça Kart"], ["lojistik.html", "Lojistik"], ["musteriler.html", "Müşteriler"], ["harita.html", "Harita"]
 ];
 function renderNav() {
   const h1 = document.querySelector(".top h1");

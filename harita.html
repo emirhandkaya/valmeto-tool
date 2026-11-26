@@ -13,7 +13,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Valmeto">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="style.css?v=26">
+<link rel="stylesheet" href="style.css?v=27">
 <style>
   .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; align-items: center; }
   .tabs button { font-weight: 600; }
@@ -54,6 +54,7 @@
     <span><span class="dot" style="background:#6b7a8f"></span>Alüminyum</span>
     <span><span class="dot" style="background:#c8642f"></span>Bakır</span>
     <span><span class="dot" style="background:#7b4fa0"></span>Bakır + Alüminyum</span>
+    <span><span class="dot" style="background:#1a73e8"></span>Lojistik (İskenderiye)</span>
     <span><span class="dot" style="background:#fff;border:3px solid #84601f"></span>🚩 Gidilecek</span>
     <span><span class="dot" style="background:#0f5c8c;border-radius:2px"></span>Potansiyel müşteri</span>
     <span><span class="dot" style="background:#d4a017;border-radius:2px"></span>Mevcut müşteri</span>
@@ -62,9 +63,10 @@
 </main>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="data.js?v=26"></script>
-<script src="musteriler.js?v=26"></script>
-<script src="common.js?v=26"></script>
+<script src="data.js?v=27"></script>
+<script src="musteriler.js?v=27"></script>
+<script src="lojistik.js?v=27"></script>
+<script src="common.js?v=27"></script>
 <script>
 const ALEX = [31.2001, 29.9187];
 let mode = lsGet("valmeto-mapmode", "go");
@@ -80,12 +82,12 @@ function color(f) {
   return f.metal[0] === "aluminyum" ? "#6b7a8f" : "#c8642f";
 }
 function popup(f) {
-  return `<h3>${esc(f.name)}</h3><b>${f.metal.map(m => METAL_LABEL[m]).join(" + ")}</b> · ${esc(f.area)}<br>
+  return `<h3>${esc(f.name)}</h3><b>${f.metal ? f.metal.map(m => METAL_LABEL[m]).join(" + ") : (f.type === "hat" ? "🚢 Gemi hattı" : "🚚 Lojistik / forwarder")}</b>${f.area ? " · " + esc(f.area) : ""}<br>
     <small>${esc(f.address)}</small><br>
     ${f.phones.slice(0, 3).map(p => `📞 <a href="${telHref(p)}">${esc(p)}</a>`).join("<br>")}
     ${f.emails.length ? "<br>✉️ " + esc(f.emails[0]) : ""}
     <br><br>${goToggle(f)}
-    <br><a href="${mapsHref(f)}" target="_blank" rel="noopener">🧭 Google Maps'te aç</a> · <a href="ziyaret.html#${f.id}">📝 Form</a>`;
+    <br><a href="${mapsHref(f)}" target="_blank" rel="noopener">🧭 Google Maps'te aç</a> · ${f.metal ? `<a href="ziyaret.html#${f.id}">📝 Form</a>` : `<a href="lojistik.html">🚢 Lojistik</a>`}`;
 }
 function dist(a, b) { const dx = a[0] - b[0], dy = (a[1] - b[1]) * Math.cos(a[0] * Math.PI / 180); return Math.hypot(dx, dy); }
 function nearestOrder(list, from) {
@@ -94,7 +96,7 @@ function nearestOrder(list, from) {
   return out;
 }
 function routeStops() {
-  const go = FACTORIES.filter(f => isGo(f) && f.lat != null);
+  const go = FACTORIES.concat(window.LOGISTICS || []).filter(f => isGo(f) && f.lat != null);
   const alex = nearestOrder(go.filter(f => f.region === "iskenderiye"), ALEX);
   const last = alex.length ? [alex[alex.length - 1].lat, alex[alex.length - 1].lng] : ALEX;
   const cairo = nearestOrder(go.filter(f => f.region !== "iskenderiye"), last);
@@ -124,7 +126,7 @@ function drawGo() {
   const origin = startIn.value.trim() || "Alexandria, Egypt";
   const legHtml = (title, list, from, offset) => !list.length ? "" : `<div class="leg"><h3>${title}</h3>
     ${list.map((f, i) => `<div class="stop"><div class="num">${offset + i + 1}</div><div><b>${esc(f.name)}</b><br><span class="meta">${esc(f.address)}</span>
-      <div class="actions" style="margin-top:4px"><a href="${mapsHref(f)}" target="_blank" rel="noopener">🧭 Konum</a>${f.phones[0] ? `<a href="${telHref(f.phones[0])}">📞 Ara</a>` : ""}<a href="ziyaret.html#${f.id}">📝 Form</a></div></div></div>`).join("")}
+      <div class="actions" style="margin-top:4px"><a href="${mapsHref(f)}" target="_blank" rel="noopener">🧭 Konum</a>${f.phones[0] ? `<a href="${telHref(f.phones[0])}">📞 Ara</a>` : ""}${f.metal ? `<a href="ziyaret.html#${f.id}">📝 Form</a>` : `<a href="lojistik.html">🚢 Lojistik</a>`}</div></div></div>`).join("")}
     <a class="big-btn" style="margin-top:8px" href="${dirUrl(from, list)}" target="_blank" rel="noopener">🧭 ${title} – Google Maps rotası</a></div>`;
   const lastAlex = alex.length ? mapQ(alex[alex.length - 1]) : origin;
   document.getElementById("legs").innerHTML = (all.length ? "" : `<p class="warning">Henüz 🚩 gidilecek seçilmedi. Mısır Üreticileri sayfasında kartlardaki “🚩 Gidilecek” kutusunu işaretle.</p>`)
@@ -139,6 +141,12 @@ function drawAll() {
     const g = isGo(f);
     const mk = L.circleMarker([f.lat, f.lng], { radius: g ? 11 : 8, color: g ? "#84601f" : "#fff", weight: g ? 4 : 2, fillColor: color(f), fillOpacity: .95 })
       .bindTooltip((g ? "🚩 " : "") + `${f.tier} · ` + f.name).bindPopup(() => popup(f)).addTo(layer);
+    markers[f.id] = mk; b.push([f.lat, f.lng]);
+  });
+  (window.LOGISTICS || []).forEach(f => {
+    const g = isGo(f);
+    const mk = L.circleMarker([f.lat, f.lng], { radius: g ? 10 : 7, color: g ? "#84601f" : "#fff", weight: g ? 4 : 2, fillColor: "#1a73e8", fillOpacity: .95 })
+      .bindTooltip((g ? "🚩 " : "") + "🚢 " + f.name).bindPopup(() => popup(f)).addTo(layer);
     markers[f.id] = mk; b.push([f.lat, f.lng]);
   });
   if (document.getElementById("cust").checked) {
