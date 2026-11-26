@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Valmeto">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="style.css?v=32">
+<link rel="stylesheet" href="style.css?v=33">
 </head>
 <body>
 <header class="top"><div class="inner">
@@ -71,8 +71,8 @@
 </main>
 <footer>Liste 25.11.2026'da firmaların kendi sitelerindeki ürünlere göre gözden geçirildi; sadece bakır/alüminyum/pirinç ürünü üretenler kaldı. Çıkarılanlar: ALUPCO (Suudi), Coppermelt (tatlıcı), Q-Bars ve ERAMCO (doğrulanamadı), Cairo Cables (kablo üreticisi = alıcı). Koordinatlar yaklaşıktır.</footer>
 
-<script src="data.js?v=32"></script>
-<script src="common.js?v=32"></script>
+<script src="data.js?v=33"></script>
+<script src="common.js?v=33"></script>
 <script>
 const notes = loadNotes();
 const visits = lsGet("valmeto-visits", {});
@@ -159,13 +159,15 @@ function render() {
   document.getElementById("count").textContent = `${items.length} kayıt gösteriliyor (toplam ${FACTORIES.length}). 🚩 işaretliler grup içinde en üstte.`;
 }
 
-document.getElementById("list").addEventListener("change", e => {
+function saveQuick(e, rerender) {
   const el = e.target, k = el.dataset.k; if (!k) return;
   const id = el.closest(".card").dataset.id;
   notes[id] = { ...(notes[id] || {}), [k]: el.value };
   saveNotes(notes);
-  if (k === "status" || k === "price") render();
-});
+  if (rerender && (k === "status" || k === "price")) render();
+}
+document.getElementById("list").addEventListener("input", e => saveQuick(e, false));
+document.getElementById("list").addEventListener("change", e => saveQuick(e, true));
 ["q", "metal", "tier", "day", "sort"].forEach(id => document.getElementById(id).addEventListener("input", render));
 
 document.getElementById("csv").onclick = () => {

@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Valmeto">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="style.css?v=32">
+<link rel="stylesheet" href="style.css?v=33">
 <style>
   .country-h { margin: 24px 0 10px; font-size: 1.15rem; display: flex; gap: 8px; align-items: baseline; }
   .country-h small { color: var(--muted); font-weight: 400; font-size: .85rem; }
@@ -61,8 +61,8 @@
 </main>
 <footer>Koordinatlar şehir düzeyindedir. Fiyat ve teklif bilgilerini “Takip” bölümüne girin.</footer>
 
-<script src="musteriler.js?v=32"></script>
-<script src="common.js?v=32"></script>
+<script src="musteriler.js?v=33"></script>
+<script src="common.js?v=33"></script>
 <script>
 const KEY = "musteri-takip-v1";
 let crm = {}; try { crm = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
@@ -146,12 +146,14 @@ function render() {
   ].map(([l, v]) => `<div class="stat"><b>${v}</b>${l}</div>`).join("");
 }
 
-document.getElementById("list").addEventListener("change", e => {
+function saveCrm(e, rerender) {
   const el = e.target, k = el.dataset.k; if (!k) return;
   const id = el.closest(".card").dataset.id;
   crm[id] = { ...(crm[id] || {}), [k]: el.value }; save();
-  if (k === "status" || k === "tons") render();
-});
+  if (rerender && (k === "status" || k === "tons")) render();
+}
+document.getElementById("list").addEventListener("input", e => saveCrm(e, false));
+document.getElementById("list").addEventListener("change", e => saveCrm(e, true));
 ["q", "country", "need", "status"].forEach(id => document.getElementById(id).addEventListener("input", render));
 
 document.getElementById("csv").onclick = () => {

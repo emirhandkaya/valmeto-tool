@@ -129,8 +129,18 @@ document.addEventListener("change", e => {
   const key = box.dataset.mail, patch = { [k]: e.target.value };
   if (k === "status" && e.target.value && !box.querySelector('[data-mk="date"]').value) patch.date = new Date().toISOString().slice(0, 10);
   setMailState(key, patch);
-  refreshTrackers(key, k === "note" ? box : null);
+  if (k === "note") { document.querySelectorAll(`[data-mail="${CSS.escape(key)}"] [data-mk="note"]`).forEach(o => { if (o !== e.target) o.value = e.target.value; }); return; }
+  refreshTrackers(key, null);
 });
+document.addEventListener("input", e => {
+  if (e.target.dataset && e.target.dataset.mk === "note") { const box = e.target.closest("[data-mail]"); if (box) setMailState(box.dataset.mail, { note: e.target.value }); }
+});
+// Uygulama kapatılırken / arka plana alınırken açık kutudaki yazıyı kaydet
+function flushActive() { const a = document.activeElement; if (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) { a.dispatchEvent(new Event("change", { bubbles: true })); } }
+window.addEventListener("pagehide", flushActive);
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flushActive(); });
+// Tarayıcıdan verilerin silinmemesini iste (destekleyen cihazlarda)
+try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch (e) {}
 // Outlook / telefon / WhatsApp düğmesine basınca: dönüşte "yaptın mı?" diye sor
 let pendingAct = null;
 document.addEventListener("click", e => {
