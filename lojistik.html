@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Valmeto">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="style.css?v=27">
+<link rel="stylesheet" href="style.css?v=28">
 </head>
 <body>
 <header class="top"><div class="inner">
@@ -32,7 +32,7 @@
   <div class="section form">
     <h2>✉️ Fiyat isteme mesajı (İngilizce)</h2>
     <div class="row">
-      <label>Varış<select id="dest"><option value="both">Selanik + Draç</option><option value="skg">Selanik (Yunanistan)</option><option value="drz">Draç (Arnavutluk)</option></select></label>
+      <label>Varış<select id="dest"><option value="both">Selanik + Durres</option><option value="skg">Selanik (Yunanistan)</option><option value="drz">Durres (Arnavutluk)</option></select></label>
       <label>Konteyner sayısı (20')<input id="qty" type="number" value="1" min="1"></label>
     </div>
     <div class="row">
@@ -54,8 +54,8 @@
 </main>
 <footer>Kaynaklar: firmaların resmi siteleri, İskenderiye Denizcilik Odası (acs.org.eg), gümrük platformu ve rehberler (Kasım 2026). “(rehber)” yazan numaraları ilk temasta teyit et.</footer>
 
-<script src="lojistik.js?v=27"></script>
-<script src="common.js?v=27"></script>
+<script src="lojistik.js?v=28"></script>
+<script src="common.js?v=28"></script>
 <script>
 const $ = id => document.getElementById(id);
 const DEST = { skg: "Thessaloniki (Greece)", drz: "Durrës (Albania)" };
@@ -97,7 +97,7 @@ function render() {
         ${f.official ? `<span class="tag ok">✅ resmi site</span>` : `<span class="tag unv">⚠️ rehber kaydı</span>`}</div>
       <div class="meta">📍 ${esc(f.address)}</div>
       <div class="contacts">${phones || "<span class='meta'>Telefon bulunamadı</span>"}${mails ? "<br>" + mails : ""}</div>
-      <div style="font-size:.9rem"><b>Ne yapıyor:</b> ${esc(f.does)}<br><b>Selanik / Draç:</b> ${esc(f.routes)}</div>
+      <div style="font-size:.9rem"><b>Ne yapıyor:</b> ${esc(f.does)}<br><b>Selanik / Durres:</b> ${esc(f.routes)}</div>
       ${f.note ? `<div class="meta">ℹ️ ${esc(f.note)}</div>` : ""}
       <div class="actions"><a href="${mapsHref(f)}" target="_blank" rel="noopener">🧭 Konum</a><a href="${esc(f.website)}" target="_blank" rel="noopener">🌐 Site / kaynak</a></div>
       ${mailTracker(f)}
