@@ -185,7 +185,7 @@ Products made from recycled material are also welcome.
 Could you please tell me:
 1. Which of these products you produce and your monthly capacity
 2. Price per ton (EXW or FOB Alexandria) and minimum order quantity
-3. Quality: purity / conductivity, and whether you can provide an analysis certificate
+3. Quality: electrolytic (ETP) or oxygen-free (OF)? Made from scrap or cathode?
 
 I'm not in Egypt at the moment, but I'll be in Alexandria and Cairo soon and would like to visit your factory. Thank you.` }
   ];
