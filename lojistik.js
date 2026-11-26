@@ -120,7 +120,7 @@ window.FREIGHT_INFO = {
   date: "26.11.2026",
   lanes: [
     { lane: "İskenderiye → Selanik (Yunanistan)", service: "CMA CGM EGAL – haftalık doğrudan (İskenderiye–Pire–Selanik)", transit: "~2–4 gün",
-      price: "Yayınlanmış fiyat yok. Kısa Akdeniz hattı – teklif alınmalı (tahmini 20' navlun birkaç yüz – 1.500 $ arası + liman masrafları).",
+      price: "Bu hatta güncel yayınlanmış fiyat yok. Tek doğrudan veri: Agora Freight 1.532 $ / 20' (Kasım 2024, eski). Kaba tahmin: navlun ~500–1.600 $ + çıkış/varış masrafları + ağır yük ek ücreti → her şey dahil ~1.200–2.500 $ / 20'. Kesin fiyat için teklif al.",
       extra: "Selanik varış (Maersk 20' ithalat ücreti): €175. Selanik → Kosova (Priştine) kamyonla ~1 gün." }
   ],
   copper: [
