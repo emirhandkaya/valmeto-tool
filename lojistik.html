@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Valmeto">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="style.css?v=31">
+<link rel="stylesheet" href="style.css?v=32">
 </head>
 <body>
 <header class="top"><div class="inner">
@@ -61,18 +61,19 @@
 </main>
 <footer>Kaynaklar: firmaların resmi siteleri, İskenderiye Denizcilik Odası (acs.org.eg), gümrük platformu ve rehberler (Kasım 2026). “(rehber)” yazan numaraları ilk temasta teyit et.</footer>
 
-<script src="lojistik.js?v=31"></script>
-<script src="common.js?v=31"></script>
+<script src="lojistik.js?v=32"></script>
+<script src="common.js?v=32"></script>
 <script>
 const $ = id => document.getElementById(id);
 const DEST = { skg: "Thessaloniki (Greece)" };
 const st = lsGet("valmeto-lj-form", {});
 ["dest", "qty", "tons", "ready"].forEach(k => { if (st[k] != null && k !== "dest") $(k).value = st[k]; }); $("door").checked = !!st.door;
 
-function waMessages() {
+function shortName(f) { return f ? f.name.split(" – ")[0].split(" (")[0] : "[company name]"; }
+function waMessages(f) {
   const q = $("qty").value, tons = $("tons").value, ready = $("ready").value, door = $("door").checked;
   return [
-    { tr: "1 · Tanışma", text: `Hello, good day! 👋
+    { tr: "1 · Tanışma", text: `Hello, good day. Is this ${shortName(f)}?
 My name is ${SENDER.name} from ${SENDER.companyEn} (${SENDER.company}), a trading company based in Türkiye.` },
     { tr: "2 · Ne yapıyoruz", text: `We trade copper and aluminium products – mainly copper wire rod and copper wire – and supply cable and metal manufacturers in Türkiye and the Balkans.
 We are now starting to buy from producers in Egypt, so we are looking for a reliable logistics partner in Alexandria.` },
@@ -123,7 +124,7 @@ function render() {
   const sorter = (a, b) => (isGo(b) - isGo(a)) || ((b.star ? 1 : 0) - (a.star ? 1 : 0)) || a.type.localeCompare(b.type);
   const card = f => {
     const ck = esc(contactKey(f));
-    const phones = f.phones.map(p => `📞 <a data-call="${ck}" href="${telHref(p)}">${esc(p)}</a>` + ((isMobile(p) || /WhatsApp/i.test(p)) ? ` · <a data-wa="${ck}" href="${waHref(p, wm[0].text)}" target="_blank" rel="noopener">💬 WhatsApp'ta yaz (1. mesaj hazır)</a>` : "")).join("<br>");
+    const phones = f.phones.map(p => `📞 <a data-call="${ck}" href="${telHref(p)}">${esc(p)}</a>` + ((isMobile(p) || /WhatsApp/i.test(p)) ? ` · <a data-wa="${ck}" href="${waHref(p, waMessages(f)[0].text)}" target="_blank" rel="noopener">💬 WhatsApp'ta yaz (1. mesaj hazır)</a>` : "")).join("<br>");
     const subj = encodeURIComponent("Sea freight quotation – FCL 20' Alexandria to Thessaloniki");
     const mails = f.emails.map(e => `✉️ ${esc(e)} · <a data-send="${ck}" href="ms-outlook://compose?to=${encodeURIComponent(e)}&subject=${subj}&body=${encodeURIComponent(msg)}">📧 Outlook</a> · <a data-send="${ck}" href="https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(e)}&subject=${subj}&body=${encodeURIComponent(msg)}" target="_blank" rel="noopener">🌐 Outlook Web</a>`).join("<br>");
     return `<article class="card">
