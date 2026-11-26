@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Valmeto">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="style.css?v=28">
+<link rel="stylesheet" href="style.css?v=29">
 </head>
 <body>
 <header class="top"><div class="inner">
@@ -32,7 +32,7 @@
   <div class="section form">
     <h2>✉️ Fiyat isteme mesajı (İngilizce)</h2>
     <div class="row">
-      <label>Varış<select id="dest"><option value="both">Selanik + Durres</option><option value="skg">Selanik (Yunanistan)</option><option value="drz">Durres (Arnavutluk)</option></select></label>
+      <label>Varış<select id="dest"><option value="skg">Selanik (Yunanistan)</option></select></label>
       <label>Konteyner sayısı (20')<input id="qty" type="number" value="1" min="1"></label>
     </div>
     <div class="row">
@@ -54,16 +54,16 @@
 </main>
 <footer>Kaynaklar: firmaların resmi siteleri, İskenderiye Denizcilik Odası (acs.org.eg), gümrük platformu ve rehberler (Kasım 2026). “(rehber)” yazan numaraları ilk temasta teyit et.</footer>
 
-<script src="lojistik.js?v=28"></script>
-<script src="common.js?v=28"></script>
+<script src="lojistik.js?v=29"></script>
+<script src="common.js?v=29"></script>
 <script>
 const $ = id => document.getElementById(id);
-const DEST = { skg: "Thessaloniki (Greece)", drz: "Durrës (Albania)" };
+const DEST = { skg: "Thessaloniki (Greece)" };
 const st = lsGet("valmeto-lj-form", {});
-["dest", "qty", "tons", "ready"].forEach(k => { if (st[k] != null) $(k).value = st[k]; }); $("door").checked = !!st.door;
+["dest", "qty", "tons", "ready"].forEach(k => { if (st[k] != null && k !== "dest") $(k).value = st[k]; }); $("door").checked = !!st.door;
 
 function message() {
-  const d = $("dest").value, dests = d === "both" ? [DEST.skg, DEST.drz] : [DEST[d]];
+  const dests = [DEST.skg];
   return `Dear team,
 
 My name is ${SENDER.name} from ${SENDER.company} (${SENDER.companyEn}), Türkiye. We are exporting copper products from Egypt and need a sea freight quotation:
@@ -72,7 +72,7 @@ My name is ${SENDER.name} from ${SENDER.company} (${SENDER.companyEn}), Türkiye
 - Port of loading: Alexandria, Egypt
 - Destination: ${dests.join(" / ")}
 - Cargo: copper wire rod / copper wire coils on pallets (non-hazardous), approx. ${$("tons").value} tons per container
-- Ready date: ${$("ready").value}${$("door").checked ? "\n- Please also quote door delivery to Prishtina, Kosovo (via " + (d === "drz" ? "Durrës" : d === "skg" ? "Thessaloniki" : "Thessaloniki or Durrës") + ")" : ""}
+- Ready date: ${$("ready").value}${$("door").checked ? "\n- Please also quote door delivery to Prishtina, Kosovo (via Thessaloniki)" : ""}
 
 Please include: ocean freight, origin THC and documentation, heavy weight surcharge (if any), destination charges, transit time, sailing frequency and the shipping line. I am in Alexandria and can visit your office.
 
@@ -88,7 +88,7 @@ function render() {
   const card = f => {
     const ck = esc(contactKey(f));
     const phones = f.phones.map(p => `📞 <a data-call="${ck}" href="${telHref(p)}">${esc(p)}</a>` + ((isMobile(p) || /WhatsApp/i.test(p)) ? ` · <a data-wa="${ck}" href="${waHref(p, msg)}" target="_blank" rel="noopener">💬 WhatsApp ile fiyat iste</a>` : "")).join("<br>");
-    const subj = encodeURIComponent("Sea freight quotation – FCL 20' Alexandria to " + ($("dest").value === "drz" ? "Durrës" : $("dest").value === "skg" ? "Thessaloniki" : "Thessaloniki / Durrës"));
+    const subj = encodeURIComponent("Sea freight quotation – FCL 20' Alexandria to Thessaloniki");
     const mails = f.emails.map(e => `✉️ ${esc(e)} · <a data-send="${ck}" href="ms-outlook://compose?to=${encodeURIComponent(e)}&subject=${subj}&body=${encodeURIComponent(msg)}">📧 Outlook</a> · <a data-send="${ck}" href="https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(e)}&subject=${subj}&body=${encodeURIComponent(msg)}" target="_blank" rel="noopener">🌐 Outlook Web</a>`).join("<br>");
     return `<article class="card">
       <h2>${f.star ? "★ " : ""}${esc(f.name)}</h2>
@@ -97,7 +97,7 @@ function render() {
         ${f.official ? `<span class="tag ok">✅ resmi site</span>` : `<span class="tag unv">⚠️ rehber kaydı</span>`}</div>
       <div class="meta">📍 ${esc(f.address)}</div>
       <div class="contacts">${phones || "<span class='meta'>Telefon bulunamadı</span>"}${mails ? "<br>" + mails : ""}</div>
-      <div style="font-size:.9rem"><b>Ne yapıyor:</b> ${esc(f.does)}<br><b>Selanik / Durres:</b> ${esc(f.routes)}</div>
+      <div style="font-size:.9rem"><b>Ne yapıyor:</b> ${esc(f.does)}<br><b>Selanik:</b> ${esc(f.routes)}</div>
       ${f.note ? `<div class="meta">ℹ️ ${esc(f.note)}</div>` : ""}
       <div class="actions"><a href="${mapsHref(f)}" target="_blank" rel="noopener">🧭 Konum</a><a href="${esc(f.website)}" target="_blank" rel="noopener">🌐 Site / kaynak</a></div>
       ${mailTracker(f)}

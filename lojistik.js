@@ -1,4 +1,4 @@
-// İskenderiye lojistikçileri – deniz yolu konteyner (FCL) İskenderiye → Selanik / Durres (Arnavutluk).
+// İskenderiye lojistikçileri – deniz yolu konteyner (FCL) İskenderiye → Selanik (Yunanistan).
 // Kaynak: firmaların kendi siteleri, İskenderiye Denizcilik Odası (acs.org.eg), rehberler – Kasım 2026 araştırması.
 // type: "hat" = gemi hattı acentesi (doğrudan navlun) · "forwarder" = nakliye organizatörü (kapıdan kapıya, gümrük dahil)
 // Hepsi İskenderiye merkezinde (Sultan Hussein Cd. / Azarita / Bab Sharq / Raml) – yürüme mesafesinde kümelenmiş.
@@ -10,8 +10,8 @@ window.LOGISTICS = [
     mapQuery: "CMA CGM Egypt, 55 Sultan Hussein St, Alexandria",
     phones: ["+20 3 484 0170 (resmi site)", "+20 3 485 8943 (resmi site)"], emails: [],
     website: "https://www.cma-cgm.com/local/egypt/offices-contacts",
-    does: "Gemi hattı. EGAL servisi: İskenderiye → Pire → SELANİK haftalık DOĞRUDAN sefer. Durres için MAESTRALE servisi (Malta aktarmalı: Malta–Durres–Rijeka–Salerno).",
-    routes: "Selanik: doğrudan, haftalık · Durres: Malta aktarmalı",
+    does: "Gemi hattı. EGAL servisi: İskenderiye → Pire → SELANİK haftalık DOĞRUDAN sefer.",
+    routes: "Selanik: doğrudan, haftalık",
     note: "Selanik için en net seçenek. Rezervasyon genelde bir forwarder üzerinden yapılır; doğrudan da fiyat isteyebilirsin." },
   { id: "lj-arkas", type: "hat", region: "iskenderiye", official: true, star: true,
     name: "Arkas Egypt (Türk Arkas grubu)", lat: 31.2015, lng: 29.9005,
@@ -19,7 +19,7 @@ window.LOGISTICS = [
     mapQuery: "Arkas Egypt, 3 Youssef Addah Street, Raml Station, Alexandria",
     phones: ["+20 3 486 0500 (resmi site)"], emails: ["info@arkas-egypt.com"],
     website: "https://arkasline.com.tr/en/country/egypt/",
-    does: "Türk denizcilik grubu Arkas'ın Mısır şirketi: gemi acenteliği, konteyner hattı, lojistik. Türkiye bağlantılı seferler; Selanik/Durres için aktarma seçeneklerini sor.",
+    does: "Türk denizcilik grubu Arkas'ın Mısır şirketi: gemi acenteliği, konteyner hattı, lojistik. Türkiye bağlantılı seferler; Selanik için sefer ve aktarma seçeneklerini sor.",
     routes: "Türkiye limanları üzerinden aktarma seçenekleri sorulmalı",
     note: "Türk grubu – Türkçe konuşulabilir. Kasım 2026'da İskenderun–İskenderiye seferi kaydı var." },
   { id: "lj-msc", type: "hat", region: "iskenderiye", official: false,
@@ -120,10 +120,7 @@ window.FREIGHT_INFO = {
   lanes: [
     { lane: "İskenderiye → Selanik (Yunanistan)", service: "CMA CGM EGAL – haftalık doğrudan (İskenderiye–Pire–Selanik)", transit: "~2–4 gün",
       price: "Yayınlanmış fiyat yok. Kısa Akdeniz hattı – teklif alınmalı (tahmini 20' navlun birkaç yüz – 1.500 $ arası + liman masrafları).",
-      extra: "Selanik varış (Maersk 20' ithalat ücreti): €175. Selanik → Kosova (Priştine) kamyonla ~1 gün." },
-    { lane: "İskenderiye → Durres (Arnavutluk)", service: "Doğrudan hat yok – Malta (CMA CGM MAESTRALE) veya Rijeka/Pire aktarmalı", transit: "~16–22 gün",
-      price: "Forwarder fiyat göstergesi: ~2.000 $ / 20' (cargorouter endeksi, kesin teklif değil).",
-      extra: "Durres → Priştine kamyonla ~4–5 saat. Aktarma süresi uzun – Selanik genelde daha hızlı." }
+      extra: "Selanik varış (Maersk 20' ithalat ücreti): €175. Selanik → Kosova (Priştine) kamyonla ~1 gün." }
   ],
   copper: [
     "Bakır yoğun yüktür: 20' konteyner yeterli (40' gereksiz). Konteyner başına genelde 20–25 ton yüklenir; Mısır'da karayolu dingil sınırı ve hattın ağırlık limiti teklif sırasında sorulmalı.",

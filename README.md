@@ -8,7 +8,7 @@
 - `ziyaret.html` – fabrika ziyaret formu, fotoğraf, babaya paylaşım, karşılaştırma
 - `hesap.html` – EGP/kg → LME %, varış maliyeti ve kâr hesabı
 - `arapca.html` – Arapça soru kartı
-- `lojistik.html` – İskenderiye lojistikçileri, Selanik/Durres konteyner bilgisi, fiyat isteme mesajı
+- `lojistik.html` – İskenderiye lojistikçileri, Selanik konteyner bilgisi, fiyat isteme mesajı
 - `harita.html` – Leaflet/OpenStreetMap haritası (Mısır üreticileri + müşteriler)
 - `manifest.webmanifest`, `icon*.png`, `logo-*.png`, `sw.js` – web uygulaması (ana ekrana ekleme, çevrimdışı). Logoyu değiştirmek için `logo-full.png` ve PNG ikonları yenileyin.
 - `data.js` / `musteriler.js` – veriler (yeni firma eklemek için burayı düzenleyin)

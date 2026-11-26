@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Valmeto">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="style.css?v=28">
+<link rel="stylesheet" href="style.css?v=29">
 </head>
 <body>
 <header class="top"><div class="inner">
@@ -52,7 +52,7 @@
       <label>Metal<select id="m"><option value="cu">Bakır</option><option value="al">Alüminyum</option></select></label>
       <label>Varış<select id="dest">
         <option value="tr">Türkiye – Mersin</option><option value="ist">Türkiye – İstanbul / Marmara</option>
-        <option value="ks">Kosova – Selanik limanı + kamyon</option><option value="ks2">Kosova – Durres limanı + kamyon</option></select></label>
+        <option value="ks">Kosova – Selanik limanı + kamyon</option></select></label>
     </div>
     <div class="row">
       <label>Alış fiyatı<input id="buy" type="number" step="any" inputmode="decimal"></label>
@@ -99,15 +99,14 @@
 </main>
 <footer>Bu hesap karar desteği içindir; kesin maliyet için nakliyeci ve gümrük müşaviri teklifi al.</footer>
 
-<script src="data.js?v=28"></script>
-<script src="common.js?v=28"></script>
+<script src="data.js?v=29"></script>
+<script src="common.js?v=29"></script>
 <script>
 const $ = id => document.getElementById(id);
 const DEST = {
   tr:  { truck: 25, port: 30, sea: 900,  tpc: 24, last: 25, duty: 0 },
   ist: { truck: 25, port: 30, sea: 1200, tpc: 24, last: 20, duty: 0 },
-  ks:  { truck: 25, port: 30, sea: 1300, tpc: 24, last: 80, duty: 0 },
-  ks2: { truck: 25, port: 30, sea: 2000, tpc: 24, last: 70, duty: 0 }
+  ks:  { truck: 25, port: 30, sea: 1300, tpc: 24, last: 80, duty: 0 }
 };
 const saved = lsGet("valmeto-calc", {});
 let R = refs();
