@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Valmeto">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="style.css?v=30">
+<link rel="stylesheet" href="style.css?v=31">
 </head>
 <body>
 <header class="top"><div class="inner">
@@ -29,8 +29,15 @@
     <p class="meta">Fiyatlar tahmini/göstergedir (<span id="fdate"></span>); kesin fiyatı aşağıdaki firmalardan teklif olarak al. İndirimli fiyat için en az 2–3 forwarder'dan teklif karşılaştır.</p>
   </div>
 
+  <div class="section">
+    <h2>💬 WhatsApp konuşması – sırayla gönder</h2>
+    <p class="meta">Önce kendini tanıt, sonra ne yaptığınızı, en son yükü ve sorularını yaz. Kartlardaki “💬 WhatsApp” düğmesi sohbeti 1. mesaj hazır şekilde açar; 2. ve 3. mesajı buradan kopyalayıp yapıştır.
+      Yük bilgileri (konteyner, ton, tarih) aşağıdaki formdan alınır.</p>
+    <div id="waMsgs"></div>
+  </div>
+
   <div class="section form">
-    <h2>✉️ Fiyat isteme mesajı (İngilizce)</h2>
+    <h2>✉️ Fiyat isteme mesajı (İngilizce, e-posta için)</h2>
     <div class="row">
       <label>Varış<select id="dest"><option value="skg">Selanik (Yunanistan)</option></select></label>
       <label>Konteyner sayısı (20')<input id="qty" type="number" value="1" min="1"></label>
@@ -42,7 +49,7 @@
     <label><input type="checkbox" id="door" style="width:auto"> Kosova'ya (Priştine) kapı teslim fiyatı da iste</label>
     <pre id="msg" style="white-space:pre-wrap;font:inherit;font-size:.9rem;background:var(--bg);padding:10px;border-radius:8px;border:1px solid var(--border)"></pre>
     <button class="big-btn" id="copy">📋 Mesajı kopyala</button>
-    <p class="meta">Kartlardaki “💬 WhatsApp ile fiyat iste” ve “📧 Outlook” düğmeleri bu metni hazır açar.</p>
+    <p class="meta">Kartlardaki “📧 Outlook” düğmeleri bu e-posta metnini hazır açar.</p>
   </div>
 
   <div class="toolbar">
@@ -54,14 +61,34 @@
 </main>
 <footer>Kaynaklar: firmaların resmi siteleri, İskenderiye Denizcilik Odası (acs.org.eg), gümrük platformu ve rehberler (Kasım 2026). “(rehber)” yazan numaraları ilk temasta teyit et.</footer>
 
-<script src="lojistik.js?v=30"></script>
-<script src="common.js?v=30"></script>
+<script src="lojistik.js?v=31"></script>
+<script src="common.js?v=31"></script>
 <script>
 const $ = id => document.getElementById(id);
 const DEST = { skg: "Thessaloniki (Greece)" };
 const st = lsGet("valmeto-lj-form", {});
 ["dest", "qty", "tons", "ready"].forEach(k => { if (st[k] != null && k !== "dest") $(k).value = st[k]; }); $("door").checked = !!st.door;
 
+function waMessages() {
+  const q = $("qty").value, tons = $("tons").value, ready = $("ready").value, door = $("door").checked;
+  return [
+    { tr: "1 · Tanışma", text: `Hello, good day! 👋
+My name is ${SENDER.name} from ${SENDER.companyEn} (${SENDER.company}), a trading company based in Türkiye.` },
+    { tr: "2 · Ne yapıyoruz", text: `We trade copper and aluminium products – mainly copper wire rod and copper wire – and supply cable and metal manufacturers in Türkiye and the Balkans.
+We are now starting to buy from producers in Egypt, so we are looking for a reliable logistics partner in Alexandria.` },
+    { tr: "3 · Yük ve sorular", text: `We would like to ship from Alexandria to Thessaloniki (Greece):
+• ${q} x 20' container (FCL)
+• Cargo: copper wire rod / copper wire coils on pallets, approx. ${tons} tons per container
+• Ready: ${ready}${door ? "\n• Also delivery by truck to Prishtina, Kosovo" : ""}
+
+Could you please tell me:
+1. Freight price per 20' container (including local charges and any heavy weight surcharge)
+2. How often there are sailings to Thessaloniki and with which shipping line
+3. Transit time
+
+I'm not in Alexandria at the moment, but I'll be there soon and would be happy to visit your office. Thank you! 🙏` }
+  ];
+}
 function message() {
   const dests = [DEST.skg];
   return `Dear team,
@@ -86,13 +113,17 @@ Best regards,`;
 function render() {
   lsSet("valmeto-lj-form", { dest: $("dest").value, qty: $("qty").value, tons: $("tons").value, ready: $("ready").value, door: $("door").checked });
   const msg = message(); $("msg").textContent = msg;
+  const wm = waMessages();
+  $("waMsgs").innerHTML = wm.map((m, i) => `<div style="margin-top:10px"><b>${m.tr}</b>
+    <pre style="white-space:pre-wrap;font:inherit;font-size:.92rem;background:var(--bg);padding:10px;border-radius:8px;border:1px solid var(--border);margin:6px 0">${esc(m.text)}</pre>
+    <button class="big-btn ghost" data-copywa="${i}">📋 ${i + 1}. mesajı kopyala</button></div>`).join("");
   const t = $("type").value;
   const contacted = f => !!mailState(contactKey(f)).status;
   const items = LOGISTICS.filter(f => !t || f.type === t);
   const sorter = (a, b) => (isGo(b) - isGo(a)) || ((b.star ? 1 : 0) - (a.star ? 1 : 0)) || a.type.localeCompare(b.type);
   const card = f => {
     const ck = esc(contactKey(f));
-    const phones = f.phones.map(p => `📞 <a data-call="${ck}" href="${telHref(p)}">${esc(p)}</a>` + ((isMobile(p) || /WhatsApp/i.test(p)) ? ` · <a data-wa="${ck}" href="${waHref(p, msg)}" target="_blank" rel="noopener">💬 WhatsApp ile fiyat iste</a>` : "")).join("<br>");
+    const phones = f.phones.map(p => `📞 <a data-call="${ck}" href="${telHref(p)}">${esc(p)}</a>` + ((isMobile(p) || /WhatsApp/i.test(p)) ? ` · <a data-wa="${ck}" href="${waHref(p, wm[0].text)}" target="_blank" rel="noopener">💬 WhatsApp'ta yaz (1. mesaj hazır)</a>` : "")).join("<br>");
     const subj = encodeURIComponent("Sea freight quotation – FCL 20' Alexandria to Thessaloniki");
     const mails = f.emails.map(e => `✉️ ${esc(e)} · <a data-send="${ck}" href="ms-outlook://compose?to=${encodeURIComponent(e)}&subject=${subj}&body=${encodeURIComponent(msg)}">📧 Outlook</a> · <a data-send="${ck}" href="https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(e)}&subject=${subj}&body=${encodeURIComponent(msg)}" target="_blank" rel="noopener">🌐 Outlook Web</a>`).join("<br>");
     return `<article class="card">
@@ -117,6 +148,11 @@ $("fdate").textContent = FREIGHT_INFO.date;
 $("lanes").innerHTML = "<tr><th>Hat</th><th>Servis</th><th>Süre</th><th>Fiyat</th><th>Not</th></tr>" + FREIGHT_INFO.lanes.map(l => `<tr><td><b>${esc(l.lane)}</b></td><td>${esc(l.service)}</td><td>${esc(l.transit)}</td><td>${esc(l.price)}</td><td>${esc(l.extra)}</td></tr>`).join("");
 $("copper").innerHTML = FREIGHT_INFO.copper.map(c => `<li>${esc(c)}</li>`).join("");
 ["dest", "qty", "tons", "ready", "door", "type"].forEach(k => $(k).addEventListener("input", render));
+document.addEventListener("click", async e => {
+  const b = e.target.closest("[data-copywa]"); if (!b) return;
+  try { await navigator.clipboard.writeText(waMessages()[+b.dataset.copywa].text); b.textContent = "Kopyalandı ✓"; setTimeout(() => b.textContent = `📋 ${+b.dataset.copywa + 1}. mesajı kopyala`, 2000); }
+  catch (err) { alert("Kopyalanamadı; metni basılı tutup kopyala."); }
+});
 $("copy").onclick = async () => { try { await navigator.clipboard.writeText(message()); $("copy").textContent = "Kopyalandı ✓"; } catch (e) { alert("Kopyalanamadı; metni basılı tutup kopyala."); } };
 window.onMailChange = render; window.onGoChange = render;
 render();
