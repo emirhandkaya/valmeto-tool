@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Valmeto">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="style.css?v=38">
+<link rel="stylesheet" href="style.css?v=39">
 </head>
 <body>
 <header class="top"><div class="inner">
@@ -77,8 +77,8 @@
 </main>
 <footer>Liste 25.11.2026'da firmaların kendi sitelerindeki ürünlere göre gözden geçirildi; sadece bakır/alüminyum/pirinç ürünü üretenler kaldı. Çıkarılanlar: ALUPCO (Suudi), Coppermelt (tatlıcı), Q-Bars ve ERAMCO (doğrulanamadı), Cairo Cables (kablo üreticisi = alıcı). Koordinatlar yaklaşıktır.</footer>
 
-<script src="data.js?v=38"></script>
-<script src="common.js?v=38"></script>
+<script src="data.js?v=39"></script>
+<script src="common.js?v=39"></script>
 <script>
 const notes = loadNotes();
 const visits = lsGet("valmeto-visits", {});
@@ -119,8 +119,6 @@ function card(f) {
     <div class="meta">📍 ${esc(f.area)}<br>${esc(f.address)}<br>🗓️ ${DAYS[f.day]}</div>
     <div class="contacts">${phones || "<span class='meta'>Telefon bulunamadı</span>"}<br>${emails || "<span class='meta'>E-posta bulunamadı</span>"}
       ${f.contact ? `<br>👤 ${esc(f.contact)}` : ""}</div>
-    ${f.phones.some(p => isMobile(p) || /WhatsApp/i.test(p)) ? `<div class="wa-steps"><b>💬 WhatsApp: 1. mesaj düğmeyle hazır gider, sonra:</b>
-      <button data-copypw="1">📋 2. mesajı kopyala</button><button data-copypw="2">📋 3. mesajı kopyala</button></div>` : ""}
     <div class="ours ${f.ours}"><b>${OURS_LABEL[f.ours] || ""}</b>${f.oursNote ? `<br>${esc(f.oursNote)}` : ""}</div>
     <div><b style="font-size:.85rem">Sitesindeki ürünler${f.official ? "" : " (rehber)"}</b><ul class="products">${f.products.map(p => `<li>${esc(p)}</li>`).join("")}</ul>
       ${f.productsSource ? `<a class="meta" href="${esc(f.productsSource)}" target="_blank" rel="noopener">Ürün kaynağı ↗</a>` : ""}</div>
