@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Valmeto">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="style.css?v=35">
+<link rel="stylesheet" href="style.css?v=36">
 </head>
 <body>
 <header class="top"><div class="inner">
@@ -37,6 +37,12 @@
     <br><small>Varsayılanlar 25.11.2026 civarı; gitmeden önce güncelle. Teklif girince kartta LME'ye göre % görünür.
     Mısır iç piyasa hurda fiyatları ve detaylı hesap için <a href="hesap.html">Fiyat Hesabı</a>.</small>
   </div>
+
+  <details class="section">
+    <summary><b>💬 WhatsApp konuşması – sırayla gönder</b> <span class="meta">(dokun, aç)</span></summary>
+    <p class="meta">Önce kendini tanıt, sonra ne yaptığınızı, en son ürünleri ve sorularını yaz. Kartlardaki “💬 WhatsApp” düğmesi sohbeti 1. mesaj o firmanın adıyla hazır açar; 2. ve 3. mesajı buradan kopyalayıp yapıştır.</p>
+    <div id="pwMsgs"></div>
+  </details>
 
   <div class="toolbar">
     <input id="q" type="search" placeholder="Ara: firma, bölge, ürün…">
@@ -71,8 +77,8 @@
 </main>
 <footer>Liste 25.11.2026'da firmaların kendi sitelerindeki ürünlere göre gözden geçirildi; sadece bakır/alüminyum/pirinç ürünü üretenler kaldı. Çıkarılanlar: ALUPCO (Suudi), Coppermelt (tatlıcı), Q-Bars ve ERAMCO (doğrulanamadı), Cairo Cables (kablo üreticisi = alıcı). Koordinatlar yaklaşıktır.</footer>
 
-<script src="data.js?v=35"></script>
-<script src="common.js?v=35"></script>
+<script src="data.js?v=36"></script>
+<script src="common.js?v=36"></script>
 <script>
 const notes = loadNotes();
 const visits = lsGet("valmeto-visits", {});
@@ -104,7 +110,7 @@ function card(f) {
     + (v ? `<span class="tag visited">Ziyaret formu dolu</span>` : "")
     + premiumTag(f);
   const ck = esc(contactKey(f));
-  const phones = f.phones.map(p => `📞 <a data-call="${ck}" href="${telHref(p)}">${esc(p)}</a>` + (isMobile(p) ? ` · <a data-wa="${ck}" href="${waHref(p)}" target="_blank" rel="noopener">💬 WhatsApp</a>` : "")).join("<br>");
+  const phones = f.phones.map(p => `📞 <a data-call="${ck}" href="${telHref(p)}">${esc(p)}</a>` + (isMobile(p) || /WhatsApp/i.test(p) ? ` · <a data-wa="${ck}" href="${waHref(p, producerWaMessages(f)[0].text)}" target="_blank" rel="noopener">💬 WhatsApp</a>` : "")).join("<br>");
   const emails = f.emails.map(e => `✉️ <a href="mailto:${esc(e)}">${esc(e)}</a>`).join("<br>");
   return `<article class="card" data-id="${f.id}">
     <h2>${f.star ? "★ " : ""}${esc(f.name)}</h2>
@@ -180,6 +186,9 @@ document.getElementById("csv").onclick = () => {
   a.download = "misir-ureticiler.csv"; a.click();
 };
 window.onMailChange = render; window.onGoChange = render;
+document.getElementById("pwMsgs").innerHTML = producerWaMessages(null).map((m, i) => `<div style="margin-top:10px"><b>${m.tr}</b>
+  <pre style="white-space:pre-wrap;font:inherit;font-size:.92rem;background:var(--bg);padding:10px;border-radius:8px;border:1px solid var(--border);margin:6px 0">${esc(m.text)}</pre>
+  <button class="big-btn ghost" data-copypw="${i}">📋 ${i + 1}. mesajı kopyala</button></div>`).join("");
 try { render(); } catch (err) {
   document.getElementById("list").innerHTML = `<div class="warning danger">Liste yüklenemedi (eski önbellek olabilir). <button class="big-btn" onclick="(async()=>{try{for(const r of await navigator.serviceWorker.getRegistrations())await r.unregister();for(const k of await caches.keys())await caches.delete(k);}catch(e){}location.reload(true)})()">🔄 Önbelleği temizle ve yenile</button><br><small>${esc(err.message)}</small></div>`;
 }

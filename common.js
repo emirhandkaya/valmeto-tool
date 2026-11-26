@@ -167,3 +167,32 @@ document.addEventListener("change", e => {
   document.querySelectorAll(`[data-go="${id}"]`).forEach(c => { if (c !== e.target) c.checked = e.target.checked; });
   if (typeof onGoChange === "function") onGoChange();
 });
+
+// ---- Mısır üreticileri için WhatsApp konuşması (3 mesaj, sırayla)
+function producerName(f) { return f ? f.name.split(" – ")[0].split(" (")[0] : "[company name]"; }
+function producerWaMessages(f) {
+  return [
+    { tr: "1 · Tanışma", text: `Hello, good day. Is this ${producerName(f)}?
+My name is ${SENDER.name} from ${SENDER.companyEn} (${SENDER.company}), a trading company based in Türkiye.` },
+    { tr: "2 · Ne yapıyoruz", text: `We trade copper and aluminium products and supply cable and metal manufacturers in Türkiye and the Balkans.
+We are now looking for reliable producers in Egypt for regular purchases.` },
+    { tr: "3 · Ürünler ve sorular", text: `We are interested in:
+• Copper: wire rod (8 mm), drawn wire, bars / strips, ingots
+• Aluminium: wire rod, ingots, billets
+• Brass rods and brass products
+Products made from recycled material are also welcome.
+
+Could you please tell me:
+1. Which of these products you produce and your monthly capacity
+2. Price per ton (EXW or FOB Alexandria) and minimum order quantity
+3. Quality: purity / conductivity, and whether you can provide an analysis certificate
+
+I'm not in Egypt at the moment, but I'll be in Alexandria and Cairo soon and would like to visit your factory. Thank you.` }
+  ];
+}
+document.addEventListener("click", async e => {
+  const b = e.target.closest("[data-copypw]"); if (!b) return;
+  const i = +b.dataset.copypw;
+  try { await navigator.clipboard.writeText(producerWaMessages(null)[i].text); b.textContent = "Kopyalandı ✓"; setTimeout(() => b.textContent = `📋 ${i + 1}. mesajı kopyala`, 2000); }
+  catch (err) { alert("Kopyalanamadı; metni basılı tutup kopyala."); }
+});
