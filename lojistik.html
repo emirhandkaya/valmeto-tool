@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Valmeto">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="style.css?v=37">
+<link rel="stylesheet" href="style.css?v=38">
 </head>
 <body>
 <header class="top"><div class="inner">
@@ -61,8 +61,8 @@
 </main>
 <footer>Kaynaklar: firmaların resmi siteleri, İskenderiye Denizcilik Odası (acs.org.eg), gümrük platformu ve rehberler (Kasım 2026). “(rehber)” yazan numaraları ilk temasta teyit et.</footer>
 
-<script src="lojistik.js?v=37"></script>
-<script src="common.js?v=37"></script>
+<script src="lojistik.js?v=38"></script>
+<script src="common.js?v=38"></script>
 <script>
 const $ = id => document.getElementById(id);
 const DEST = { skg: "Thessaloniki (Greece)" };
@@ -134,6 +134,8 @@ function render() {
         ${f.official ? `<span class="tag ok">✅ resmi site</span>` : `<span class="tag unv">⚠️ rehber kaydı</span>`}</div>
       <div class="meta">📍 ${esc(f.address)}</div>
       <div class="contacts">${phones || "<span class='meta'>Telefon bulunamadı</span>"}${mails ? "<br>" + mails : ""}</div>
+      ${f.phones.some(p => isMobile(p) || /WhatsApp/i.test(p)) ? `<div class="wa-steps"><b>💬 WhatsApp: 1. mesaj düğmeyle hazır gider, sonra:</b>
+        <button data-copywa="1">📋 2. mesajı kopyala</button><button data-copywa="2">📋 3. mesajı kopyala</button></div>` : ""}
       <div style="font-size:.9rem"><b>Ne yapıyor:</b> ${esc(f.does)}<br><b>Selanik:</b> ${esc(f.routes)}</div>
       ${f.note ? `<div class="meta">ℹ️ ${esc(f.note)}</div>` : ""}
       <div class="actions"><a href="${mapsHref(f)}" target="_blank" rel="noopener">🧭 Konum</a><a href="${esc(f.website)}" target="_blank" rel="noopener">🌐 Site / kaynak</a></div>

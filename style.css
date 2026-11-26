@@ -128,3 +128,7 @@ nav a.install { border: 1px solid var(--accent); color: var(--accent); }
 .gochk { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: .9rem; padding: 6px 10px; border: 1px solid var(--accent); border-radius: 99px; color: var(--accent); cursor: pointer; align-self: flex-start; }
 .gochk input { width: 18px; height: 18px; accent-color: var(--accent); }
 .group-h.contacted { color: var(--ok); }
+
+.wa-steps { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 8px; border-radius: 8px; background: var(--bg); border: 1px dashed var(--border); font-size: .85rem; }
+.wa-steps b { width: 100%; }
+.wa-steps button { font-size: .85rem; padding: 7px 10px; }
