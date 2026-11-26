@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Valmeto">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="style.css?v=29">
+<link rel="stylesheet" href="style.css?v=30">
 </head>
 <body>
 <header class="top"><div class="inner">
@@ -54,8 +54,8 @@
 </main>
 <footer>Kaynaklar: firmaların resmi siteleri, İskenderiye Denizcilik Odası (acs.org.eg), gümrük platformu ve rehberler (Kasım 2026). “(rehber)” yazan numaraları ilk temasta teyit et.</footer>
 
-<script src="lojistik.js?v=29"></script>
-<script src="common.js?v=29"></script>
+<script src="lojistik.js?v=30"></script>
+<script src="common.js?v=30"></script>
 <script>
 const $ = id => document.getElementById(id);
 const DEST = { skg: "Thessaloniki (Greece)" };
@@ -74,7 +74,12 @@ My name is ${SENDER.name} from ${SENDER.company} (${SENDER.companyEn}), Türkiye
 - Cargo: copper wire rod / copper wire coils on pallets (non-hazardous), approx. ${$("tons").value} tons per container
 - Ready date: ${$("ready").value}${$("door").checked ? "\n- Please also quote door delivery to Prishtina, Kosovo (via Thessaloniki)" : ""}
 
-Please include: ocean freight, origin THC and documentation, heavy weight surcharge (if any), destination charges, transit time, sailing frequency and the shipping line. I am in Alexandria and can visit your office.
+Could you please let me know:
+- Freight price per 20' container (ocean freight plus origin and destination charges, and any heavy weight surcharge)
+- How often there are sailings to Thessaloniki (weekly or other) and with which shipping line
+- Transit time from Alexandria to Thessaloniki
+
+I am not in Alexandria at the moment, but I will be there soon and would like to visit your office.
 
 Best regards,`;
 }
