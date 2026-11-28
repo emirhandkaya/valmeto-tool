@@ -4,7 +4,7 @@
 
 - `index.html` – liste, arama/filtre, ziyaret notları, fiyat kaydı, CSV
 - `musteriler.html` – Türkiye & Balkanlar potansiyel müşteriler (ülkelere göre, takip/CRM)
-- `gezi.html` – 3 günlük Kahire rota planı
+- `gezi.html` – takvim: ziyaret günlerine göre günlük rota (İskenderiye → Kahire)
 - `ziyaret.html` – fabrika ziyaret formu, fotoğraf, babaya paylaşım, karşılaştırma
 - `hesap.html` – EGP/kg → LME %, varış maliyeti ve kâr hesabı
 - `arapca.html` – Arapça soru kartı

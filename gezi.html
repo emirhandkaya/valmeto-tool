@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Valmeto">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="style.css?v=43">
+<link rel="stylesheet" href="style.css?v=45">
 </head>
 <body>
 <header class="top"><div class="inner">
@@ -21,23 +21,29 @@
 </div></header>
 
 <main>
-  <div class="section form">
-    <h2>🏨 Başlangıç noktası</h2>
-    <label>Otel adresi veya adı (rotalar buradan başlar; boş bırakırsan telefonun konumundan başlar)
-      <input id="hotel" placeholder="ör. Steigenberger Tahrir, Cairo"></label>
+  <div class="section">
+    <h2>📅 Takvim</h2>
+    <p class="meta">Mısır Üreticileri ve Lojistik sayfalarında bir yeri <b>🚩 Gidilecek</b> işaretleyip <b>📅 Ziyaret günü</b> seç; burada günlere göre sıralanır.
+      Her günün durakları birbirine en yakın sırayla dizilir (aynı gün İskenderiye ve Kahire varsa önce İskenderiye).</p>
+    <div class="cal" id="cal"></div>
   </div>
 
   <div id="days"></div>
+  <div id="nodate"></div>
 
-  <div class="section">
-    <h2>📞 Telefonla görüşülecekler (Kahire dışı / büyük firmalar)</h2>
-    <div id="phoneonly"></div>
+  <div class="section form">
+    <h2>🏨 Oteller (günlük rotalar buradan başlar)</h2>
+    <div class="row">
+      <label>İskenderiye oteli<input id="hotelAlex" placeholder="ör. Hilton Alexandria Corniche"></label>
+      <label>Kahire oteli<input id="hotelCairo" placeholder="ör. Steigenberger Tahrir"></label>
+    </div>
+    <p class="meta">Boş bırakırsan Google Maps rotayı telefonun bulunduğu yerden başlatır.</p>
   </div>
 
+
   <div class="section">
-    <h2>✅ Gitmeden önce (Çarşamba – Cumartesi)</h2>
+    <h2>✅ Gitmeden önce</h2>
     <ul>
-      <li><b>Tarihler:</b> Pazar 29 Kasım – Çarşamba 2 Aralık (4 iş günü; Mısır'da Pazar–Perşembe çalışılır).</li>
       <li><b>Bugünden itibaren randevu al:</b> Aşağıdaki hazır mesajı her fabrikaya WhatsApp'tan gönder. Mısır'da Cuma–Cumartesi hafta sonu; cevaplar Pazar sabahı gelebilir, <b>Pazar sabahı 9'da tekrar ara</b>.</li>
       <li><b>Şoförlü araç tut (günlük):</b> 10th of Ramadan ve Anshas 50–60 km uzakta; dönüşte taksi bulmak zor. Otelden günlük “car with driver” iste. Arapça bilen bir şoför tercüman da olur.</li>
       <li><b>Erken başla:</b> Fabrikalar ~08:00–16:00 çalışır. Kahire trafiği öğlen ağırlaşır. Günde 3–4 ★ öncelikli yeri hedefle, diğerleri vakit kalırsa.</li>
@@ -68,88 +74,94 @@
     <button class="big-btn" id="copy">Mesajı kopyala</button>
   </div>
 </main>
-<footer>Sıra ve süreler tahminidir; trafik ve randevulara göre değiştir. Rota linkleri Google Maps'te açılır.</footer>
+<footer>Mesafeler kuş uçuşu tahminidir; gerçek süre için Google Maps rotasını aç. Trafik ve randevulara göre sırayı değiştirebilirsin.</footer>
 
-<script src="data.js?v=43"></script>
-<script src="common.js?v=43"></script>
+<script src="data.js?v=45"></script>
+<script src="lojistik.js?v=45"></script>
+<script src="common.js?v=45"></script>
 <script>
-const hotel = document.getElementById("hotel"), myname = document.getElementById("myname");
-const myphone = document.getElementById("myphone");
-hotel.value = lsGet("valmeto-hotel", ""); myname.value = lsGet("valmeto-name", "") || SENDER.name; myphone.value = senderPhone();
-const DAY_INFO = {
-  5: { title: "İskenderiye – Kahire'den önce", tip: "Önce İskenderiye: ★ Egyptian Copper Works merkez ve fabrikaları (Hagar El-Nawatia, Raml). WhatsApp müşteri hizmetleri +20 100 286 9836, satış müdürlüğü 03 500 6032. Ardından çöl yoluyla Kahire'ye (~220 km, 2,5–3 saat)." },
-  1: { title: "Pazar 29 Kasım – Downtown + Güney Kahire (Helwan / Tebbin)", tip: "Sabah EMW merkez ofisi (Downtown); Egyptalum ve Egyptian Copper Works'ün Kahire satış ofisleri de aynı bölgede. Sonra güneye: HiTech Casting (Maadi) → Alu Misr (Wadi Houf) → ★ EMW fabrikası (Al Tebbin) → ★ Egyptian Copper Works Kahire fabrikası (Nile Road – Tebbin). Toplam ~45 km." },
-  2: { title: "Pazartesi 30 Kasım – Kuzeydoğu: Obour → Anshas → 10th of Ramadan", tip: "En uzun gün (~70 km tek yön), 07:30'da çık. ★ Arab Metals: resmi sitedeki cep numaralarından WhatsApp'la ara, Anshas fabrikasında buluş (upcast 8 mm filmaşin hattı). 10th of Ramadan'da ★ Sabaek El Ashir (saf bakır tel/çubuk/bara), Wadi El Nile (bara) ve United Metals Egypt (alüminyum külçe, bakır çubuk) aynı bölgede." },
-  4: { title: "Çarşamba 2 Aralık – 6th of October + ikinci tur pazarlık", tip: "Sabah 6th of October: Al Amana dökümhanesi ve InterCairo. Öğleden sonra ilk 3 günün en iyi 1–2 fabrikasına geri dön: son fiyat, numune, yazılı teklif. Egyptian Copper Works Kahire'de görüşmeyi kabul ettiyse bu güne koy. Kahire'deki bir nakliye firmasıyla (forwarder) Mersin ve Kosova navlununu konuş." },
-  3: { title: "Salı 1 Aralık – Kuzey: Shubra El Kheima", tip: "Bütün gün Shubra El Kheima: hurdadan döküp tel çeken küçük atölyeler. Ürün listeleri internette doğrulanamadı – yerinde kim ne üretiyor gör, Arapça kartı kullan, numune al. En ucuz fiyat ama en yüksek kalite ve fatura riski." }
-};
+const $ = id => document.getElementById(id);
+const myname = $("myname"), myphone = $("myphone");
+$("hotelAlex").value = lsGet("valmeto-hotel-alex", ""); $("hotelCairo").value = lsGet("valmeto-hotel-cairo", lsGet("valmeto-hotel", ""));
+myname.value = lsGet("valmeto-name", "") || SENDER.name; myphone.value = senderPhone();
 
-function routeUrl(stops) {
-  const pts = stops.map(mapQ);
-  const dest = pts.pop();
-  let u = `https://www.google.com/maps/dir/?api=1&travelmode=driving&destination=${encodeURIComponent(dest)}`;
-  if (hotel.value.trim()) u += `&origin=${encodeURIComponent(hotel.value.trim())}`;
-  if (pts.length) u += `&waypoints=${encodeURIComponent(pts.join("|"))}`;
-  return u;
+function tripRange() {
+  const ds = Object.values(lsGet(PLAN_KEY, {})).filter(Boolean).sort();
+  return ds.length ? [ds[0], ds[ds.length - 1]] : null;
 }
 function apptText() {
-  const n = myname.value.trim() || SENDER.name, ph = myphone.value.trim();
+  const n = myname.value.trim() || SENDER.name, ph = myphone.value.trim(), r = tripRange();
+  const en = r ? `from ${new Date(r[0] + "T12:00").toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })} to ${new Date(r[1] + "T12:00").toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })}` : "soon";
+  const ar = r ? `من ${new Date(r[0] + "T12:00").toLocaleDateString("ar-EG", { weekday: "long", day: "numeric", month: "long" })} إلى ${new Date(r[1] + "T12:00").toLocaleDateString("ar-EG", { weekday: "long", day: "numeric", month: "long" })}` : "قريباً";
   return `السلام عليكم،
 أنا ${n} من شركة ${SENDER.companyEn} – تركيا. نحن نشتري منتجات النحاس والألومنيوم بأنواعها (سلك، راد، بارات، سبائك، نحاس أصفر) ونوردها لمصانع الكابلات والمعادن في تركيا والبلقان.
-سأكون في القاهرة من الأحد ٢٩ نوفمبر إلى الأربعاء ٢ ديسمبر، وأود زيارة مصنعكم والاطلاع على المنتجات والأسعار.
+سأكون في مصر ${ar}، وأود زيارة مصنعكم والاطلاع على المنتجات والأسعار.
 ما هو اليوم والوقت المناسب لكم؟ شكراً جزيلاً.${ph ? "\nواتساب: " + ph : ""}
 
 Hello,
 I am ${n} from ${SENDER.company} (${SENDER.companyEn}), Türkiye. We buy a wide range of copper and aluminium products (wire rod, wire, busbars, ingots, brass) for cable and metal manufacturers in Türkiye and the Balkans.
-I will be in Cairo from Sunday 29 November to Wednesday 2 December and would like to visit your factory to see your products and prices.
+I will be in Egypt ${en} and would like to visit your factory to see your products and prices.
 Which day and time would suit you? Thank you.${ph ? "\nWhatsApp: " + ph : ""}`;
 }
-
-function stopHtml(f, i) {
-  const mob = f.phones.find(isMobile);
-  return `<div class="stop"><div class="num">${i + 1}</div><div>
-    <b>${f.star ? "★ " : ""}${esc(f.name)}</b> <span class="tag tier${f.tier}">${f.tier}</span><br>
-    <span class="meta">${esc(f.area)} · ${f.metal.map(m => METAL_LABEL[m]).join(" + ")} · ${SOURCE_LABEL[f.source]}</span><br>
-    <span class="meta">${esc(f.notes || "")}</span>
+function stopRow(f, i, color) {
+  const wa = f.phones.find(p => isMobile(p) || /WhatsApp/i.test(p)), ck = esc(contactKey(f));
+  return `<div class="stop"><div class="num" style="background:${color}">${i + 1}</div><div>
+    <b>${esc(f.name)}</b><br><span class="meta">📍 ${esc(f.area || f.address)}</span>
+    <div class="pc-plan" style="margin-top:4px">${planDateInput(f)}</div>
     <div class="actions" style="margin-top:6px">
-      ${f.phones[0] ? `<a href="${telHref(f.phones[0])}">📞 Ara</a>` : ""}
-      ${mob ? `<a href="${waHref(mob, apptText())}" target="_blank" rel="noopener">💬 WhatsApp randevu</a>` : ""}
+      ${f.phones[0] ? `<a data-call="${ck}" href="${telHref(f.phones[0])}">📞 Ara</a>` : ""}
+      ${wa ? `<a data-wa="${ck}" href="${waHref(wa, f.metal ? producerWaMessages(f)[0].text : "")}" target="_blank" rel="noopener">💬 WhatsApp</a>` : ""}
       <a href="${mapsHref(f)}" target="_blank" rel="noopener">🧭 Konum</a>
-      <a class="primary-link" href="ziyaret.html#${f.id}">📝 Form</a>
+      ${f.metal ? `<a class="primary-link" href="ziyaret.html#${f.id}">📝 Form</a>` : `<a href="lojistik.html">🚢 Lojistik</a>`}
     </div></div></div>`;
 }
-
+function renderPlan() {
+  const { days, none } = planDays();
+  // Takvim şeridi: ilk planlı günden son planlı güne kadar her gün
+  const cal = $("cal");
+  if (!days.length) cal.innerHTML = `<p class="warning">Henüz ziyaret günü seçilmedi.</p>`;
+  else {
+    const out = [], byDate = Object.fromEntries(days.map((d, i) => [d.date, { ...d, i }]));
+    for (let d = new Date(days[0].date + "T12:00"); d <= new Date(days[days.length - 1].date + "T12:00"); d.setDate(d.getDate() + 1)) {
+      const k = d.toISOString().slice(0, 10), x = byDate[k];
+      out.push(`<a class="cal-day ${x ? "has" : ""}" ${x ? `href="#gun-${k}" style="border-color:${DAY_COLORS[x.i % DAY_COLORS.length]}"` : ""}>
+        <span>${d.toLocaleDateString("tr-TR", { weekday: "short" })}</span><b>${d.getDate()}</b><span>${d.toLocaleDateString("tr-TR", { month: "short" })}</span>
+        <small>${x ? x.stops.length + " yer" : "–"}</small></a>`);
+    }
+    cal.innerHTML = out.join("");
+  }
+  $("days").innerHTML = days.map((d, i) => {
+    const c = DAY_COLORS[i % DAY_COLORS.length], cities = [...new Set(d.stops.map(s => placeCity(s) === "iskenderiye" ? "İskenderiye" : "Kahire"))].join(" → ");
+    return `<div class="section day-card" id="gun-${d.date}" style="border-top:4px solid ${c}">
+      <h2>🗓️ ${fmtDay(d.date)} <small class="meta">· ${cities} · ${d.stops.length} yer · ~${routeKm(d.stops)} km (kuş uçuşu)</small></h2>
+      <div class="actions"><a class="big-btn" href="${dayRouteUrl(d.stops)}" target="_blank" rel="noopener">🧭 Günün rotası (Google Maps)</a>
+        <a class="big-btn ghost" href="harita.html?gun=${d.date}">🗺️ Haritada gör</a></div>
+      ${d.stops.map((s, j) => stopRow(s, j, c)).join("")}</div>`;
+  }).join("");
+  $("nodate").innerHTML = none.length ? `<div class="section"><h2>🚩 Gidilecek ama günü seçilmemiş</h2>
+    <p class="meta">Günü seçince ilgili güne taşınır.</p>${none.map((s, j) => stopRow(s, j, "#888")).join("")}</div>` : "";
+}
 function mailSummary() {
   const seen = new Set(), list = FACTORIES.filter(f => f.emails.length && !seen.has(f.emails[0]) && seen.add(f.emails[0]));
   const cnt = k => list.filter(f => (mailState(f.emails[0]).status || "") === k).length;
-  document.getElementById("mailsum").innerHTML = Object.entries(MAIL_STATUS).map(([k, v]) => `<span class="stat"><b>${cnt(k)}</b>${v}</span>`).join("");
+  $("mailsum").innerHTML = Object.entries(MAIL_STATUS).map(([k, v]) => `<span class="stat"><b>${cnt(k)}</b>${v}</span>`).join("");
 }
-function onMailChange() { mailSummary(); }
-function render() {
-  document.getElementById("msg").textContent = apptText();
-  document.getElementById("days").innerHTML = [5, 1, 2, 3, 4].map(d => {
-    const stops = FACTORIES.filter(f => f.day === d && f.lat != null).sort((a, b) => a.order - b.order);
-    return `<div class="section"><h2>🗓️ ${DAY_INFO[d].title}</h2>
-      <p class="meta">${DAY_INFO[d].tip}</p>
-      <a class="big-btn" href="${routeUrl(stops)}" target="_blank" rel="noopener">🧭 Günün rotasını Google Maps'te aç (${stops.length} durak)</a>
-      ${stops.map(stopHtml).join("")}</div>`;
-  }).join("");
+function renderMails() {
   const seen = new Set();
-  document.getElementById("mails").innerHTML = FACTORIES.filter(f => f.emails.length && !seen.has(f.emails[0]) && seen.add(f.emails[0])).sort((a, b) => a.tier.localeCompare(b.tier)).map(f =>
+  $("mails").innerHTML = FACTORIES.filter(f => f.emails.length && !seen.has(f.emails[0]) && seen.add(f.emails[0])).sort((a, b) => a.tier.localeCompare(b.tier)).map(f =>
     `<div class="stop"><div class="num">${f.tier}</div><div><b>${esc(f.name.split(" – ")[0])}</b><br><span class="meta">${esc(f.emails[0])}</span>
       <div class="actions" style="margin-top:6px"><a class="primary-link" data-send="${esc(f.emails[0])}" href="${outlookAppHref(f)}">📧 Outlook uygulaması</a>
-      <a data-send="${esc(f.emails[0])}" href="${outlookWebHref(f)}" target="_blank" rel="noopener">🌐 Outlook Web</a><a data-send="${esc(f.emails[0])}" href="${mailtoRFQ(f)}">✉️ Diğer e-posta uygulaması</a></div>
+      <a data-send="${esc(f.emails[0])}" href="${outlookWebHref(f)}" target="_blank" rel="noopener">🌐 Outlook Web</a></div>
       ${mailTracker(f)}</div></div>`).join("");
   mailSummary();
-  document.getElementById("phoneonly").innerHTML = FACTORIES.filter(f => f.day === 0).map((f, i) => stopHtml(f, i).replace(/<\/div><\/div>$/, mailTracker(f) + "</div></div>")).join("");
 }
-hotel.oninput = () => { lsSet("valmeto-hotel", hotel.value); render(); };
-myname.oninput = () => { lsSet("valmeto-name", myname.value); render(); };
-myphone.oninput = () => { lsSet("valmeto-phone", myphone.value); render(); };
-document.getElementById("copy").onclick = async () => {
-  try { await navigator.clipboard.writeText(apptText()); document.getElementById("copy").textContent = "Kopyalandı ✓"; }
-  catch (e) { alert("Kopyalanamadı; metni basılı tutup kopyalayın."); }
-};
+function render() { $("msg").textContent = apptText(); renderPlan(); renderMails(); }
+window.onPlanChange = renderPlan; window.onGoChange = renderPlan; window.onMailChange = mailSummary;
+$("hotelAlex").oninput = () => { lsSet("valmeto-hotel-alex", $("hotelAlex").value); renderPlan(); };
+$("hotelCairo").oninput = () => { lsSet("valmeto-hotel-cairo", $("hotelCairo").value); renderPlan(); };
+myname.oninput = () => { lsSet("valmeto-name", myname.value); $("msg").textContent = apptText(); };
+myphone.oninput = () => { lsSet("valmeto-phone", myphone.value); $("msg").textContent = apptText(); };
+$("copy").onclick = async () => { try { await navigator.clipboard.writeText(apptText()); $("copy").textContent = "Kopyalandı ✓"; } catch (e) { alert("Kopyalanamadı; metni basılı tutup kopyalayın."); } };
 render();
 </script>
 </body>

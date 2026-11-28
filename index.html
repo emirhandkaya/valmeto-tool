@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Valmeto">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="style.css?v=43">
+<link rel="stylesheet" href="style.css?v=45">
 </head>
 <body>
 <header class="top"><div class="inner">
@@ -21,174 +21,96 @@
 </div></header>
 
 <main>
-  <div class="warning" style="border-left-color:var(--ok)">
-    <b>🎯 Ürün yelpazemiz:</b> bakır (filmaşin, tel, çubuk, şerit, bara, külçe), alüminyum (külçe, billet, filmaşin, profil, levha) ve pirinç.
-    Hurdadan üretilmiş ürünler de olur; hurda doğrudan alınmayacak. Liste firmaların kendi sitelerindeki ürünlere göre süzüldü: her kartta “✔ / ◐ / ?” işareti ve sitedeki tam ürün listesi var.
-    Kablo müşterileri için bakırda kritik ölçüler: <b>saflık (% Cu ≥ 99,9), iletkenlik (% IACS), oksijen (ppm), çap toleransı, kangal ağırlığı</b> – numune alıp Türkiye'de test ettir.
-    <br><small>Not: Mısır'ın 2026 hurda ihracat yasağı (Karar 77/2026) mamul filmaşin/teli kapsamamalı, ama bazı bakır ürünleri için genelge bildirildiği için her fabrikaya ihracat iznini teyit ettir.
-    <a href="https://www.goeic.gov.eg/en/laws-and-decisions/list/898" target="_blank" rel="noopener">GOEIC kararları</a></small>
-  </div>
-
-  <div class="warning" style="border-left-color:var(--accent)">
-    <b>Fiyat referansı:</b>
-    LME bakır <input id="lme" type="number" step="any" class="mini"> $/t ·
-    LME alüminyum <input id="lmeal" type="number" step="any" class="mini"> $/t ·
-    1 USD = <input id="fx" type="number" step="any" class="mini"> EGP
-    <br><small>Varsayılanlar 25.11.2026 civarı; gitmeden önce güncelle. Teklif girince kartta LME'ye göre % görünür.
-    Mısır iç piyasa hurda fiyatları ve detaylı hesap için <a href="hesap.html">Fiyat Hesabı</a>.</small>
-  </div>
-
-  <details class="section" open>
-    <summary><b>💬 WhatsApp konuşması – sırayla gönder</b> <span class="meta">(kapatmak için dokun)</span></summary>
-    <p class="meta">Önce kendini tanıt, sonra ne yaptığınızı, en son ürünleri ve sorularını yaz. Kartlardaki “💬 WhatsApp” düğmesi sohbeti 1. mesaj o firmanın adıyla hazır açar; 2. ve 3. mesajı buradan kopyalayıp yapıştır.</p>
+  <details class="section wa-top" open>
+    <summary><b>💬 WhatsApp konuşması</b> <span class="meta">– 1. mesaj karttaki düğmeyle hazır gider, 2. ve 3.'yü buradan kopyala</span></summary>
     <div id="pwMsgs"></div>
   </details>
 
-  <div class="toolbar">
+  <div class="filters">
     <input id="q" type="search" placeholder="Ara: firma, bölge, ürün…">
-    <select id="tier">
-      <option value="AB">A + B (önerilen)</option>
-      <option value="A">Sadece A – Hedef (ucuz)</option>
-      <option value="">Hepsi (referanslar dahil)</option>
-    </select>
     <select id="metal">
       <option value="">Tüm metaller</option>
       <option value="bakir">Bakır</option>
       <option value="aluminyum">Alüminyum</option>
     </select>
-    <select id="day">
-      <option value="">Tüm günler</option>
-      <option value="5">İskenderiye</option>
-      <option value="1">Pazar 29 Kas</option>
-      <option value="2">Pazartesi 30 Kas</option>
-      <option value="3">Salı 1 Ara</option>
-      <option value="4">Çarşamba 2 Ara</option>
-      <option value="0">Telefonla</option>
-    </select>
-    <select id="sort">
-      <option value="">Sıra: öncelik</option>
-      <option value="price">En ucuz teklif önce</option>
-    </select>
-    <button id="csv" class="primary">CSV indir</button>
+    <label class="chk"><input type="checkbox" id="onlyGo"> 🚩 Sadece gidilecekler</label>
+    <button id="csv">CSV</button>
   </div>
-
   <p class="meta" id="count"></p>
   <div id="list"></div>
 </main>
-<footer>Liste 25.11.2026'da firmaların kendi sitelerindeki ürünlere göre gözden geçirildi; sadece bakır/alüminyum/pirinç ürünü üretenler kaldı. Çıkarılanlar: ALUPCO (Suudi), Coppermelt (tatlıcı), Q-Bars ve ERAMCO (doğrulanamadı), Cairo Cables (kablo üreticisi = alıcı). Koordinatlar yaklaşıktır.</footer>
+<footer>Ürün ve iletişim bilgileri firmaların kendi sitelerinden (Kasım 2026). Haritadaki konumlar yaklaşıktır; “Yol tarifi” firmayı adıyla arar.</footer>
 
-<script src="data.js?v=43"></script>
-<script src="common.js?v=43"></script>
+<script src="data.js?v=45"></script>
+<script src="common.js?v=45"></script>
 <script>
-const notes = loadNotes();
 const visits = lsGet("valmeto-visits", {});
-let R = refs();
-const lmeIn = document.getElementById("lme"), lmeAl = document.getElementById("lmeal"), fxIn = document.getElementById("fx");
-lmeIn.value = R.cu; lmeAl.value = R.al; fxIn.value = R.fx;
-[lmeIn, lmeAl, fxIn].forEach(i => i.onchange = () => { saveRefs({ cu: +lmeIn.value, al: +lmeAl.value, fx: +fxIn.value }); R = refs(); render(); });
-
-// Teklif: önce detaylı ziyaret formundan, yoksa karttaki hızlı nottan
-function offerUsdT(f) {
-  const v = visits[f.id];
-  if (v && v.priceUsdT) return v.priceUsdT;
-  return parseFloat(notes[f.id]?.price) || null;
-}
-function premiumTag(f) {
-  const price = offerUsdT(f); if (!price) return "";
+const R = refs();
+function offerUsdT(f) { const v = visits[f.id]; return v && v.priceUsdT ? v.priceUsdT : null; }
+function priceTag(f) {
+  const p = offerUsdT(f); if (!p) return "";
   const ref = f.metal[0] === "aluminyum" ? R.al : R.cu;
-  const pct = (price / ref * 100).toFixed(1);
-  return `<span class="tag ${price > ref * 1.03 ? "unv" : "ok"}">${Math.round(price)} $/t = LME'nin %${pct}'i</span>`;
+  return `<span class="tag ${p > ref * 1.03 ? "unv" : "ok"}">💰 LME %${(p / ref * 100).toFixed(0)}</span>`;
 }
+const isWa = p => isMobile(p) || /WhatsApp/i.test(p);
+const shortPhone = p => p.replace(/\s*\(.*\)\s*/, "");
 
 function card(f) {
-  const n = notes[f.id] || {};
-  const v = visits[f.id];
-  const tags = `<span class="tag tier${f.tier}">${f.tier}</span>`
-    + f.metal.map(m => `<span class="tag ${m}">${METAL_LABEL[m]}</span>`).join("")
-    + `<span class="tag src">${SOURCE_LABEL[f.source] || ""}</span>`
-    + (f.official ? `<span class="tag ok">✅ resmi site</span>` : `<span class="tag unv">⚠️ resmi site yok</span>`)
-    + (v ? `<span class="tag visited">Ziyaret formu dolu</span>` : "")
-    + premiumTag(f);
   const ck = esc(contactKey(f));
-  const phones = f.phones.map(p => `📞 <a data-call="${ck}" href="${telHref(p)}">${esc(p)}</a>` + (isMobile(p) || /WhatsApp/i.test(p) ? ` · <a data-wa="${ck}" href="${waHref(p, producerWaMessages(f)[0].text)}" target="_blank" rel="noopener">💬 WhatsApp</a>` : "")).join("<br>");
-  const emails = f.emails.map(e => `✉️ <a href="mailto:${esc(e)}">${esc(e)}</a>`).join("<br>");
-  return `<article class="card" data-id="${f.id}">
-    <h2>${f.star ? "★ " : ""}${esc(f.name)}</h2>
-    ${goToggle(f)}
-    <div class="tags">${tags}</div>
-    <div class="meta">📍 ${esc(f.area)}<br>${esc(f.address)}<br>🗓️ ${DAYS[f.day]}</div>
-    <div class="contacts">${phones || "<span class='meta'>Telefon bulunamadı</span>"}<br>${emails || "<span class='meta'>E-posta bulunamadı</span>"}
-      ${f.contact ? `<br>👤 ${esc(f.contact)}` : ""}</div>
-    <div class="ours ${f.ours}"><b>${OURS_LABEL[f.ours] || ""}</b>${f.oursNote ? `<br>${esc(f.oursNote)}` : ""}</div>
-    <div><b style="font-size:.85rem">Sitesindeki ürünler${f.official ? "" : " (rehber)"}</b><ul class="products">${f.products.map(p => `<li>${esc(p)}</li>`).join("")}</ul>
-      ${f.productsSource ? `<a class="meta" href="${esc(f.productsSource)}" target="_blank" rel="noopener">Ürün kaynağı ↗</a>` : ""}</div>
-    ${f.active ? `<div class="meta">📅 <b>Faaliyet:</b> ${esc(f.active)}</div>` : ""}
-    ${f.verifyNote ? `<div class="meta verify">🔎 <b>Teyit (${esc(f.checked || "")}):</b> ${esc(f.verifyNote)}</div>` : ""}
-    <div class="actions">
-      <a class="primary-link" href="ziyaret.html#${f.id}">📝 Ziyaret formu</a>
-      <a href="${mapsHref(f)}" target="_blank" rel="noopener">🧭 Yol tarifi</a>
-      ${f.lat != null ? `<a href="harita.html#${f.id}">🗺️ Harita</a>` : ""}
-      ${f.website ? `<a href="${esc(f.website)}" target="_blank" rel="noopener">🌐 Site</a>` : ""}
-      ${f.emails[0] ? `<a data-send="${esc(f.emails[0])}" href="${outlookAppHref(f)}">📧 Outlook uygulaması</a><a data-send="${esc(f.emails[0])}" href="${outlookWebHref(f)}" target="_blank" rel="noopener">🌐 Outlook Web</a>` : ""}
-    </div>
+  const wa = f.phones.find(isWa), tel = f.phones[0];
+  const tags = f.metal.map(m => `<span class="tag ${m}">${METAL_LABEL[m]}</span>`).join("")
+    + (f.tier === "C" ? `<span class="tag tierC">Büyük / pahalı</span>` : "")
+    + (!f.official ? `<span class="tag unv">Sitesi yok</span>` : "") + priceTag(f);
+  const mainBtns = [
+    tel ? `<a class="btn" data-call="${ck}" href="${telHref(tel)}">📞 Ara</a>` : "",
+    wa ? `<a class="btn wa" data-wa="${ck}" href="${waHref(wa, producerWaMessages(f)[0].text)}" target="_blank" rel="noopener">💬 WhatsApp</a>` : "",
+    f.emails[0] ? `<a class="btn" data-send="${esc(f.emails[0])}" href="${outlookAppHref(f)}">📧 E-posta</a>` : "",
+    `<a class="btn" href="${mapsHref(f)}" target="_blank" rel="noopener">🧭 Yol tarifi</a>`,
+    `<a class="btn primary-link" href="ziyaret.html#${f.id}">📝 Form</a>`
+  ].join("");
+  return `<article class="card pcard" data-id="${f.id}">
+    <div class="pc-head"><h2>${f.star ? "★ " : ""}${esc(f.name)}</h2><div class="tags">${tags}</div></div>
+    <div class="meta">📍 ${esc(f.area)}</div>
+    <div class="pc-plan">${goToggle(f)}${planDateInput(f)}</div>
+    <div class="pc-btns">${mainBtns}</div>
     ${mailTracker(f)}
-    <details class="visit" ${n.status || n.text ? "open" : ""}>
-      <summary>Hızlı not</summary>
-      <label>Durum<select data-k="status">${Object.entries(STATUS_LABEL).map(([k, l]) => `<option value="${k}" ${n.status === k ? "selected" : ""}>${l}</option>`).join("")}</select></label>
-      <div class="row">
-        <label>Randevu<input type="datetime-local" data-k="date" value="${esc(n.date)}"></label>
-        <label>Teklif (USD/ton)<input type="number" step="any" data-k="price" value="${esc(n.price)}"></label>
-      </div>
-      <label>Not<textarea rows="2" data-k="text">${esc(n.text)}</textarea></label>
+    <details class="pc-more"><summary>Bilgiler: ürünler, tüm numaralar, adres</summary>
+      <p class="pc-ours ${f.ours}"><b>${OURS_LABEL[f.ours] || ""}</b>${f.oursNote ? " – " + esc(f.oursNote) : ""}</p>
+      <b class="mini-h">Ürünler</b><ul class="products">${f.products.map(p => `<li>${esc(p)}</li>`).join("")}</ul>
+      <b class="mini-h">İletişim</b>
+      <ul class="plain">${f.phones.map(p => `<li>📞 <a data-call="${ck}" href="${telHref(p)}">${esc(shortPhone(p))}</a> <span class="meta">${esc((p.match(/\((.*)\)/) || [, ""])[1])}</span>${isWa(p) ? ` · <a data-wa="${ck}" href="${waHref(p, producerWaMessages(f)[0].text)}" target="_blank" rel="noopener">WhatsApp</a>` : ""}</li>`).join("")}
+        ${f.emails.map(e => `<li>✉️ ${esc(e)} · <a data-send="${esc(e)}" href="${outlookAppHref(f)}">Outlook</a> · <a data-send="${esc(e)}" href="${outlookWebHref(f)}" target="_blank" rel="noopener">Outlook Web</a></li>`).join("")}
+        ${f.contact ? `<li>👤 ${esc(f.contact)}</li>` : ""}</ul>
+      <b class="mini-h">Adres</b><p>${esc(f.address)}</p>
+      ${f.verifyNote ? `<p class="meta">🔎 ${esc(f.verifyNote)}</p>` : ""}
+      <p class="pc-links">${f.website ? `<a href="${esc(f.website)}" target="_blank" rel="noopener">🌐 Site</a>` : ""}${f.lat != null ? `<a href="harita.html#${f.id}">🗺️ Haritada gör</a>` : ""}</p>
     </details>
   </article>`;
 }
 
 function render() {
-  const q = document.getElementById("q").value.toLowerCase();
-  const m = document.getElementById("metal").value, t = document.getElementById("tier").value, d = document.getElementById("day").value;
-  let items = FACTORIES.filter(f => (!t || t.includes(f.tier)) && (!m || f.metal.includes(m)) && (d === "" || String(f.day) === d)
-    && (!q || JSON.stringify(f).toLowerCase().includes(q) || (notes[f.id]?.text || "").toLowerCase().includes(q)));
-  const byPrice = document.getElementById("sort").value === "price";
-  let html = "";
-  if (byPrice) {
-    items.sort((a, b) => (offerUsdT(a) || Infinity) - (offerUsdT(b) || Infinity));
-    html = `<div class="grid">${items.map(card).join("")}</div>`;
-  } else {
-    const contacted = f => !!mailState(contactKey(f)).status;
-    const sorter = (a, b) => (isGo(b) - isGo(a)) || a.tier.localeCompare(b.tier) || ((b.star ? 1 : 0) - (a.star ? 1 : 0)) || ((a.day || 9) - (b.day || 9));
-    const yes = items.filter(contacted).sort(sorter), no = items.filter(f => !contacted(f)).sort(sorter);
-    if (yes.length) html += `<h2 class="group-h contacted">📞 İrtibata geçilenler <small>${yes.length} kayıt</small></h2><div class="grid">${yes.map(card).join("")}</div>`;
-    if (no.length) html += `<h2 class="group-h">İrtibata geçilmeyenler <small>${no.length} kayıt</small></h2><div class="grid">${no.map(card).join("")}</div>`;
-  }
-  document.getElementById("list").innerHTML = html;
-  document.getElementById("count").textContent = `${items.length} kayıt gösteriliyor (toplam ${FACTORIES.length}). 🚩 işaretliler grup içinde en üstte.`;
+  const q = document.getElementById("q").value.toLowerCase(), m = document.getElementById("metal").value, og = document.getElementById("onlyGo").checked;
+  const items = FACTORIES.filter(f => (!m || f.metal.includes(m)) && (!og || isGo(f)) && (!q || JSON.stringify(f).toLowerCase().includes(q)));
+  const contacted = f => !!mailState(contactKey(f)).status;
+  const sorter = (a, b) => (isGo(b) - isGo(a)) || (planDate(a.id) || "9").localeCompare(planDate(b.id) || "9") || a.tier.localeCompare(b.tier) || ((b.star ? 1 : 0) - (a.star ? 1 : 0));
+  const yes = items.filter(contacted).sort(sorter), no = items.filter(f => !contacted(f)).sort(sorter);
+  document.getElementById("list").innerHTML =
+    (yes.length ? `<h2 class="group-h contacted">📞 İrtibata geçilenler <small>${yes.length}</small></h2><div class="grid">${yes.map(card).join("")}</div>` : "")
+    + (no.length ? `<h2 class="group-h">İrtibata geçilmeyenler <small>${no.length}</small></h2><div class="grid">${no.map(card).join("")}</div>` : "");
+  document.getElementById("count").textContent = `${items.length} üretici · 🚩 gidilecekler ve ziyaret günü olanlar üstte`;
 }
-
-function saveQuick(e, rerender) {
-  const el = e.target, k = el.dataset.k; if (!k) return;
-  const id = el.closest(".card").dataset.id;
-  notes[id] = { ...(notes[id] || {}), [k]: el.value };
-  saveNotes(notes);
-  if (rerender && (k === "status" || k === "price")) render();
-}
-document.getElementById("list").addEventListener("input", e => saveQuick(e, false));
-document.getElementById("list").addEventListener("change", e => saveQuick(e, true));
-["q", "metal", "tier", "day", "sort"].forEach(id => document.getElementById(id).addEventListener("input", render));
+["q", "metal", "onlyGo"].forEach(id => document.getElementById(id).addEventListener("input", render));
 
 document.getElementById("csv").onclick = () => {
-  const head = ["Sınıf", "Firma", "Metal", "Kaynak", "Gün", "Bölge", "Adres", "Telefon", "E-posta", "Ürünler", "Durum", "Teklif USD/t", "LME %", "Not"];
-  const rows = FACTORIES.map(f => { const n = notes[f.id] || {}; const p = offerUsdT(f); const ref = f.metal[0] === "aluminyum" ? R.al : R.cu;
-    return [f.tier, f.name, f.metal.map(x => METAL_LABEL[x]).join("/"), SOURCE_LABEL[f.source], DAYS[f.day], f.area, f.address, f.phones.join(" | "), f.emails.join(" | "), f.products.join(" | "), STATUS_LABEL[n.status || ""], p ? Math.round(p) : "", p ? (p / ref * 100).toFixed(1) : "", n.text]; });
+  const head = ["Firma", "Metal", "Bölge", "Adres", "Telefon", "E-posta", "Ürünler", "Gidilecek", "Ziyaret günü", "İletişim durumu", "Not", "Teklif USD/t", "LME %"];
+  const rows = FACTORIES.map(f => { const ms = mailState(contactKey(f)), p = offerUsdT(f), ref = f.metal[0] === "aluminyum" ? R.al : R.cu;
+    return [f.name, f.metal.map(x => METAL_LABEL[x]).join("/"), f.area, f.address, f.phones.join(" | "), f.emails.join(" | "), f.products.join(" | "), isGo(f) ? "Evet" : "", planDate(f.id), MAIL_STATUS[ms.status || ""], ms.note, p ? Math.round(p) : "", p ? (p / ref * 100).toFixed(1) : ""]; });
   const csv = "﻿" + [head, ...rows].map(r => r.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(";")).join("\n");
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
-  a.download = "misir-ureticiler.csv"; a.click();
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" })); a.download = "misir-ureticiler.csv"; a.click();
 };
-window.onMailChange = render; window.onGoChange = render;
-document.getElementById("pwMsgs").innerHTML = producerWaMessages(null).map((m, i) => `<div style="margin-top:10px"><b>${m.tr}</b>
-  <pre style="white-space:pre-wrap;font:inherit;font-size:.92rem;background:var(--bg);padding:10px;border-radius:8px;border:1px solid var(--border);margin:6px 0">${esc(m.text)}</pre>
-  <button class="big-btn ghost" data-copypw="${i}">📋 ${i + 1}. mesajı kopyala</button></div>`).join("");
+window.onMailChange = render; window.onGoChange = render; window.onPlanChange = render;
+document.getElementById("pwMsgs").innerHTML = producerWaMessages(null).map((m, i) => `<div class="wa-msg"><b>${m.tr}</b>
+  <pre>${esc(m.text)}</pre><button class="big-btn ghost" data-copypw="${i}">📋 ${i + 1}. mesajı kopyala</button></div>`).join("");
 try { render(); } catch (err) {
   document.getElementById("list").innerHTML = `<div class="warning danger">Liste yüklenemedi (eski önbellek olabilir). <button class="big-btn" onclick="(async()=>{try{for(const r of await navigator.serviceWorker.getRegistrations())await r.unregister();for(const k of await caches.keys())await caches.delete(k);}catch(e){}location.reload(true)})()">🔄 Önbelleği temizle ve yenile</button><br><small>${esc(err.message)}</small></div>`;
 }

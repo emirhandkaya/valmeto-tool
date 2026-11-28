@@ -1,8 +1,8 @@
 // Çevrimdışı önbellek. Her zaman önce ağdan TAZE dosya istenir (HTTP önbelleği atlanır);
 // ağ yoksa son kaydedilen sürüm kullanılır. Sürüm değişince eski önbellekler silinir.
-const CACHE = "valmeto-v43";
+const CACHE = "valmeto-v45";
 const CORE = ["./", "index.html", "gezi.html", "ziyaret.html", "hesap.html", "arapca.html", "musteriler.html", "harita.html",
-  "style.css?v=43", "common.js?v=43", "data.js?v=43", "musteriler.js?v=43", "lojistik.js?v=43", "lojistik.html",
+  "style.css?v=45", "common.js?v=45", "data.js?v=45", "musteriler.js?v=45", "lojistik.js?v=45", "lojistik.html",
   "manifest.webmanifest?v=2", "icon-192-v2.png", "icon-512-v2.png", "icon-maskable-512-v2.png", "apple-touch-icon-v2.png", "favicon-32-v2.png", "logo-header-v2.png",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css", "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"];
 self.addEventListener("install", e => e.waitUntil(caches.open(CACHE).then(c => Promise.allSettled(CORE.map(u => c.add(new Request(u, { cache: "reload" }))))).then(() => self.skipWaiting())));

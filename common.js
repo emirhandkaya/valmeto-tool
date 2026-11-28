@@ -103,7 +103,7 @@ window.addEventListener("beforeinstallprompt", e => {
 
 // ---- İletişim takibi (e-posta, telefon, WhatsApp). Anahtar: firmanın e-postası; yoksa firma kimliği.
 const MAIL_KEY = "valmeto-mail";
-const MAIL_STATUS = { "": "Henüz iletişim yok", atildi: "📤 Mail atıldı", tel: "📞 Telefonla arandı", wa: "💬 WhatsApp yazıldı",
+const MAIL_STATUS = { "": "İletişim yok", atildi: "📤 Mail atıldı", tel: "📞 Telefonla arandı", wa: "💬 WhatsApp yazıldı",
   cevap: "📥 Cevap geldi", gorusme: "🤝 Görüşülüyor", teklif: "💰 Teklif alındı", olumsuz: "✖ Olumsuz / cevap yok" };
 function contactKey(f) { return f.emails && f.emails[0] ? f.emails[0] : "firma:" + f.id; }
 function mailState(key) { return (lsGet(MAIL_KEY, {})[key]) || {}; }
@@ -195,4 +195,55 @@ document.addEventListener("click", async e => {
   const i = +b.dataset.copypw;
   try { await navigator.clipboard.writeText(producerWaMessages(null)[i].text); b.textContent = "Kopyalandı ✓"; setTimeout(() => b.textContent = `📋 ${i + 1}. mesajı kopyala`, 2000); }
   catch (err) { alert("Kopyalanamadı; metni basılı tutup kopyala."); }
+});
+
+// ---- Ziyaret takvimi: her 🚩 yer için gün seçilir; gezi planı ve harita bu günlere göre rota çıkarır.
+const PLAN_KEY = "valmeto-plan";
+const CITY = { iskenderiye: [31.2001, 29.9187], kahire: [30.0444, 31.2357] };
+function planDate(id) { return lsGet(PLAN_KEY, {})[id] || ""; }
+function setPlanDate(id, d) { const p = lsGet(PLAN_KEY, {}); if (d) p[id] = d; else delete p[id]; lsSet(PLAN_KEY, p); }
+function placeCity(f) { return f.region === "iskenderiye" ? "iskenderiye" : "kahire"; }
+function allPlaces() { return FACTORIES.concat(window.LOGISTICS || []); }
+function haversine(a, b) {
+  const R = 6371, t = x => x * Math.PI / 180, dLat = t(b[0] - a[0]), dLng = t(b[1] - a[1]);
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(t(a[0])) * Math.cos(t(b[0])) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+function nearestChain(list, start) {
+  const rest = list.slice(), out = []; let cur = start;
+  while (rest.length) { rest.sort((a, b) => haversine(cur, [a.lat, a.lng]) - haversine(cur, [b.lat, b.lng])); const n = rest.shift(); out.push(n); cur = [n.lat, n.lng]; }
+  return out;
+}
+// Aynı günde hem İskenderiye hem Kahire varsa önce İskenderiye, sonra Kahire; her şehirde en yakından uzağa.
+function orderStops(list) {
+  const alex = nearestChain(list.filter(f => placeCity(f) === "iskenderiye"), CITY.iskenderiye);
+  const last = alex.length ? [alex[alex.length - 1].lat, alex[alex.length - 1].lng] : CITY.kahire;
+  return alex.concat(nearestChain(list.filter(f => placeCity(f) !== "iskenderiye"), last));
+}
+function dayStart(stops) { return stops.length && placeCity(stops[0]) === "iskenderiye" ? CITY.iskenderiye : CITY.kahire; }
+function routeKm(stops) { let km = 0, cur = dayStart(stops); stops.forEach(s => { km += haversine(cur, [s.lat, s.lng]); cur = [s.lat, s.lng]; }); return Math.round(km); }
+function planDays() {
+  const go = allPlaces().filter(f => isGo(f) && f.lat != null), by = {}, none = [];
+  go.forEach(f => { const d = planDate(f.id); if (d) (by[d] = by[d] || []).push(f); else none.push(f); });
+  return { days: Object.keys(by).sort().map(d => ({ date: d, stops: orderStops(by[d]) })), none };
+}
+function fmtDay(d, opts) { return new Date(d + "T12:00:00").toLocaleDateString("tr-TR", opts || { weekday: "long", day: "numeric", month: "long" }); }
+const DAY_COLORS = ["#84601f", "#1a73e8", "#2e7d4f", "#b3261e", "#7b4fa0", "#00838f", "#ef6c00", "#5d4037"];
+function hotelFor(stops) { return lsGet(stops.length && placeCity(stops[0]) === "iskenderiye" ? "valmeto-hotel-alex" : "valmeto-hotel-cairo", ""); }
+function dayRouteUrl(stops) {
+  if (!stops.length) return "";
+  const pts = stops.map(mapQ), dest = pts.pop(), origin = hotelFor(stops);
+  let u = `https://www.google.com/maps/dir/?api=1&travelmode=driving&destination=${encodeURIComponent(dest)}`;
+  if (origin) u += `&origin=${encodeURIComponent(origin)}`;
+  if (pts.length) u += `&waypoints=${encodeURIComponent(pts.join("|"))}`;
+  return u;
+}
+function planDateInput(f) {
+  return isGo(f) ? `<label class="plandate">📅 Ziyaret günü <input type="date" data-plan="${f.id}" value="${esc(planDate(f.id))}"></label>` : "";
+}
+document.addEventListener("change", e => {
+  const id = e.target.dataset && e.target.dataset.plan; if (!id) return;
+  setPlanDate(id, e.target.value);
+  document.querySelectorAll(`[data-plan="${id}"]`).forEach(c => { if (c !== e.target) c.value = e.target.value; });
+  if (typeof onPlanChange === "function") onPlanChange();
 });

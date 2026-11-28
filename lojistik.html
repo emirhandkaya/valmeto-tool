@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Valmeto">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="style.css?v=43">
+<link rel="stylesheet" href="style.css?v=45">
 </head>
 <body>
 <header class="top"><div class="inner">
@@ -61,8 +61,8 @@
 </main>
 <footer>Kaynaklar: firmaların resmi siteleri, İskenderiye Denizcilik Odası (acs.org.eg), gümrük platformu ve rehberler (Kasım 2026). “(rehber)” yazan numaraları ilk temasta teyit et.</footer>
 
-<script src="lojistik.js?v=43"></script>
-<script src="common.js?v=43"></script>
+<script src="lojistik.js?v=45"></script>
+<script src="common.js?v=45"></script>
 <script>
 const $ = id => document.getElementById(id);
 const DEST = { skg: "Thessaloniki (Greece)" };
@@ -129,7 +129,7 @@ function render() {
     const mails = f.emails.map(e => `✉️ ${esc(e)} · <a data-send="${ck}" href="ms-outlook://compose?to=${encodeURIComponent(e)}&subject=${subj}&body=${encodeURIComponent(msg)}">📧 Outlook</a> · <a data-send="${ck}" href="https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(e)}&subject=${subj}&body=${encodeURIComponent(msg)}" target="_blank" rel="noopener">🌐 Outlook Web</a>`).join("<br>");
     return `<article class="card">
       <h2>${f.star ? "★ " : ""}${esc(f.name)}</h2>
-      ${goToggle(f)}
+      ${goToggle(f)}${planDateInput(f)}
       <div class="tags"><span class="tag ${f.type === "hat" ? "tierB" : "tierA"}">${f.type === "hat" ? "Gemi hattı" : "Forwarder"}</span>
         ${f.official ? `<span class="tag ok">✅ resmi site</span>` : `<span class="tag unv">⚠️ rehber kaydı</span>`}</div>
       <div class="meta">📍 ${esc(f.address)}</div>
@@ -155,7 +155,7 @@ document.addEventListener("click", async e => {
   catch (err) { alert("Kopyalanamadı; metni basılı tutup kopyala."); }
 });
 $("copy").onclick = async () => { try { await navigator.clipboard.writeText(message()); $("copy").textContent = "Kopyalandı ✓"; } catch (e) { alert("Kopyalanamadı; metni basılı tutup kopyala."); } };
-window.onMailChange = render; window.onGoChange = render;
+window.onMailChange = render; window.onGoChange = render; window.onPlanChange = render;
 render();
 </script>
 </body>

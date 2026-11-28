@@ -13,7 +13,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Valmeto">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="style.css?v=43">
+<link rel="stylesheet" href="style.css?v=45">
 <style>
   .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; align-items: center; }
   .tabs button { font-weight: 600; }
@@ -41,13 +41,13 @@
 
   <div id="map"></div>
 
-  <div id="routePanel" class="section form" style="margin-top:12px">
-    <h2>🧭 Rota: önce İskenderiye, sonra Kahire</h2>
-    <label>Başlangıç noktası (İskenderiye'de varış yeri / otel)
-      <input id="start" placeholder="İskenderiye, Mısır"></label>
-    <p class="meta">Sıra otomatik: önce İskenderiye'deki 🚩 fabrikalar, sonra Kahire'dekiler (en yakından uzağa). Haritadaki çizgi düz çizgidir;
-      gerçek yol tarifi için aşağıdaki Google Maps düğmelerini kullan. Gidilecekleri değiştirmek için Mısır Üreticileri sayfasında veya haritadaki noktada “🚩 Gidilecek” kutusunu işaretle.</p>
+  <div id="routePanel" class="section" style="margin-top:12px">
+    <h2>🧭 Gün gün rota</h2>
+    <label class="meta">Gösterilecek gün
+      <select id="daySel" style="font:inherit;font-size:16px;padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);width:100%;margin-top:4px"></select></label>
+    <p class="meta">Günleri Mısır Üreticileri / Lojistik kartlarındaki “📅 Ziyaret günü”nden seç. Her gün ayrı renkte; numaralar o günün ziyaret sırası. Çizgiler kuş uçuşudur – gerçek yol için Google Maps düğmesi.</p>
     <div id="legs"></div>
+  </div>
   </div>
 
   <div class="legend" id="legendAll" style="margin-top:10px">
@@ -63,15 +63,13 @@
 </main>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="data.js?v=43"></script>
-<script src="musteriler.js?v=43"></script>
-<script src="lojistik.js?v=43"></script>
-<script src="common.js?v=43"></script>
+<script src="data.js?v=45"></script>
+<script src="musteriler.js?v=45"></script>
+<script src="lojistik.js?v=45"></script>
+<script src="common.js?v=45"></script>
 <script>
 const ALEX = [31.2001, 29.9187];
 let mode = lsGet("valmeto-mapmode", "go");
-const startIn = document.getElementById("start");
-startIn.value = lsGet("valmeto-route-start", "");
 const map = L.map("map").setView([30.6, 30.9], 8);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "&copy; OpenStreetMap" }).addTo(map);
 const layer = L.layerGroup().addTo(map);
@@ -86,7 +84,7 @@ function popup(f) {
     <small>${esc(f.address)}</small><br>
     ${f.phones.slice(0, 3).map(p => `📞 <a href="${telHref(p)}">${esc(p)}</a>`).join("<br>")}
     ${f.emails.length ? "<br>✉️ " + esc(f.emails[0]) : ""}
-    <br><br>${goToggle(f)}
+    <br><br>${goToggle(f)} ${planDateInput(f)}
     <br><a href="${mapsHref(f)}" target="_blank" rel="noopener">🧭 Google Maps'te aç</a> · ${f.metal ? `<a href="ziyaret.html#${f.id}">📝 Form</a>` : `<a href="lojistik.html">🚢 Lojistik</a>`}`;
 }
 function dist(a, b) { const dx = a[0] - b[0], dy = (a[1] - b[1]) * Math.cos(a[0] * Math.PI / 180); return Math.hypot(dx, dy); }
@@ -95,46 +93,35 @@ function nearestOrder(list, from) {
   while (rest.length) { rest.sort((a, b) => dist(cur, [a.lat, a.lng]) - dist(cur, [b.lat, b.lng])); const n = rest.shift(); out.push(n); cur = [n.lat, n.lng]; }
   return out;
 }
-function routeStops() {
-  const go = FACTORIES.concat(window.LOGISTICS || []).filter(f => isGo(f) && f.lat != null);
-  const alex = nearestOrder(go.filter(f => f.region === "iskenderiye"), ALEX);
-  const last = alex.length ? [alex[alex.length - 1].lat, alex[alex.length - 1].lng] : ALEX;
-  const cairo = nearestOrder(go.filter(f => f.region !== "iskenderiye"), last);
-  return { alex, cairo };
-}
-function dirUrl(origin, stops) {
-  if (!stops.length) return "";
-  const pts = stops.map(mapQ), dest = pts.pop();
-  let u = `https://www.google.com/maps/dir/?api=1&travelmode=driving&destination=${encodeURIComponent(dest)}`;
-  if (origin) u += `&origin=${encodeURIComponent(origin)}`;
-  if (pts.length) u += `&waypoints=${encodeURIComponent(pts.join("|"))}`;
-  return u;
-}
-function numIcon(n) { return L.divIcon({ className: "", iconSize: [28, 28], iconAnchor: [14, 14], html: `<div class="num-icon">${n}</div>` }); }
-
+let daySel = new URLSearchParams(location.search).get("gun") || lsGet("valmeto-map-day", "all");
+function numIcon(n, c) { return L.divIcon({ className: "", iconSize: [28, 28], iconAnchor: [14, 14], html: `<div class="num-icon" style="background:${c}">${n}</div>` }); }
 function drawGo() {
-  const { alex, cairo } = routeStops(), all = alex.concat(cairo);
-  L.marker(ALEX, { icon: L.divIcon({ className: "", iconSize: [30, 30], iconAnchor: [15, 15], html: '<div class="start-icon">▶</div>' }) })
-    .bindTooltip("Başlangıç: İskenderiye").addTo(layer);
-  const pts = [ALEX];
-  all.forEach((f, i) => {
-    const mk = L.marker([f.lat, f.lng], { icon: numIcon(i + 1) }).bindTooltip(`${i + 1}. ${f.name}`).bindPopup(() => popup(f)).addTo(layer);
+  const { days, none } = planDays();
+  const sel = document.getElementById("daySel");
+  sel.innerHTML = `<option value="all">Tüm günler</option>` + days.map(d => `<option value="${d.date}">${fmtDay(d.date)} (${d.stops.length})</option>`).join("") + (none.length ? `<option value="none">Günü seçilmemiş (${none.length})</option>` : "");
+  if (![...sel.options].some(o => o.value === daySel)) daySel = "all";
+  sel.value = daySel;
+  const pts = [], legs = [];
+  days.forEach((d, i) => {
+    if (daySel !== "all" && daySel !== d.date) return;
+    const c = DAY_COLORS[i % DAY_COLORS.length], start = dayStart(d.stops), line = [start];
+    d.stops.forEach((f, j) => {
+      const mk = L.marker([f.lat, f.lng], { icon: numIcon(j + 1, c) }).bindTooltip(`${fmtDay(d.date, { day: "numeric", month: "short" })} · ${j + 1}. ${f.name}`).bindPopup(() => popup(f)).addTo(layer);
+      markers[f.id] = mk; line.push([f.lat, f.lng]); pts.push([f.lat, f.lng]);
+    });
+    L.polyline(line, { color: c, weight: 4, opacity: .85, dashArray: "8 6" }).addTo(layer);
+    legs.push(`<div class="leg" style="border-left:4px solid ${c};padding-left:8px"><h3>${fmtDay(d.date)} · ~${routeKm(d.stops)} km</h3>
+      <ol style="margin:4px 0 8px;padding-left:20px">${d.stops.map(f => `<li>${esc(f.name)}</li>`).join("")}</ol>
+      <a class="big-btn" href="${dayRouteUrl(d.stops)}" target="_blank" rel="noopener">🧭 Google Maps rotası</a></div>`);
+  });
+  if (daySel === "all" || daySel === "none") none.forEach(f => {
+    const mk = L.circleMarker([f.lat, f.lng], { radius: 9, color: "#888", weight: 3, fillColor: "#fff", fillOpacity: 1 }).bindTooltip("Günü seçilmemiş: " + f.name).bindPopup(() => popup(f)).addTo(layer);
     markers[f.id] = mk; pts.push([f.lat, f.lng]);
   });
-  if (pts.length > 1) L.polyline(pts, { color: "#84601f", weight: 4, opacity: .8, dashArray: "8 6" }).addTo(layer);
-  map.fitBounds(pts.length > 1 ? pts : [ALEX, [30.05, 31.25]], { padding: [40, 40] });
-  const origin = startIn.value.trim() || "Alexandria, Egypt";
-  const legHtml = (title, list, from, offset) => !list.length ? "" : `<div class="leg"><h3>${title}</h3>
-    ${list.map((f, i) => `<div class="stop"><div class="num">${offset + i + 1}</div><div><b>${esc(f.name)}</b><br><span class="meta">${esc(f.address)}</span>
-      <div class="actions" style="margin-top:4px"><a href="${mapsHref(f)}" target="_blank" rel="noopener">🧭 Konum</a>${f.phones[0] ? `<a href="${telHref(f.phones[0])}">📞 Ara</a>` : ""}${f.metal ? `<a href="ziyaret.html#${f.id}">📝 Form</a>` : `<a href="lojistik.html">🚢 Lojistik</a>`}</div></div></div>`).join("")}
-    <a class="big-btn" style="margin-top:8px" href="${dirUrl(from, list)}" target="_blank" rel="noopener">🧭 ${title} – Google Maps rotası</a></div>`;
-  const lastAlex = alex.length ? mapQ(alex[alex.length - 1]) : origin;
-  document.getElementById("legs").innerHTML = (all.length ? "" : `<p class="warning">Henüz 🚩 gidilecek seçilmedi. Mısır Üreticileri sayfasında kartlardaki “🚩 Gidilecek” kutusunu işaretle.</p>`)
-    + legHtml("1. bölüm: İskenderiye", alex, origin, 0)
-    + legHtml("2. bölüm: İskenderiye → Kahire", cairo, lastAlex, alex.length)
-    + (alex.length && cairo.length ? `<p style="margin-top:10px"><a class="big-btn ghost" href="${dirUrl(origin, all)}" target="_blank" rel="noopener">🗺️ Tüm rota tek seferde (Google Maps)</a></p>` : "");
+  if (none.length && (daySel === "all" || daySel === "none")) legs.push(`<div class="leg"><h3>Günü seçilmemiş</h3><ul style="margin:4px 0;padding-left:20px">${none.map(f => `<li>${esc(f.name)}</li>`).join("")}</ul></div>`);
+  document.getElementById("legs").innerHTML = legs.join("") || `<p class="warning">Henüz 🚩 gidilecek / ziyaret günü yok. Mısır Üreticileri sayfasında kartlardan seç.</p>`;
+  if (pts.length) map.fitBounds(pts, { padding: [40, 40] }); else map.setView([30.6, 30.9], 8);
 }
-
 function drawAll() {
   const b = [];
   FACTORIES.filter(f => f.lat != null).forEach(f => {
@@ -174,9 +161,10 @@ function draw() {
 }
 document.querySelectorAll("[data-mode]").forEach(x => x.onclick = () => { mode = x.dataset.mode; lsSet("valmeto-mapmode", mode); draw(); });
 document.getElementById("cust").onchange = draw;
-startIn.oninput = () => { lsSet("valmeto-route-start", startIn.value); if (mode === "go") { layer.clearLayers(); drawGo(); } };
-window.onGoChange = () => { map.closePopup(); draw(); };
-if (location.hash && !FACTORIES.some(f => f.id === location.hash.slice(1) && isGo(f))) mode = "all";
+document.getElementById("daySel").onchange = e => { daySel = e.target.value; lsSet("valmeto-map-day", daySel); draw(); };
+window.onGoChange = () => { map.closePopup(); draw(); }; window.onPlanChange = () => { map.closePopup(); draw(); };
+if (new URLSearchParams(location.search).get("gun")) mode = "go";
+if (location.hash && !allPlaces().some(f => f.id === location.hash.slice(1) && isGo(f))) mode = "all";
 draw();
 
 let meLayer;
