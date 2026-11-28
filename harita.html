@@ -13,7 +13,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Valmeto">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="style.css?v=45">
+<link rel="stylesheet" href="style.css?v=46">
 <style>
   .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; align-items: center; }
   .tabs button { font-weight: 600; }
@@ -39,6 +39,7 @@
     <label class="meta" style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="me"> Konumumu göster</label>
   </div>
 
+  <div class="map-layout">
   <div id="map"></div>
 
   <div id="routePanel" class="section" style="margin-top:12px">
@@ -47,6 +48,7 @@
       <select id="daySel" style="font:inherit;font-size:16px;padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);width:100%;margin-top:4px"></select></label>
     <p class="meta">Günleri Mısır Üreticileri / Lojistik kartlarındaki “📅 Ziyaret günü”nden seç. Her gün ayrı renkte; numaralar o günün ziyaret sırası. Çizgiler kuş uçuşudur – gerçek yol için Google Maps düğmesi.</p>
     <div id="legs"></div>
+  </div>
   </div>
   </div>
 
@@ -63,10 +65,10 @@
 </main>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="data.js?v=45"></script>
-<script src="musteriler.js?v=45"></script>
-<script src="lojistik.js?v=45"></script>
-<script src="common.js?v=45"></script>
+<script src="data.js?v=46"></script>
+<script src="musteriler.js?v=46"></script>
+<script src="lojistik.js?v=46"></script>
+<script src="common.js?v=46"></script>
 <script>
 const ALEX = [31.2001, 29.9187];
 let mode = lsGet("valmeto-mapmode", "go");

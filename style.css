@@ -170,3 +170,18 @@ ul.plain li { padding: 3px 0; overflow-wrap: anywhere; }
 .cal-day.has { color: var(--text); background: var(--surface); }
 .cal-day small { font-size: .72rem; }
 .day-card h2 small { font-weight: 400; }
+
+/* --- iPad / geniş ekran --- */
+@media (min-width: 900px) {
+  #pwMsgs, #waMsgs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; align-items: stretch; }
+  .wa-msg { display: flex; flex-direction: column; margin-top: 8px; }
+  .wa-msg pre { flex: 1; }
+  .wa-msg button { align-self: flex-start; }
+  .day-card .stop { grid-template-columns: 34px minmax(0, 1fr); }
+}
+@media (min-width: 1000px) {
+  .map-layout { display: grid; grid-template-columns: minmax(0, 2fr) minmax(300px, 1fr); gap: 14px; align-items: start; }
+  .map-layout #map { height: calc(100vh - 190px); min-height: 480px; }
+  .map-layout #routePanel { margin-top: 0 !important; max-height: calc(100vh - 190px); overflow-y: auto; }
+}
+@media (min-width: 700px) and (max-width: 999px) { #map { height: 55vh; } }

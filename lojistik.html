@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Valmeto">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="style.css?v=45">
+<link rel="stylesheet" href="style.css?v=46">
 </head>
 <body>
 <header class="top"><div class="inner">
@@ -61,8 +61,8 @@
 </main>
 <footer>Kaynaklar: firmaların resmi siteleri, İskenderiye Denizcilik Odası (acs.org.eg), gümrük platformu ve rehberler (Kasım 2026). “(rehber)” yazan numaraları ilk temasta teyit et.</footer>
 
-<script src="lojistik.js?v=45"></script>
-<script src="common.js?v=45"></script>
+<script src="lojistik.js?v=46"></script>
+<script src="common.js?v=46"></script>
 <script>
 const $ = id => document.getElementById(id);
 const DEST = { skg: "Thessaloniki (Greece)" };
@@ -115,8 +115,8 @@ function render() {
   lsSet("valmeto-lj-form", { dest: $("dest").value, qty: $("qty").value, tons: $("tons").value, ready: $("ready").value, door: $("door").checked });
   const msg = message(); $("msg").textContent = msg;
   const wm = waMessages();
-  $("waMsgs").innerHTML = wm.map((m, i) => `<div style="margin-top:10px"><b>${m.tr}</b>
-    <pre style="white-space:pre-wrap;font:inherit;font-size:.92rem;background:var(--bg);padding:10px;border-radius:8px;border:1px solid var(--border);margin:6px 0">${esc(m.text)}</pre>
+  $("waMsgs").innerHTML = wm.map((m, i) => `<div class="wa-msg"><b>${m.tr}</b>
+    <pre>${esc(m.text)}</pre>
     <button class="big-btn ghost" data-copywa="${i}">📋 ${i + 1}. mesajı kopyala</button></div>`).join("");
   const t = $("type").value;
   const contacted = f => !!mailState(contactKey(f)).status;
