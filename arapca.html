@@ -12,7 +12,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Valmeto">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="style.css?v=39">
+<link rel="stylesheet" href="style.css?v=40">
 <style>
   .phrase { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; cursor: pointer; }
   .phrase .tr { font-weight: 600; }
@@ -24,6 +24,14 @@
   .digits { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; text-align: center; }
   .digits div { background: var(--bg); border-radius: 6px; padding: 6px; }
   .digits b { display: block; font-size: 1.6rem; }
+  .gloss-search { width: 100%; font: inherit; font-size: 16px; padding: 9px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); margin-bottom: 8px; }
+  table.gloss { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  table.gloss th { text-align: left; font-size: .8rem; color: var(--muted); padding: 6px 4px; border-bottom: 2px solid var(--border); }
+  table.gloss th:last-child, table.gloss td.gar { text-align: right; }
+  table.gloss td { padding: 8px 4px; border-bottom: 1px solid var(--border); vertical-align: middle; font-size: .92rem; word-wrap: break-word; cursor: pointer; }
+  table.gloss td.gen { color: var(--muted); }
+  table.gloss td.gar { direction: rtl; font-size: 1.25rem; font-family: "Noto Naskh Arabic", "Geeza Pro", Arial, sans-serif; }
+  table.gloss tr.cat td { background: var(--bg); font-weight: 700; color: var(--accent); cursor: default; }
 </style>
 </head>
 <body>
@@ -41,12 +49,19 @@
 
   <h2 class="group-h">Ürün adları</h2>
   <div id="products"></div>
+  <h2 class="group-h">Terimler sözlüğü <small>Türkçe · English · العربية</small></h2>
+  <div class="section">
+    <input class="gloss-search" id="gq" type="search" placeholder="Ara: bakır, fiyat, liman…">
+    <table class="gloss"><thead><tr><th>Türkçe</th><th>English</th><th>العربية</th></tr></thead><tbody id="gloss"></tbody></table>
+    <p class="meta">Bir satıra dokun: Arapçası tam ekran büyür, karşındakine göster.</p>
+  </div>
+
   <h2 class="group-h">Sorular</h2>
   <div id="phrases"></div>
 </main>
 <div id="big" role="dialog" aria-label="Büyük gösterim"><div class="ar" id="bigAr"></div><div class="tr" id="bigTr"></div></div>
 
-<script src="common.js?v=39"></script>
+<script src="common.js?v=40"></script>
 <script>
 const P = [
   ["أهلاً وسهلاً، أنا تاجر من تركيا. نشتري النحاس والألومنيوم لمصانع الكابلات.", "Merhaba, Türkiye'den tüccarım. Kablo fabrikaları için bakır ve alüminyum alıyoruz.", "Hello, I am a trader from Türkiye. We buy copper and aluminium for cable factories."],
@@ -88,10 +103,22 @@ const PROD = [
 const card = ([ar, tr, en]) => `<div class="phrase" data-ar="${esc(ar)}" data-tr="${esc(tr)}"><div class="ar">${esc(ar)}</div><div class="tr">${esc(tr)}</div>${en ? `<div class="en">${esc(en)}</div>` : ""}</div>`;
 document.getElementById("phrases").innerHTML = P.map(card).join("");
 document.getElementById("products").innerHTML = PROD.map(card).join("");
+const GLOSS = {"Metaller ve ürünler": [["Bakır", "Copper", "نحاس"], ["Kırmızı (saf) bakır", "Pure / red copper", "نحاس أحمر"], ["Pirinç (sarı bakır)", "Brass", "نحاس أصفر"], ["Bronz", "Bronze", "برونز"], ["Alüminyum", "Aluminium", "ألومنيوم"], ["Bakır filmaşin (8 mm)", "Copper wire rod (8 mm)", "سلك نحاس ٨ مم (راد)"], ["Bakır tel", "Copper wire", "سلك نحاس"], ["Tavlı (yumuşak) tel", "Annealed wire", "سلك مُلدَّن"], ["Örgülü / çok telli tel", "Stranded wire", "سلك مجدول"], ["Bara", "Busbar", "بار نحاس"], ["Şerit", "Strip", "شريط"], ["Çubuk", "Rod / bar", "قضيب"], ["Külçe", "Ingot", "سبيكة"], ["Katot", "Cathode", "كاثود"], ["Hurda", "Scrap", "خردة"], ["Billet", "Billet", "بيليت"], ["Profil", "Profile / section", "قطاع"], ["Levha", "Sheet", "لوح"], ["Kangal / bobin", "Coil", "لفّة"], ["Kablo", "Cable", "كابل"]], "Kalite": [["Kalite", "Quality", "جودة"], ["Saflık", "Purity", "نقاوة"], ["İletkenlik", "Conductivity", "توصيلية كهربائية"], ["Elektrolitik (ETP)", "Electrolytic (ETP)", "إلكتروليتي"], ["Oksijensiz (OF)", "Oxygen-free (OF)", "خالٍ من الأكسجين"], ["Analiz sertifikası", "Analysis certificate", "شهادة تحليل"], ["Numune", "Sample", "عيّنة"], ["Çap", "Diameter", "قُطر"], ["Ağırlık", "Weight", "وزن"], ["Ambalaj", "Packing", "تغليف"]], "Ticaret ve ödeme": [["Fiyat", "Price", "سعر"], ["Ton", "Ton", "طن"], ["Kilo", "Kilogram", "كيلو"], ["Teklif", "Quotation / offer", "عرض سعر"], ["Sipariş", "Order", "طلبية"], ["Minimum sipariş", "Minimum order", "أقل كمية للطلب"], ["Aylık kapasite", "Monthly capacity", "الطاقة الإنتاجية الشهرية"], ["Teslim süresi", "Delivery time", "مدة التسليم"], ["Fabrika teslim (EXW)", "Ex works (EXW)", "تسليم المصنع"], ["FOB İskenderiye", "FOB Alexandria", "تسليم ميناء الإسكندرية"], ["Ödeme", "Payment", "الدفع"], ["Peşinat", "Advance payment", "دفعة مقدمة"], ["Akreditif", "Letter of credit (L/C)", "اعتماد مستندي"], ["Banka havalesi", "Bank transfer", "تحويل بنكي"], ["Fatura", "Invoice", "فاتورة"], ["Sözleşme", "Contract", "عقد"], ["İndirim", "Discount", "خصم"], ["Pahalı", "Expensive", "غالي"], ["Ucuz", "Cheap", "رخيص"]], "Nakliye ve ihracat": [["Nakliye", "Shipping", "شحن"], ["Konteyner", "Container", "حاوية"], ["Liman", "Port", "ميناء"], ["Gümrük", "Customs", "جمارك"], ["İhracat", "Export", "تصدير"], ["İhracat izni", "Export licence", "ترخيص تصدير"], ["Menşe belgesi", "Certificate of origin", "شهادة المنشأ"], ["Kamyon", "Truck", "شاحنة"]], "Firma ve konuşma": [["Fabrika", "Factory", "مصنع"], ["Depo", "Warehouse", "مخزن"], ["Müdür", "Manager", "مدير"], ["Satış müdürü", "Sales manager", "مدير المبيعات"], ["Ticaret sicili", "Commercial register", "سجل تجاري"], ["Vergi kartı", "Tax card", "بطاقة ضريبية"], ["Telefon / WhatsApp", "Phone / WhatsApp", "تليفون / واتساب"], ["Evet / Hayır", "Yes / No", "أيوه / لأ"], ["Tamam", "OK", "تمام"], ["Teşekkürler", "Thank you", "شكراً"]]};
+function renderGloss() {
+  const q = document.getElementById("gq").value.trim().toLowerCase();
+  document.getElementById("gloss").innerHTML = Object.entries(GLOSS).map(([cat, rows]) => {
+    const r = rows.filter(([tr, en, ar]) => !q || (tr + " " + en + " " + ar).toLowerCase().includes(q));
+    if (!r.length) return "";
+    return `<tr class="cat"><td colspan="3">${esc(cat)}</td></tr>` + r.map(([tr, en, ar]) =>
+      `<tr class="grow" data-ar="${esc(ar)}" data-tr="${esc(tr + " · " + en)}"><td>${esc(tr)}</td><td class="gen">${esc(en)}</td><td class="gar">${esc(ar)}</td></tr>`).join("");
+  }).join("");
+}
+document.getElementById("gq").addEventListener("input", renderGloss);
+renderGloss();
 document.getElementById("digits").innerHTML = "٠١٢٣٤٥٦٧٨٩".split("").map((d, i) => `<div><b>${d}</b>${i}</div>`).join("");
 const big = document.getElementById("big");
 document.querySelector("main").onclick = e => {
-  const p = e.target.closest(".phrase"); if (!p) return;
+  const p = e.target.closest(".phrase, tr.grow"); if (!p) return;
   document.getElementById("bigAr").textContent = p.dataset.ar; document.getElementById("bigTr").textContent = p.dataset.tr;
   big.classList.add("on");
 };
