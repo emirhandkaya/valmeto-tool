@@ -516,18 +516,22 @@ window.FACTORIES = [
 ];
 
 // Fiyat referansları (sayfalardaki kutulardan güncellenebilir)
-window.LME_REF = { copper: 11660, aluminium: 2800, date: "25.11.2026",
+window.LME_REF = { copper: 12311, aluminium: 2830, date: "27.11.2026",
   source: "https://tradingeconomics.com/commodity/copper", sourceAl: "https://www.alcircle.com/news/lme-cash-aluminium-climbs-0-77-to-2-825-t-exchange-stocks-slip-0-37-116388" };
 window.FX_REF = { usdEgp: 53.8, date: "15.11.2026", source: "https://www.arabfinance.com/en/news/newdetails/usd-egp-exchange-rate-on-november-15-2026" };
 // Mısır iç piyasa hurda fiyatları (EGP/kg) – pazarlık için referans
 window.EG_SCRAP = {
-  date: "25.11.2026",
-  source: "https://www.egyin.com/article/162416/",
+  date: "28.11.2026",
+  source: "https://www.egyin.com/article/163288/",
   items: [
-    { name: "Parlak kırmızı bakır hurda (kablo – 'lamee')", min: 530, max: 550, metal: "bakir" },
-    { name: "Kırmızı bakır hurda (sessiz/standart)", min: 450, max: 520, metal: "bakir" },
-    { name: "Karışık bakır hurda", min: 440, max: 500, metal: "bakir" },
-    { name: "Sarı (pirinç) hurda", min: 190, max: 210, metal: "pirinc" },
+    { name: "Parlak kırmızı bakır hurda (kablo – 'lamee')", min: 530, max: 560, metal: "bakir" },
+    { name: "Kırmızı bakır hurda (sessiz – kap/kacak)", min: 520, max: 545, metal: "bakir" },
+    { name: "Karışık bakır hurda", min: 490, max: 500, metal: "bakir" },
+    { name: "Sarı (pirinç) hurda", min: 320, max: 330, metal: "pirinc" },
     { name: "Alüminyum hurda (temiz, Ağustos 2026 verisi)", min: 150, max: 250, metal: "aluminyum" }
+  ],
+  ref: [
+    { name: "Egyptalum alüminyum billet (iç piyasa, KDV hariç, Kasım 2026)", egpt: 205000, metal: "aluminyum" },
+    { name: "Egyptalum soğuk haddelenmiş levha (iç piyasa, KDV hariç, Kasım 2026)", egpt: 229000, metal: "aluminyum" }
   ]
 };
