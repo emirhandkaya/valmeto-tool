@@ -185,3 +185,16 @@ ul.plain li { padding: 3px 0; overflow-wrap: anywhere; }
   .map-layout #routePanel { margin-top: 0 !important; max-height: calc(100vh - 190px); overflow-y: auto; }
 }
 @media (min-width: 700px) and (max-width: 999px) { #map { height: 55vh; } }
+
+/* Eşitleme */
+nav a.syncbtn { margin-left: auto; white-space: nowrap; }
+nav a.syncbtn[data-state="off"], nav a.syncbtn[data-state="err"] { opacity: .85; }
+nav a.syncbtn[data-state="new"] { font-weight: 700; }
+.sync-ov { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center; z-index: 5000; padding: 16px; }
+.sync-card { background: var(--surface); color: var(--text); border-radius: 14px; padding: 18px; width: 100%; max-width: 420px; box-shadow: 0 10px 40px rgba(0,0,0,.3); }
+.sync-card h3 { margin: 0 0 8px; }
+.sync-card p { margin: 6px 0; }
+.sync-row { display: flex; gap: 8px; margin: 12px 0; flex-wrap: wrap; }
+.sync-row input { flex: 1; min-width: 0; font-size: 16px; padding: 10px; border: 1px solid var(--border, #c9d2dc); border-radius: 8px; background: var(--bg); color: var(--text); }
+.sync-err { color: #b3261e; min-height: 1.2em; }
+.sync-card #syncClose { width: 100%; }

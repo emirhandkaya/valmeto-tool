@@ -96,7 +96,7 @@ window.addEventListener("beforeinstallprompt", e => {
   if (!ios || standalone || lsGet("valmeto-ios-hint", false)) return;
   document.addEventListener("DOMContentLoaded", () => {
     const main = document.querySelector("main"); if (!main) return;
-    main.insertAdjacentHTML("afterbegin", '<div class="warning" id="iosHint" style="border-left-color:var(--accent)">📲 <b>Uygulama olarak ekle:</b> Safari\'de adres çubuğundaki <b>Paylaş</b> (⬆️) düğmesine dokun → <b>Ana Ekrana Ekle</b>. Notlar her cihazda ayrı saklanır; cihazlar arası aktarım için Ziyaret Formu\'ndaki “Yedek indir / yükle”yi kullan. <a href="#" id="iosHintX">Kapat</a></div>');
+    main.insertAdjacentHTML("afterbegin", '<div class="warning" id="iosHint" style="border-left-color:var(--accent)">📲 <b>Uygulama olarak ekle:</b> Safari\'de adres çubuğundaki <b>Paylaş</b> (⬆️) düğmesine dokun → <b>Ana Ekrana Ekle</b>. Veriler menüdeki <b>☁️ Eşitleme</b> ile telefon ve iPad arasında otomatik eşitlenir. <a href="#" id="iosHintX">Kapat</a></div>');
     document.getElementById("iosHintX").onclick = e => { e.preventDefault(); lsSet("valmeto-ios-hint", true); document.getElementById("iosHint").remove(); };
   });
 })();
